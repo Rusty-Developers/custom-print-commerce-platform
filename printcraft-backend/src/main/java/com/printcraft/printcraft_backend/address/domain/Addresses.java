@@ -17,7 +17,7 @@ import org.apache.logging.log4j.util.Lazy;
 public class Addresses {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private  Long id;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY) //A Person can have more than 1  address relationship(ER)
 //    Why `FetchType.LAZY` — Understand This
 //`EAGER` = every time you load an Address, JPA
@@ -27,7 +27,7 @@ public class Addresses {
 //    This is the correct default for all `@ManyToOne` relationships.
     @JoinColumn(name = "users.id") // column name in addresses table
     private User user;   // the actual object reference
-    @Column(name = "fullName",nullable = false)
+    @Column(name = "fullName", nullable = false)
     private String fullName;
     @Column(nullable = false, unique = true)  // unique, not null
     private String phoneNo;
@@ -38,8 +38,8 @@ public class Addresses {
     private String city;
     @Column(nullable = false)
     private String state;
-    @Column(nullable = false,length = 6)
+    @Column(nullable = false, length = 6)
     private Integer pinCode;
     @Builder.Default
-    private boolean isDefault=false;
+    private boolean isDefault = false;
 }

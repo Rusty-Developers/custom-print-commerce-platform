@@ -7,5 +7,4 @@ public enum ProductSizeInches {
     SIZE_20X30,
     SIZE_24X36,
     SIZE_36X48
-
 }

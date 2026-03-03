@@ -20,20 +20,20 @@ import java.math.BigDecimal;
 public class ProductPricing {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private  Long id;
+    private Long id;
     //BIGINT FK → products.id  AND One product → many price configs SO ONE - TO - MANY
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
-//    Size in inches
+    //    Size in inches
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-private ProductSizeInches productSizeInches;
+    private ProductSizeInches productSizeInches;
     //thickness.
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProductThickness productThickness;
-//    DECIMAL(10,2) NOT NULL--BOOLEAN DEFAULT TRUE --Price for this exact size+thickness combo
+    //    DECIMAL(10,2) NOT NULL--BOOLEAN DEFAULT TRUE --Price for this exact size+thickness combo
     @Column(nullable = false)
     private BigDecimal basePrice;
     @Builder.Default
