@@ -25,11 +25,11 @@ public class Addresses {
 //    If you load 100 addresses, you load 100 users unnecessarily.
 //    LAZY` = User is only loaded **when you actually call** `address.getUser()`.
 //    This is the correct default for all `@ManyToOne` relationships.
-    @JoinColumn(name = "users.id") // column name in addresses table
+    @JoinColumn(name = "user_id") // column name in addresses table
     private User user;   // the actual object reference
     @Column(name = "fullName", nullable = false)
     private String fullName;
-    @Column(nullable = false, unique = true)  // unique, not null
+    @Column(nullable = false)  // unique, not null
     private String phoneNo;
     @Column(nullable = false)
     private String addressLine;

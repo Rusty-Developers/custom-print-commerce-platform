@@ -53,8 +53,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     //ORDER DEFAULT = PLACED...ONLY WHEN ORDER PAYED
     private  OrderStatus orderStatus;
-    @Column(nullable = true)
-     private String paymentId;   // Razorpay payment IDs are Strings like pay_ABC123XYZ
+    @Column(unique = true)
+    private String paymentId;   // Razorpay payment IDs are Strings like pay_ABC123XYZ
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default

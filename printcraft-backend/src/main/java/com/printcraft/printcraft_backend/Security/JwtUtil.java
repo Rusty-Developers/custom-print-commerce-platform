@@ -45,7 +45,8 @@ public class JwtUtil {
 
     // Called on every request — reads phone from token
     public String extractPhone(String token){
-     return getClaims(token).getSubject();
+
+        return getClaims(token).getSubject();
     }
     //return true if token valid, false if expired/wrong
     public boolean isTokenValid(String token) {
@@ -61,4 +62,7 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
     }
 
+    public String extractRole(String token) {
+        return getClaims(token).get("role",String.class);
+    }
 }

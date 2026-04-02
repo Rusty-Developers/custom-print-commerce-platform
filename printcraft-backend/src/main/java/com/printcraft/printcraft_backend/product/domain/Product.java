@@ -21,6 +21,8 @@ public class   Product {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @Column(nullable = false)
+    @Version
+    private Long version;  //This enables optimistic locking && Prevents overselling when 500 users order same product
     private String productName;
     @Enumerated(EnumType.STRING)
     @Column(name = "catagory", nullable = false)
