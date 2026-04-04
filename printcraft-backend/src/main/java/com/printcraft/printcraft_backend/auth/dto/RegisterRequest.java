@@ -11,10 +11,10 @@ public class RegisterRequest {
     private String name;
     @NotBlank
     @Pattern(regexp = "^[6-9][0-9]{9}$")
-    @Size(min = 10,max = 10)  //coz a phoneno without 10-digits is not valid
+    @Size(min = 10,max = 10,message = "Phone number must be exactly 10 digits")  //coz a phoneno without 10-digits is not valid
     private String phoneno;
     @NotBlank
-    @Email
+    @Email(message = "Invalid email format")
     private String email;
 
 }
