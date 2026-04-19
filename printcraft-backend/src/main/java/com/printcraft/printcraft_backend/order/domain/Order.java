@@ -1,5 +1,6 @@
 package com.printcraft.printcraft_backend.order.domain;
 
+import com.printcraft.printcraft_backend.address.domain.Addresses;
 import com.printcraft.printcraft_backend.payment.domain.PaymentStatus;
 import com.printcraft.printcraft_backend.product.domain.FrameTypes;
 import com.printcraft.printcraft_backend.product.domain.Product;
@@ -61,8 +62,12 @@ public class Order {
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
     @Column(nullable = false)
     private String customImageUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Addresses address;
+
     @Column(nullable = false)
-    private String deliveryAddress;
+    private String deliveryAddressSnapshot;  //frozen copy for keep history,logs
     @CreationTimestamp
     private LocalDateTime createdAt;
 //    Set when payment confirmed--cancellation deadline

@@ -33,6 +33,15 @@ public class ProductPricing {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProductThickness productThickness;
+
+    public BigDecimal getBasePrice() {
+        return basePrice;
+    }
+
+    public void setBasePrice(BigDecimal basePrice) {
+        this.basePrice = basePrice;
+    }
+
     //    DECIMAL(10,2) NOT NULL--BOOLEAN DEFAULT TRUE --Price for this exact size+thickness combo
     @Column(nullable = false)
     private BigDecimal basePrice;

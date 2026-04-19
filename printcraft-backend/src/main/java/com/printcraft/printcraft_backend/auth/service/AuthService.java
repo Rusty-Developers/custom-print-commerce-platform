@@ -83,7 +83,7 @@ public class AuthService {
     public String sendOTP(OtpRequest otpRequest){
         //first check the phone no. existence
         if(!userRepository.existsByphoneNo(otpRequest.getPhoneno())){
-            throw new RuntimeException("Phone no. is not registered. Please register first.");
+            throw new RuntimeException("OTP sent if user exists");
         }
         //generate otp
       String otp = String.format("%06d",new SecureRandom().nextInt(999999));

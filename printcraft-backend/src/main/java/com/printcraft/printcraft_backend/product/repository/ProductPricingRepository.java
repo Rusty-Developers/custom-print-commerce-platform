@@ -1,16 +1,21 @@
 package com.printcraft.printcraft_backend.product.repository;
 
 import com.printcraft.printcraft_backend.product.domain.Product;
+
+
+import com.printcraft.printcraft_backend.product.domain.Product;
 import com.printcraft.printcraft_backend.product.domain.ProductPricing;
 import com.printcraft.printcraft_backend.product.domain.ProductSizeInches;
 import com.printcraft.printcraft_backend.product.domain.ProductThickness;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductPricingRepository extends JpaRepository<ProductPricing, Long> {
 
-    List<Product> findByIsProductActiveTrue();
-
+    Optional<ProductPricing> findByProductAndProductSizeInchesAndProductThicknessAndIsActiveTrue(
+            Product product,
+            ProductSizeInches sizeInches,
+            ProductThickness thickness
+    );
 }
