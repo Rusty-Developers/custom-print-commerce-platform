@@ -76,7 +76,7 @@ export default function Footer() {
       </div>
       <div className="footer-bottom">
         <div className="container">
-          © 2025 PrintCraft. All rights reserved. &nbsp;|&nbsp; Designed with ❤️ in India
+          © 2026 PrintCraft. All rights reserved. &nbsp;|&nbsp; Designed with ❤️ in India
         </div>
       </div>
     </footer>
