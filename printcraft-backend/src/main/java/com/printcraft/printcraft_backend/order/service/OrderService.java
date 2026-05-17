@@ -89,4 +89,9 @@ User user  = userRepository.findByphoneNo(phoneNo).orElseThrow(()->new RuntimeEx
         // 9. Save INTO REPO
       return      orderRepository.save(Createorder);
     }
+    //validate payment
+    public boolean isPaymentDone(PaymentStatus paymentStatus){
+        if(paymentStatus==PaymentStatus.PAID) return true;
+        return false;
+    }
 }

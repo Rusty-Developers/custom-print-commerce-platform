@@ -33,7 +33,7 @@ public class Product {
     private FrameTypes frameTypes;
     @Builder.Default
     private boolean isProductActive = true;
-    //      INT DEFAULT 0 Inventory — prevents overselling
+    //  INT DEFAULT 0 Inventory — prevents overselling
     @Builder.Default
     private Integer stockQuantity = 0;
     @Column(nullable = false)
