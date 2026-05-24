@@ -24,7 +24,7 @@ public class OrderModificationRequest {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "orders_id")
     private Order order;
-    //what user wants--this will be required for the bot to undrstand the context strongly
+    //what user wants--this will be required for the bot to understand the context strongly
     @Column(columnDefinition = "TEXT")
     private String requestedChanges;
     //status should be only->pending/approved/rejected
