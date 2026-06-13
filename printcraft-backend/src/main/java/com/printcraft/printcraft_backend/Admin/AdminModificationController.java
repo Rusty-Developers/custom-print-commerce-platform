@@ -1,11 +1,6 @@
 package com.printcraft.printcraft_backend.Admin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.printcraft.printcraft_backend.order.domain.Order;
-import com.printcraft.printcraft_backend.order.domain.OrderBotReplyStatus;
-import com.printcraft.printcraft_backend.order.domain.OrderModificationRequest;
-import com.printcraft.printcraft_backend.order.domain.OrderStatus;
-import com.printcraft.printcraft_backend.order.repository.OrderModificationRequestRepository;
 import com.printcraft.printcraft_backend.order.service.OrderNotication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +15,7 @@ public class AdminModificationController {
     // inject service
     private final OrderNotication orderNotication;
 
-    public AdminModificationController(OrderNotication orderNotication, OrderModificationRequestRepository orderModificationRequestRepository, Order order) {
+    public AdminModificationController(OrderNotication orderNotication) {
         this.orderNotication = orderNotication;
     }
     //here , actual updation after approval will reflected/saved into Order-DATABASE TABLE

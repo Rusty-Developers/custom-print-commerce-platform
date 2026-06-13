@@ -16,7 +16,7 @@ public class WebhookController {
     }
 
 
-    @PostMapping("/razorpay")
+    @PostMapping("/api/webhooks/razorpay")
     public ResponseEntity<String> handleWebhook(
             @RequestBody String payload,
             @RequestHeader("X-Razorpay-Signature") String signature) {

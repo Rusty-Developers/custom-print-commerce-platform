@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.printcraft.printcraft_backend.Admin.AdminModificationDetailsByIDDTO;
 import com.printcraft.printcraft_backend.Admin.AdminModificationResponseDTO;
+import com.printcraft.printcraft_backend.notification.EmailService;
+import com.printcraft.printcraft_backend.notification.EmailTemplateBuilder;
 import com.printcraft.printcraft_backend.order.domain.*;
 import com.printcraft.printcraft_backend.order.repository.OrderModificationRequestRepository;
 import com.printcraft.printcraft_backend.order.repository.OrderRepository;
@@ -20,12 +22,14 @@ import java.util.List;
 public class OrderNotication {
     private final OrderRepository orderRepository;
     private final OrderModificationRequestRepository orderModificationRequestRepository;
-
-    public OrderNotication(OrderRepository orderRepository, OrderModificationRequestRepository orderModificationRequestRepository) {
+   //Injecting EmailService
+    private final EmailService emailService;
+    public OrderNotication(OrderRepository orderRepository, OrderModificationRequestRepository orderModificationRequestRepository, EmailService emailService) {
         this.orderRepository = orderRepository;
         this.orderModificationRequestRepository = orderModificationRequestRepository;
+        this.emailService = emailService;
     }
-
+    @Transactional
     public OrderModificationRequest createModificationRequest(ModificationRequestDTO requestDTO,Long orderId) throws JsonProcessingException {
    //fetch order from orderRepo
         Order order = orderRepository.findById(orderId).orElseThrow(
@@ -75,6 +79,21 @@ public class OrderNotication {
                 .build();
         //save in repo
         orderModificationRequestRepository.save(orderModificationRequest);
+        //After saving we should send mail to the Admin
+        String adminHtml = EmailTemplateBuilder.buildModificationRequestAdmin(
+                order.getId(),
+                order.getUser().getName(),
+                order.getUser().getEmail(),
+                json,
+                orderModificationRequest.getModificationRequestId()
+        );
+        //calling remailService method
+        emailService.sendEmail(
+                "mkgroupprinting@gmail.com",
+                "⚠️ Modification Request — Order #" + order.getId(),
+                adminHtml
+        );
+
         //return entity
         return orderModificationRequest;
     }
@@ -122,6 +141,21 @@ public class OrderNotication {
        orderRepository.save(order);
        //also save the recent modification
        orderModificationRequestRepository.save(orderModification);
+       //after both save if admin approves send mail to User
+       String newSize      = payloadDTO.getSize()      != null ? payloadDTO.getSize().getNewValue()      : order.getProductSizeInches().name();
+       String newFrame     = payloadDTO.getFrame()     != null ? payloadDTO.getFrame().getNewValue()     : order.getFrameTypes().name();
+       String newThickness = payloadDTO.getThickness() != null ? payloadDTO.getThickness().getNewValue() : order.getProductThickness().name();
+
+       String approvedHtml = EmailTemplateBuilder.buildModificationApproved(
+               order.getUser().getName(),
+               order.getId(),
+               newSize, newFrame, newThickness
+       );
+       emailService.sendEmail(
+               order.getUser().getEmail(),
+               "Your Order Modification Has Been Approved — #" + order.getId(),
+               approvedHtml
+       );
 
    }
 //pendingRequest method to surve to Admin very very crucial:
@@ -157,6 +191,18 @@ public List<AdminModificationResponseDTO> getPendingRequests() {
         orderModificationRequest.setAdminAcknowledged(true);
         //save into repo
         orderModificationRequestRepository.save(orderModificationRequest);
+        //we should inform the User via mail
+        Order order = orderModificationRequest.getOrder();
+        String rejectedHtml = EmailTemplateBuilder.buildModificationRejected(
+                orderModificationRequest.getUser().getName(),
+                orderModificationRequest.getOrder().getId()
+        );
+
+        emailService.sendEmail(
+                orderModificationRequest.getUser().getEmail(),
+                "Your Order Modification Request Was Not Approved — #" + order.getId(),
+                rejectedHtml
+        );
     }
 
     public AdminModificationDetailsByIDDTO getModificationDetailsByID(long id) {

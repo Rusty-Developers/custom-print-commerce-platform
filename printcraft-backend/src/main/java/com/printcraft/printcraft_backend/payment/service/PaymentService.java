@@ -1,5 +1,8 @@
 package com.printcraft.printcraft_backend.payment.service;
 
+import com.printcraft.printcraft_backend.DeliveryTracking.DeliveryServiceEngine;
+import com.printcraft.printcraft_backend.notification.EmailService;
+import com.printcraft.printcraft_backend.notification.EmailTemplateBuilder;
 import com.printcraft.printcraft_backend.order.domain.Order;
 import com.printcraft.printcraft_backend.order.domain.OrderStatus;
 import com.printcraft.printcraft_backend.order.repository.OrderRepository;
@@ -10,16 +13,22 @@ import com.razorpay.RazorpayException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 @Service
 public class PaymentService {
     private final OrderRepository orderRepository;
-
-    public PaymentService(OrderRepository orderRepository) {
+  //injecting EmailService
+    private final EmailService emailService;
+    private final DeliveryServiceEngine deliveryServiceEngine;
+    public PaymentService(OrderRepository orderRepository, EmailService emailService, DeliveryServiceEngine deliveryServiceEngine) {
         this.orderRepository = orderRepository;
+        this.emailService = emailService;
+        this.deliveryServiceEngine = deliveryServiceEngine;
     }
     // Injecting values from application.properties
     @Value("${razorpay.key.id}")
@@ -62,6 +71,7 @@ public class PaymentService {
             order.setPaymentId(razorpayOrder.get("id"));
             //save in db now
             orderRepository.save(order);
+
             //return response
          return PaymentResponseDTO.builder()
                  .razorpayOrderId(razorpayOrder.get("id"))
@@ -78,6 +88,7 @@ public class PaymentService {
         }
 
 }
+    @Transactional
     public void handleWebhook(String payload, String signature) {
 
         try {
@@ -107,8 +118,48 @@ public class PaymentService {
                 // ✅ Update order
                 order.setPaymentStatus(PaymentStatus.PAID);
                 order.setOrderStatus(OrderStatus.CONFIRMED);
-
+                order.setConfirmedAt(LocalDateTime.now()); //time when order has created
                 orderRepository.save(order);
+                //calling createOrderDelivery()
+                deliveryServiceEngine.createDeliveryAfterPayment(order);
+                //here, we got confirmation that PAYMENT=PAID + saved into DB .
+                //after creation Order(PAYMENT==PAID) we should send email to User and Admin
+                // inside if ("payment.captured".equals(eventType)) block
+// AFTER orderRepository.save(order);
+
+                String userHtml = EmailTemplateBuilder.buildOrderConfirmed(
+                        order.getUser().getName(),
+                        order.getId(),
+                        order.getProduct().getProductName(),
+                        order.getProductSizeInches().name(),
+                        order.getFrameTypes().name(),
+                        order.getProductThickness().name(),
+                        order.getBorderColor(),
+                        order.getFinalPrice(),
+                        order.getDeliveryAddressSnapshot()
+                );
+                emailService.sendEmail(
+                        order.getUser().getEmail(),
+                        "Order Confirmed! 🎉 — #" + order.getId(),
+                        userHtml
+                );
+
+                String adminHtml = EmailTemplateBuilder.buildNewOrderAdmin(
+                        order.getId(),
+                        order.getUser().getName(),
+                        order.getUser().getEmail(),
+                        order.getProduct().getProductName(),
+                        order.getProductSizeInches().name(),
+                        order.getFrameTypes().name(),
+                        order.getProductThickness().name(),
+                        order.getFinalPrice(),
+                        order.getDeliveryAddressSnapshot()
+                );
+                emailService.sendEmail(
+                        "mkgroupprinting@gmail.com",
+                        "🛒 New Order Received — #" + order.getId(),
+                        adminHtml
+                );
 
                 //  CALL EMAIL SERVICE HERE (non-blocking ideally)
             }
