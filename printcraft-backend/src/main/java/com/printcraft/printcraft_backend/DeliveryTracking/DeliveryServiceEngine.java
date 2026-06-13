@@ -1,5 +1,9 @@
 package com.printcraft.printcraft_backend.DeliveryTracking;
 
+import com.printcraft.printcraft_backend.DeliveryTracking.dto.EventDTO;
+import com.printcraft.printcraft_backend.DeliveryTracking.dto.UserTrackingDTO;
+import com.printcraft.printcraft_backend.notification.EmailService;
+import com.printcraft.printcraft_backend.notification.EmailTemplateBuilder;
 import com.printcraft.printcraft_backend.order.domain.Order;
 import com.printcraft.printcraft_backend.order.service.OrderService;
 import com.printcraft.printcraft_backend.payment.domain.PaymentStatus;
@@ -7,11 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -20,10 +26,12 @@ public class DeliveryServiceEngine {
     private final DeliveryRepository deliveryRepository;
     private final DeliveryEventHistoryRepository deliveryEventHistoryRepository;
 //avoid @Autowired for tight-coupling so used contructor injection
-    public DeliveryServiceEngine(OrderService orderService, DeliveryRepository deliveryRepository, DeliveryEventHistoryRepository deliveryEventHistoryRepository) {
+    private final EmailService emailService;
+    public DeliveryServiceEngine(OrderService orderService, DeliveryRepository deliveryRepository, DeliveryEventHistoryRepository deliveryEventHistoryRepository, EmailService emailService) {
         this.orderService = orderService;
         this.deliveryRepository = deliveryRepository;
         this.deliveryEventHistoryRepository = deliveryEventHistoryRepository;
+        this.emailService = emailService;
     }
 
     //we first need to give birth of delivery after payment done !!
@@ -156,9 +164,52 @@ public class DeliveryServiceEngine {
         deliveryEvent.setLocation(location);//saving location into event
         deliveryEvent.setTimestamp(incomingEventTimestamp);
         deliveryEvent.setDescription( "Delivery status updated to " + newStatus); //saving location into event);
+        //necessary details
+        String customerName = deliveryEntity.getOrder().getUser().getName();
+        String customerEmail = deliveryEntity.getOrder().getUser().getEmail();
+        Long orderId = deliveryEntity.getOrder().getId();
+        //send Email
+        switch (newStatus){
+            case IN_TRANSIT -> emailService.sendEmail(customerEmail,
+                    "🖨️ Your Order Is Being Made — #" + orderId,
+                    EmailTemplateBuilder.buildOrderProcessing(customerName,orderId,deliveryEntity.getOrder().getProduct().getProductName()));
+            case SHIPPED -> emailService.sendEmail(customerEmail,
+                    "🚚 Your Order Is Shipped — #" + orderId,
+                    EmailTemplateBuilder.buildOrderShipped(customerName,orderId,deliveryEntity.getTrackingId(),deliveryEntity.getCourierName()!=null?deliveryEntity.getCourierName():"our courier partner"));
+            case OUT_FOR_DELIVERY -> emailService.sendEmail(
+                    customerEmail,
+                    "📦 Your Order Is Out for Delivery — Order #" + orderId,
+                    EmailTemplateBuilder.buildOutForDelivery(
+                            customerName,
+                            orderId,
+                            deliveryEntity.getCourierName(),
+                            deliveryEntity.getCurrentLocation()
+                    )
+            );
+
+            case DELIVERED -> emailService.sendEmail(
+                    customerEmail,
+                    "✅ Your Order Has Been Delivered — Order #" + orderId,
+                    EmailTemplateBuilder.buildDelivered(
+                            customerName,
+                            orderId
+                    )
+            );
+
+            case FAILED -> emailService.sendEmail(
+                    customerEmail,
+                    "⚠️ Delivery Attempt Unsuccessful — Order #" + orderId,
+                    EmailTemplateBuilder.buildDeliveryFailed(
+                            customerName,
+                            orderId,
+                            "Delivery attempt was unsuccessful."
+                    )
+            );
+            default -> {}
+        }
+
         //save into repo
         return deliveryEventHistoryRepository.save(deliveryEvent);
-
     }
     // SAVE EVENT ONLY (for stale delayed events)
     private DeliveryEvent saveEventOnly(DeliveryEntity deliveryProduct, DeliveryStatus newStatus, String location, LocalDateTime incomingEventTimestamp) {
@@ -207,4 +258,25 @@ public class DeliveryServiceEngine {
         return false;
     }
 
+    public UserTrackingDTO getAllDetailsByTrackingId(String trackingId) {
+    DeliveryEntity delivery = deliveryRepository.getByTrackingId(trackingId).orElseThrow(()->
+            new RuntimeException("Tracking ID not found: " + trackingId));
+    return mapToDto(delivery);
+    }
+
+    private UserTrackingDTO mapToDto(DeliveryEntity delivery) {
+        List<EventDTO> eventDTOS = delivery.getEvents().stream().map(e-> EventDTO.builder()
+                .status(e.getDeliveryStatus())
+                .description(e.getDescription())
+                .currentLocation(e.getLocation())
+                .timestamp(e.getTimestamp())
+                .build()).collect(Collectors.toUnmodifiableList());
+        return UserTrackingDTO.builder()
+                .trackingId(delivery.getTrackingId())
+                .currentStatus(delivery.getDeliveryStatus())
+                .location(delivery.getCurrentLocation())
+                .estimatedDeliveryDate(delivery.getEstimatedDeliveryDate()!=null ?delivery.getEstimatedDeliveryDate().toLocalDate():null) // if it's LocalDateTime
+                .eventDTOS(eventDTOS)
+                .build();
+    }
 }

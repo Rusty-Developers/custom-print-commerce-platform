@@ -1,5 +1,9 @@
 package com.printcraft.printcraft_backend.order.service;
 
+import com.printcraft.printcraft_backend.DeliveryTracking.DeliveryEntity;
+import com.printcraft.printcraft_backend.DeliveryTracking.DeliveryRepository;
+import com.printcraft.printcraft_backend.DeliveryTracking.dto.EventDTO;
+import com.printcraft.printcraft_backend.DeliveryTracking.dto.UserTrackingDTO;
 import com.printcraft.printcraft_backend.address.domain.Addresses;
 import com.printcraft.printcraft_backend.address.repository.AddressRepository;
 import com.printcraft.printcraft_backend.order.domain.Order;
@@ -17,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,6 +34,7 @@ public class OrderService {
     private final ProductRepository productRepository;
 //    private final Discount discount;
     private final OrderRepository orderRepository;
+    private DeliveryRepository deliveryRepository;
     @Transactional
     public Order createOrder(CreateOrderRequest request, String phoneNo) {
 
@@ -93,5 +100,38 @@ User user  = userRepository.findByphoneNo(phoneNo).orElseThrow(()->new RuntimeEx
     public boolean isPaymentDone(PaymentStatus paymentStatus){
         if(paymentStatus==PaymentStatus.PAID) return true;
         return false;
+    }
+    //getMyOrders
+    public List<Order> getMyOrders(String phoneNo){
+        //first check existance whether it's present or not
+        User user = userRepository.findByphoneNo(phoneNo).orElseThrow(()->new RuntimeException("User not found"));
+        return orderRepository.findByUser(user);
+    }
+
+    public UserTrackingDTO getTrackingByOrderIdMethod(Long orderId) {
+        //first find out the order
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                ()-> new RuntimeException("Order ID not found: " + orderId)
+        );
+        DeliveryEntity delivery = deliveryRepository.getByOrder(order).orElseThrow(
+                ()-> new RuntimeException("Order ID not found: " + orderId)
+        );
+        return mapToDTO(delivery);
+    }
+
+    private UserTrackingDTO mapToDTO(DeliveryEntity delivery) {
+        List<EventDTO> eventDTOS = delivery.getEvents().stream().map(e-> EventDTO.builder()
+                .status(e.getDeliveryStatus())
+                .description(e.getDescription())
+                .currentLocation(e.getLocation())
+                .timestamp(e.getTimestamp())
+                .build()).collect(Collectors.toUnmodifiableList());
+        return UserTrackingDTO.builder()
+                .trackingId(delivery.getTrackingId())
+                .currentStatus(delivery.getDeliveryStatus())
+                .location(delivery.getCurrentLocation())
+                .estimatedDeliveryDate(delivery.getEstimatedDeliveryDate()!=null ?delivery.getEstimatedDeliveryDate().toLocalDate():null) // if it's LocalDateTime
+                .eventDTOS(eventDTOS)
+                .build();
     }
 }

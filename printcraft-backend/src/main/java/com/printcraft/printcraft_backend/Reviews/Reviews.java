@@ -10,7 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -39,4 +41,10 @@ private Long id;
     @Max(5)
     @Column(name = "rating", nullable = false)
     private Integer rating;
+    // What's missing:
+    private String comment;      //  text review
+    private String imageUrl;     //  review photo
+//    private String videoUrl;     //  review video
+    @CreationTimestamp
+    private LocalDateTime createdAt; // ---- when reviewed
 }

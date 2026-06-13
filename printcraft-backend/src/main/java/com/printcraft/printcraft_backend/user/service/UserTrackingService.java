@@ -6,6 +6,7 @@ import com.printcraft.printcraft_backend.DeliveryTracking.dto.EventDTO;
 import com.printcraft.printcraft_backend.DeliveryTracking.dto.UserTrackingDTO;
 import com.printcraft.printcraft_backend.GlobalExceptionHandler.GlobalException.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,11 +14,10 @@ import java.util.stream.Collectors;
 @Service
 public class UserTrackingService {
     private final DeliveryRepository deliveryRepository;
-
     public UserTrackingService(DeliveryRepository deliveryRepository) {
         this.deliveryRepository = deliveryRepository;
     }
-
+    @Transactional
     public UserTrackingDTO getByTrackingId(String trackingId) {
         //here, we will handle logic layer
         DeliveryEntity deliveryEntity = deliveryRepository.getByTrackingId(trackingId).orElseThrow(
