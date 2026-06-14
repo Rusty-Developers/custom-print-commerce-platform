@@ -11,10 +11,14 @@ import com.printcraft.printcraft_backend.user.domain.User;
 import com.printcraft.printcraft_backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -27,6 +31,9 @@ import java.util.concurrent.TimeUnit;
 public class AuthService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    //importing SMS_API_KEY(FAST2SMS)
+    @Value("${fast2sms.api.key}")
+    private String fast2smsApiKey;
     private final RedisTemplate<String, String> redisTemplate;
 //    private final PasswordEncoder passwordEncoder;
 //    Transactions:->  @Transactional ensures save() rollback if something fails after the duplicate checks.
@@ -94,17 +101,55 @@ public class AuthService {
         String attemptsKey = "OTP_ATTEMPTS:" + otpRequest.getPhoneno();
         String attemtsStrTotal = redisTemplate.opsForValue().get(attemptsKey);
         int attempts = (attemtsStrTotal==null)?0: Integer.parseInt(attemtsStrTotal);
-        if(attempts>=3){
+        if(attempts>=8){
             throw new RuntimeException("Too many OTP requests. Try later.");
         }
         //increase redis_counter
         redisTemplate.opsForValue().increment(attemptsKey);
         redisTemplate.expire(attemptsKey,10,TimeUnit.MINUTES);
 
-        //logging in console
-        log.info("OTP for {} is {}", otpRequest.getPhoneno(), otp);
+//        //logging in console
+//        log.info("OTP for {} is {}", otpRequest.getPhoneno(), otp);
+        sendSmsViaFast2SMS(otpRequest.getPhoneno(), otp);
+        // Add this right after generating the secure OTP string
+        log.info("🔥 [DEMO ACTIVE] Generated OTP for Phone {} is: {}", otpRequest.getPhoneno(), otp);
+
         return "OTP sent successfully";
     }
+    private void sendSmsViaFast2SMS(String phoneNo, String otp) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("authorization", fast2smsApiKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Change route from "otp" to "q", add otp to message:
+            String body = """
+{
+  "route": "q",
+  "message": "Your PrintCraft OTP is %s",
+  "language": "english",
+  "flash": 0,
+  "numbers": "%s"
+}
+""".formatted(otp, phoneNo);
+
+            HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+            var response = restTemplate.postForEntity(
+                    "https://www.fast2sms.com/dev/bulkV2",
+                    entity,
+                    String.class
+            );
+
+            log.info("Fast2SMS response: {}", response.getBody());
+
+        } catch (Exception e) {
+            log.error("SMS failed: {}", e.getMessage());
+        }
+    }
+
+
     //verifying OTP Function :->
     public String verifyOTP(VerifyOtpRequest request) {
 

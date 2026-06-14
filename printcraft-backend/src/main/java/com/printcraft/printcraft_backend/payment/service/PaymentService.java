@@ -92,32 +92,31 @@ public class PaymentService {
     public void handleWebhook(String payload, String signature) {
 
         try {
+            //  STEP 1 : Cryptographically verify the webhook signature to protect against fraud
             boolean isValid = com.razorpay.Utils.verifyWebhookSignature(payload, signature, webhookSecret);
-
-
             if (!isValid) {
-                throw new RuntimeException("Invalid webhook signature");
+                throw new RuntimeException("Invalid Razorpay Webhook Signature");
             }
-
+            // 2. Parse the payload body string into JSON
             JSONObject event = new JSONObject(payload);
             String eventType = event.getString("event");
-
+            // 3. Process only successful payments
             if ("payment.captured".equals(eventType)) {
 
                 JSONObject paymentEntity = event
                         .getJSONObject("payload")
                         .getJSONObject("payment")
                         .getJSONObject("entity");
-
+                // Extract Razorpay's Order ID (e.g., "order_T1QuDX2lEJ0fJi")
                 String razorpayOrderId = paymentEntity.getString("order_id");
 
                 // 🔥 Find your order using paymentId
                 Order order = orderRepository.findBypaymentId(razorpayOrderId)
                         .orElseThrow(() -> new RuntimeException("Order not found"));
 
-                // ✅ Update order
+                // ✅ Update order ---> Settle statuses securely
                 order.setPaymentStatus(PaymentStatus.PAID);
-                order.setOrderStatus(OrderStatus.CONFIRMED);
+                order.setOrderStatus(OrderStatus.CONFIRMED); // Update lifecycle status
                 order.setConfirmedAt(LocalDateTime.now()); //time when order has created
                 orderRepository.save(order);
                 //calling createOrderDelivery()
@@ -138,6 +137,8 @@ public class PaymentService {
                         order.getFinalPrice(),
                         order.getDeliveryAddressSnapshot()
                 );
+
+                //  CALL EMAIL SERVICE HERE (non-blocking ideally)
                 emailService.sendEmail(
                         order.getUser().getEmail(),
                         "Order Confirmed! 🎉 — #" + order.getId(),
@@ -161,7 +162,6 @@ public class PaymentService {
                         adminHtml
                 );
 
-                //  CALL EMAIL SERVICE HERE (non-blocking ideally)
             }
 
         } catch (Exception e) {
