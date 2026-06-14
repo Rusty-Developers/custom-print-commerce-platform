@@ -8,6 +8,7 @@ import { CATEGORY_LABELS, CATEGORY_ICONS, ALL_CATEGORIES } from '../utils/format
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
+  const [logoVisible, setLogoVisible] = useState(false)
   const megaRef = useRef(null)
   const navigate = useNavigate()
 
@@ -15,6 +16,12 @@ export default function Navbar() {
   const setCartOpen = useStore((s) => s.setCartOpen)
   const cartCount = cart.reduce((a, i) => a + i.quantity, 0)
   const loggedIn = isLoggedIn()
+
+  // Logo fade-in on first load
+  useEffect(() => {
+    const t = setTimeout(() => setLogoVisible(true), 50)
+    return () => clearTimeout(t)
+  }, [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -34,8 +41,11 @@ export default function Navbar() {
   return (
     <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
       <div className="navbar-inner">
-        {/* Logo */}
-        <Link to="/" className="navbar-logo">
+        {/* Logo — fade in on mount */}
+        <Link to="/" className="navbar-logo" style={{
+          opacity: logoVisible ? 1 : 0,
+          transition: 'opacity 300ms ease',
+        }}>
           <Logo size={24} />
         </Link>
 
@@ -85,6 +95,11 @@ export default function Navbar() {
           <li className="navbar-nav-item">
             <NavLink to="/contact" className={({ isActive }) => `navbar-nav-link${isActive ? ' active' : ''}`}>
               Contact
+            </NavLink>
+          </li>
+          <li className="navbar-nav-item">
+            <NavLink to="/track" className={({ isActive }) => `navbar-nav-link${isActive ? ' active' : ''}`}>
+              Track Order
             </NavLink>
           </li>
         </ul>
