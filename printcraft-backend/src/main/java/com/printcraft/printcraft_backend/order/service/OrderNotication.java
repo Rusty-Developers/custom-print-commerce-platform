@@ -87,7 +87,7 @@ public class OrderNotication {
                 json,
                 orderModificationRequest.getModificationRequestId()
         );
-        //calling remailService method
+        //calling EmailService method
         emailService.sendEmail(
                 "mkgroupprinting@gmail.com",
                 "⚠️ Modification Request — Order #" + order.getId(),
