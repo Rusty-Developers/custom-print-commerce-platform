@@ -1,18 +1,26 @@
+import { memo, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useShallow } from 'zustand/react/shallow'
 import useStore from '../store/useStore'
 import { formatINR, SIZE_LABELS, THICKNESS_LABELS, FRAME_LABELS } from '../utils/format'
 
-export default function CartDrawer() {
+export default memo(function CartDrawer() {
   const navigate = useNavigate()
-  const cartOpen    = useStore((s) => s.cartOpen)
-  const setCartOpen = useStore((s) => s.setCartOpen)
-  const cart        = useStore((s) => s.cart)
-  const removeFromCart = useStore((s) => s.removeFromCart)
-  const updateQty      = useStore((s) => s.updateQty)
+  const { cartOpen, setCartOpen, cart, removeFromCart, updateQty } = useStore(
+    useShallow((s) => ({
+      cartOpen: s.cartOpen,
+      setCartOpen: s.setCartOpen,
+      cart: s.cart,
+      removeFromCart: s.removeFromCart,
+      updateQty: s.updateQty,
+    }))
+  )
 
-  const subtotal  = cart.reduce((a, i) => a + i.price * i.quantity, 0)
-  const delivery  = subtotal >= 599 ? 0 : 99
-  const total     = subtotal + delivery
+  const { subtotal, delivery, total } = useMemo(() => {
+    const sub = cart.reduce((a, i) => a + i.price * i.quantity, 0)
+    const del = sub >= 599 ? 0 : 99
+    return { subtotal: sub, delivery: del, total: sub + del }
+  }, [cart])
 
   if (!cartOpen) return null
 
@@ -44,6 +52,10 @@ export default function CartDrawer() {
                   <img
                     src={item.uploadedImageDataUrl || item.imageUrl || 'https://placehold.co/60x60/f9f9f9/ccc?text=Print'}
                     alt={item.productName}
+                    width={60}
+                    height={60}
+                    loading="lazy"
+                    decoding="async"
                     onError={(e) => { e.target.src = 'https://placehold.co/60x60/f9f9f9/ccc?text=Print' }}
                   />
                 </div>
@@ -105,4 +117,4 @@ export default function CartDrawer() {
       </div>
     </>
   )
-}
+})

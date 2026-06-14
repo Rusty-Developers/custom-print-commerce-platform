@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 44" fill="none" role="img" aria-label="MK Group Printing">
+  <rect x="0" y="4" width="36" height="36" rx="8" fill="#C0392B"/>
+  <path d="M10 14h6l4 8 4-8h6v20h-5V21l-4.5 8h-3L14 21v13h-4V14z" fill="#FFFFFF"/>
+  <text x="46" y="30" font-family="Georgia, 'Playfair Display', serif" font-size="18" font-weight="700" fill="#1A1A1A">MK Group</text>
+  <text x="46" y="42" font-family="Inter, sans-serif" font-size="9" font-weight="600" letter-spacing="0.12em" fill="#C0392B">PRINTING</text>
+</svg>

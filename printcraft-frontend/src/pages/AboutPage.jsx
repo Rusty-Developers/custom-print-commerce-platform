@@ -9,7 +9,7 @@ export default function AboutPage() {
     { icon: '❤️', title: 'Customer First', desc: 'Your satisfaction is our mission, not just our motto. From upload to doorstep, we\'re with you every step of the way.' },
   ]
   const TIMELINE = [
-    { year: '2020', title: 'PrintCraft Founded', desc: 'Started as a one-room print studio in Bengaluru with two premium printers and a dream to make custom prints accessible.' },
+    { year: '2020', title: 'MK Group Printing Founded', desc: 'Started as a one-room print studio in Bengaluru with two premium printers and a dream to make custom prints accessible.' },
     { year: '2021', title: 'Went Online', desc: 'Launched our first e-commerce platform. Within 6 months, served customers across 18 Indian states.' },
     { year: '2023', title: 'Expanded Materials', desc: 'Added Glass, Metal, and Acrylic printing to our range. Installed state-of-the-art UV printing equipment.' },
     { year: '2025', title: 'Premium Platform Launch', desc: 'Launched our new platform with live photo preview, instant pricing, and pan-India delivery across 500+ cities.' },
@@ -32,7 +32,7 @@ export default function AboutPage() {
                 Where Memories Become Masterpieces
               </h2>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.9, marginBottom: 16 }}>
-                PrintCraft was born from a simple belief — that every memory deserves to be displayed beautifully. We started in a small studio in Bengaluru's Koramangala, armed with nothing but premium printers and an obsession with quality.
+                MK Group Printing was born from a simple belief — that every memory deserves to be displayed beautifully. We started in a small studio in Bengaluru's Koramangala, armed with nothing but premium printers and an obsession with quality.
               </p>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.9, marginBottom: 24 }}>
                 Today, we serve thousands of customers across India, transforming cherished photographs into stunning prints on glass, metal, wood, acrylic, and more. Every piece that leaves our studio is a testament to our commitment to craftsmanship.
