@@ -112,7 +112,11 @@ export default function CheckoutPage() {
         name: 'MK Group Printing',
         description: 'Custom Print Order',
         theme: { color: '#C0392B' },
-        handler: () => { clearCart(); navigate('/order-success') },
+        handler: () => {
+          localStorage.setItem('last_order_id', String(orderId))
+          clearCart()
+          navigate('/order-success', { state: { orderId } })
+        },
         modal: { ondismiss: () => { toast.error('Payment cancelled'); setPlacing(false) } },
       }).open()
     } catch (err) {

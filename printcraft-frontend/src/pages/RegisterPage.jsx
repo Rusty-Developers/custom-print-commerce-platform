@@ -54,7 +54,7 @@ export default function RegisterPage() {
         <div className="auth-card-header">
           <Logo size={24} />
           <h1 className="auth-title" style={{ marginTop: 20 }}>Create Account</h1>
-          <p className="auth-subtitle">Join PrintCraft — your prints await</p>
+          <p className="auth-subtitle">Join MK Group Printing — your prints await</p>
         </div>
         <div className="auth-card-body">
           <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

@@ -1,7 +1,23 @@
 import { create } from 'zustand'
 
+function loadCart() {
+  try {
+    const saved = localStorage.getItem('printcraft_cart')
+    return saved ? JSON.parse(saved) : []
+  } catch {
+    return []
+  }
+}
+
+function saveCart(cart) {
+  try {
+    localStorage.setItem('printcraft_cart', JSON.stringify(cart))
+  } catch {
+    /* storage full — silently ignore */
+  }
+}
+
 const useStore = create((set, get) => ({
-  // ── Auth ──────────────────────────────────────────
   token: localStorage.getItem('printcraft_token') || null,
   setToken: (token) => {
     localStorage.setItem('printcraft_token', token)
@@ -12,8 +28,7 @@ const useStore = create((set, get) => ({
     set({ token: null })
   },
 
-  // ── Cart ──────────────────────────────────────────
-  cart: [],
+  cart: loadCart(),
   cartOpen: false,
   setCartOpen: (val) => set({ cartOpen: val }),
 
@@ -25,30 +40,38 @@ const useStore = create((set, get) => ({
         c.selectedThickness === item.selectedThickness &&
         c.selectedFrame === item.selectedFrame
     )
+    let cart
     if (existing >= 0) {
-      const updated = [...state.cart]
-      updated[existing] = { ...updated[existing], quantity: updated[existing].quantity + item.quantity }
-      return { cart: updated }
+      cart = [...state.cart]
+      cart[existing] = { ...cart[existing], quantity: cart[existing].quantity + item.quantity }
+    } else {
+      cart = [...state.cart, item]
     }
-    return { cart: [...state.cart, item] }
+    saveCart(cart)
+    return { cart }
   }),
 
-  removeFromCart: (index) => set((state) => ({
-    cart: state.cart.filter((_, i) => i !== index),
-  })),
+  removeFromCart: (index) => set((state) => {
+    const cart = state.cart.filter((_, i) => i !== index)
+    saveCart(cart)
+    return { cart }
+  }),
 
   updateQty: (index, qty) => set((state) => {
     if (qty < 1) return state
-    const updated = [...state.cart]
-    updated[index] = { ...updated[index], quantity: qty }
-    return { cart: updated }
+    const cart = [...state.cart]
+    cart[index] = { ...cart[index], quantity: qty }
+    saveCart(cart)
+    return { cart }
   }),
 
-  clearCart: () => set({ cart: [] }),
+  clearCart: () => {
+    saveCart([])
+    set({ cart: [] })
+  },
 
-  // Derived
   cartCount: () => get().cart.reduce((acc, item) => acc + item.quantity, 0),
-  cartTotal: () => get().cart.reduce((acc, item) => acc + (item.price * item.quantity), 0),
+  cartTotal: () => get().cart.reduce((acc, item) => acc + item.price * item.quantity, 0),
 }))
 
 export default useStore

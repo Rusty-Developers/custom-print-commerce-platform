@@ -56,7 +56,7 @@ export default function ContactPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 {[
                   { icon: '📞', label: 'Phone', val: '+91 98765 43210' },
-                  { icon: '✉️', label: 'Email', val: 'hello@printcraft.in' },
+                  { icon: '✉️', label: 'Email', val: 'hello@mkgroupprinting.in' },
                   { icon: '📍', label: 'Address', val: '42, Craft Lane, Koramangala, Bengaluru, Karnataka 560034' },
                   { icon: '⏰', label: 'Working Hours', val: 'Monday–Saturday: 9AM – 7PM IST' },
                 ].map((c) => (

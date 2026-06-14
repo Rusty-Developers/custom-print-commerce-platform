@@ -64,7 +64,7 @@ export default function VerifyOtpPage() {
       const res = await api.post('/api/auth/verify-otp', { phoneno: phone, otp })
       const token = res.data.token
       setToken(token)
-      toast.success('Login successful! Welcome to PrintCraft 🎉')
+      toast.success('Login successful! Welcome to MK Group Printing 🎉')
       navigate(redirect, { replace: true })
     } catch (err) {
       const newAttempts = attempts + 1
