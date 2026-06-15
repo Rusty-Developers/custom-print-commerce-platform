@@ -1,4 +1,4 @@
-import { memo, forwardRef, useRef } from 'react'
+import { memo, forwardRef, useRef, useState, useEffect } from 'react'
 import {
   usePhotoCycle,
   useInView,
@@ -25,6 +25,22 @@ const CyclingFrame = memo(forwardRef(function CyclingFrame(
   const inView = useInView(innerRef, '100px')
   const active = !pauseWhenHidden || inView
   const { currentIndex, prevIndex, prevOpacity } = usePhotoCycle(photos, active, initialIndex)
+  const [loaded, setLoaded] = useState(false)
+
+  // Preload all photos in cache on mount
+  useEffect(() => {
+    if (photos && photos.length > 0) {
+      photos.forEach((src) => {
+        const img = new Image()
+        img.src = src
+      })
+    }
+  }, [photos])
+
+  // Reset loaded status on image cycle
+  useEffect(() => {
+    setLoaded(false)
+  }, [currentIndex])
 
   const setRef = (node) => {
     innerRef.current = node
@@ -45,10 +61,13 @@ const CyclingFrame = memo(forwardRef(function CyclingFrame(
         overflow: 'hidden',
         width,
         height,
+        backgroundColor: '#EAE3DC',
+        animation: !loaded ? 'pulse 1.8s ease-in-out infinite' : 'none',
         ...frameStyle,
         boxShadow: frameStyle.boxShadow ?? boxShadow,
       }}
     >
+      {/* Previous image in cycle (fades out) */}
       <img
         src={photos[prevIndex ?? currentIndex]}
         alt=""
@@ -60,6 +79,7 @@ const CyclingFrame = memo(forwardRef(function CyclingFrame(
         style={{ ...IMG_BASE, opacity: prevIndex !== null ? prevOpacity : 0, zIndex: 1 }}
         onError={handleImgError}
       />
+      {/* Current image in cycle (fades in) */}
       <img
         src={photos[currentIndex]}
         alt=""
@@ -68,8 +88,14 @@ const CyclingFrame = memo(forwardRef(function CyclingFrame(
         decoding="async"
         width={width}
         height={height}
-        style={{ ...IMG_BASE, opacity: 1, zIndex: 2 }}
+        style={{
+          ...IMG_BASE,
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 350ms ease-in-out',
+          zIndex: 2,
+        }}
         onError={handleImgError}
+        onLoad={() => setLoaded(true)}
       />
       <div style={GLASS_OVERLAY} />
       <div style={EDGE_HIGHLIGHT} />
