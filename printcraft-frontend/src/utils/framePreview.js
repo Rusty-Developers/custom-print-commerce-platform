@@ -126,8 +126,8 @@ export function getCategoryFrameStyle(category) {
 }
 
 /** Photo cycle hook — pauses when inactive or tab hidden */
-export function usePhotoCycle(photos, active = true) {
-  const startRef = useRef(Math.floor(Math.random() * photos.length))
+export function usePhotoCycle(photos, active = true, initialIndex) {
+  const startRef = useRef(initialIndex !== undefined ? initialIndex : Math.floor(Math.random() * photos.length))
   const [currentIndex, setCurrentIndex] = useState(startRef.current)
   const [prevIndex, setPrevIndex] = useState(null)
   const [prevOpacity, setPrevOpacity] = useState(1)
