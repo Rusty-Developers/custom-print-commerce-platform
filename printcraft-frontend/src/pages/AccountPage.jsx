@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import api from '../api/axios'
 import useStore from '../store/useStore'
 import Spinner from '../components/Spinner'
-import { isLoggedIn, getPhone } from '../utils/jwt'
+import { isLoggedIn, getPhone, getName } from '../utils/jwt'
 import { formatINR, SIZE_LABELS, THICKNESS_LABELS, FRAME_LABELS, ORDER_STATUS_BADGE, PAYMENT_STATUS_BADGE, ALL_SIZES, ALL_THICKNESSES, ALL_FRAMES } from '../utils/format'
 
 const DELIVERY_STEPS = ['CREATED','PACKED','SHIPPED','IN_TRANSIT','OUT_FOR_DELIVERY','DELIVERED']
@@ -168,7 +168,10 @@ export default function AccountPage() {
   const [modifyOrder, setModifyOrder]     = useState(null)
 
   const phone   = getPhone()
-  const initials = phone ? phone.slice(-4) : '??'
+  const name    = getName()
+  const initials = name
+    ? name.trim().split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : (phone ? phone.slice(-4) : '??')
 
   useEffect(() => { if (!isLoggedIn()) { navigate('/login?redirect=/account') } }, [navigate])
 
@@ -206,7 +209,7 @@ export default function AccountPage() {
                 <div style={{ display:'flex', alignItems:'center', gap:20, padding:24, background:'var(--off-white)', borderRadius:'var(--radius-md)', border:'1px solid var(--divider)', marginBottom:24 }}>
                   <div className="avatar-lg">{initials}</div>
                   <div>
-                    <div style={{ fontFamily:'var(--font-heading)', fontSize:22, fontWeight:700 }}>MK Group Printing Member</div>
+                    <div style={{ fontFamily:'var(--font-heading)', fontSize:22, fontWeight:700 }}>{name || 'MK Group Printing Member'}</div>
                     <div style={{ color:'var(--text-muted)', fontSize:14, marginTop:4 }}>📞 +91 {phone}</div>
                     <span className="badge badge-red" style={{ marginTop:8 }}>Verified Member</span>
                   </div>

@@ -47,3 +47,8 @@ export function isLoggedIn() {
   }
   return true
 }
+
+export function getName() {
+  const payload = getTokenPayload()
+  return payload?.name || null
+}

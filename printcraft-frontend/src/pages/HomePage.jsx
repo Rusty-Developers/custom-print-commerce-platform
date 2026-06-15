@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
@@ -101,6 +101,17 @@ function HeroSection() {
   const navigate = useNavigate()
   const [mounted, setMounted] = useState(false)
 
+  const startIndices = useMemo(() => {
+    const indices = []
+    while (indices.length < 4) {
+      const r = Math.floor(Math.random() * SAMPLE_PHOTOS.length)
+      if (!indices.includes(r)) {
+        indices.push(r)
+      }
+    }
+    return indices
+  }, [])
+
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -140,7 +151,7 @@ function HeroSection() {
             {HERO_FRAMES.map((frame, i) => (
               <CyclingFrame
                 key={i}
-                photos={HERO_PHOTOS}
+                photos={SAMPLE_PHOTOS}
                 width={140}
                 height={175}
                 frameStyle={{
@@ -150,6 +161,7 @@ function HeroSection() {
                 className={`hp-hero-frame ${frame.floatClass}`}
                 eager={i === 0}
                 pauseWhenHidden
+                initialIndex={startIndices[i]}
               />
             ))}
           </div>

@@ -31,12 +31,13 @@ public class JwtUtil {
     }
 
 //    generate token with phoneNo + role
-    public String generateToken(String phoneno,String role){
+    public String generateToken(String phoneno, String role, String name){
         Date now = new Date();
         //use jwt.builder
         String token = Jwts.builder()
                 .setSubject(phoneno) //who is this jwt for
-                .claim("role",role) //extra data inside token
+                .claim("role", role) //extra data inside token
+                .claim("name", name != null ? name : "MK Group Printing Member") //extra data inside token
                 .setIssuedAt(now) //when was it created
                 .setExpiration(new Date(System.currentTimeMillis()+expiration)) //when it will expire
                 .signWith(getSigningKey()).compact(); // adding the secret key

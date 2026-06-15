@@ -185,7 +185,8 @@ public class AuthService {
         // ✅ generate JWT
         return jwtUtil.generateToken(
                 user.getPhoneNo(),
-                user.getRole().name()
+                user.getRole().name(),
+                user.getName()
         );
     }
 }
