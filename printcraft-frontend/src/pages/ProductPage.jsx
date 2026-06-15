@@ -146,21 +146,50 @@ function UploadZone({ onPreview, onUploaded, uploadedUrl, onRemove }) {
       onDragLeave={() => setDrag(false)}
       onDrop={(e) => { e.preventDefault(); setDrag(false); handleFile(e.dataTransfer.files[0]) }}
       onClick={() => inputRef.current?.click()}
+      style={{
+        background: 'white',
+        border: '2px dashed #E0E0E0',
+        borderRadius: 12,
+        padding: 24,
+        marginTop: 20,
+        textAlign: 'center',
+        cursor: 'pointer',
+        transition: 'border-color 0.2s, background 0.2s',
+        ...(drag ? { borderColor: '#C0392B', background: 'rgba(192,57,43,0.02)' } : {}),
+      }}
     >
       <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp"
-        onChange={(e) => handleFile(e.target.files[0])} />
-      <span className="upload-icon">📤</span>
-      <div className="upload-title">Upload Your Photo</div>
-      <div className="upload-sub">JPG or PNG, max 5MB — drag &amp; drop or click to browse</div>
-      {status === 'uploading' && <div className="upload-success" style={{ color: '#F59E0B' }}>⏳ Uploading...</div>}
-      {status === 'done' && uploadedUrl && (
-        <div className="upload-success">
-          ✅ Photo ready!
-          <span style={{ color: 'var(--primary)', cursor: 'pointer', marginLeft: 8, fontSize: 12 }}
-            onClick={(e) => { e.stopPropagation(); onRemove(); setStatus('idle') }}>
-            Remove ✕
+        onChange={(e) => handleFile(e.target.files[0])} style={{ display: 'none' }} />
+
+      {status === 'done' && uploadedUrl ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="11" fill="#166534" />
+              <path d="M6.5 11.5L9.5 14.5L15.5 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span style={{ fontWeight: 700, fontSize: 15, color: '#166534' }}>Photo ready! ✓</span>
+          </div>
+          {uploadedUrl && (
+            <img src={uploadedUrl} alt="Uploaded preview" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, border: '1px solid #E0E0E0' }} />
+          )}
+          <span
+            style={{ color: '#C0392B', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
+            onClick={(e) => { e.stopPropagation(); onRemove(); setStatus('idle') }}
+          >
+            Remove
           </span>
         </div>
+      ) : (
+        <>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C0392B" strokeWidth="1.5" strokeLinecap="round" style={{ marginBottom: 8, display: 'block', margin: '0 auto 8px' }}>
+            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <div style={{ fontWeight: 700, color: '#1A1A1A', fontSize: 15 }}>Upload Your Photo</div>
+          <div style={{ fontSize: 12, color: '#999', marginTop: 4 }}>Drag & drop or click to browse • JPG or PNG up to 8MB</div>
+          {status === 'uploading' && <div style={{ color: '#F59E0B', fontWeight: 600, fontSize: 13, marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>⏳ Uploading...</div>}
+        </>
       )}
     </div>
   )
@@ -373,21 +402,129 @@ export default function ProductPage() {
         <div className="product-layout">
           {/* LEFT — Interactive Preview */}
           <div>
-            <div className="room-scene">
-              <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.5) 2px,rgba(0,0,0,0.5) 3px)', borderRadius: 'inherit', pointerEvents: 'none' }} />
-              <div className="frame-preview-area">
-                <GlassyFramePreview
-                  frameType={selectedFrame} size={selectedSize} thickness={selectedThickness}
-                  borderColor={borderColor} images={productImages} uploadedImage={previewSrc}
-                />
+            <div className="room-scene" style={{
+              position: 'relative',
+              borderRadius: 20,
+              overflow: 'hidden',
+              minHeight: 520,
+              background: 'linear-gradient(180deg, #E8E0D5 0%, #D4C8BA 60%, #C8BAA8 100%)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '50px 40px 60px',
+              gap: 32,
+            }}>
+              {/* Wall texture overlay */}
+              <div style={{
+                position: 'absolute', inset: 0, zIndex: 0,
+                backgroundImage: `
+                  repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 60px,
+                    rgba(0,0,0,0.015) 60px,
+                    rgba(0,0,0,0.015) 61px
+                  ),
+                  repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 60px,
+                    rgba(0,0,0,0.015) 60px,
+                    rgba(0,0,0,0.015) 61px
+                  )
+                `,
+                pointerEvents: 'none'
+              }} />
+
+              {/* Floor shadow */}
+              <div style={{
+                position: 'absolute', bottom: 0, left: 0, right: 0,
+                height: 80, zIndex: 1, pointerEvents: 'none',
+                background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.12))'
+              }} />
+
+              {/* Ambient room lighting */}
+              <div style={{
+                position: 'absolute', top: -60, left: -60,
+                width: 300, height: 300, zIndex: 1, pointerEvents: 'none',
+                background: 'radial-gradient(circle, rgba(255,240,210,0.35) 0%, transparent 70%)',
+              }} />
+
+              {/* Subtle wall moulding line */}
+              <div style={{
+                position: 'absolute', top: '30%', left: 24, right: 24,
+                height: 1, zIndex: 1, pointerEvents: 'none',
+                background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.08), transparent)'
+              }} />
+
+              {/* Frame hanging on wall */}
+              <div className="frame-preview-area" style={{
+                position: 'relative', zIndex: 10,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flex: 1,
+              }}>
+                {/* Hanging wire */}
+                <div style={{
+                  position: 'absolute', top: -24, left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 2, height: 24,
+                  background: 'linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.1))',
+                  zIndex: 11
+                }} />
+                {/* Nail / hook dot */}
+                <div style={{
+                  position: 'absolute', top: -28, left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 8, height: 8, borderRadius: '50%',
+                  background: 'rgba(0,0,0,0.4)',
+                  zIndex: 11
+                }} />
+
+                {/* Wall shadow behind frame */}
+                <div style={{
+                  position: 'absolute',
+                  top: '50%', left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: 'calc(100% + 40px)',
+                  height: 'calc(100% + 40px)',
+                  zIndex: 8, pointerEvents: 'none',
+                  background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.06) 0%, transparent 65%)',
+                  borderRadius: 8
+                }} />
+
+                {/* The actual frame with drop shadow */}
+                <div style={{
+                  filter: 'drop-shadow(0 40px 30px rgba(0,0,0,0.25)) drop-shadow(0 8px 12px rgba(0,0,0,0.15))',
+                  position: 'relative', zIndex: 10,
+                }}>
+                  <GlassyFramePreview
+                    frameType={selectedFrame} size={selectedSize} thickness={selectedThickness}
+                    borderColor={borderColor} images={productImages} uploadedImage={previewSrc}
+                  />
+                </div>
               </div>
-              <div className="scale-ref">
-                <svg width="20" height="32" viewBox="0 0 20 32" fill="rgba(70,60,50,0.5)">
-                  <ellipse cx="10" cy="5" rx="5" ry="5"/><rect x="6" y="10" width="8" height="14" rx="3"/>
-                  <rect x="6" y="24" width="3" height="8" rx="1.5"/><rect x="11" y="24" width="3" height="8" rx="1.5"/>
+
+              {/* Scale reference */}
+              <div style={{
+                position: 'absolute', bottom: 20, left: '50%',
+                transform: 'translateX(-50%)',
+                display: 'flex', alignItems: 'center', gap: 10,
+                zIndex: 12, pointerEvents: 'none'
+              }}>
+                <svg width="24" height="40" viewBox="0 0 24 40" fill="rgba(0,0,0,0.2)">
+                  <circle cx="12" cy="5" r="4.5"/>
+                  <path d="M4 15 Q12 12 20 15 L18 30 H14 L12 22 L10 30 H6 Z"/>
+                  <path d="M6 30 L4 40 H8 L10 30"/>
+                  <path d="M18 30 L20 40 H16 L14 30"/>
                 </svg>
-                <div style={{ width: 60, height: 1, background: 'rgba(70,60,50,0.35)' }} />
-                <span>{SIZE_LABELS[selectedSize]} real scale reference</span>
+                <div style={{ width: 1, height: 40, background: 'rgba(0,0,0,0.15)' }} />
+                <span style={{
+                  fontSize: 11, color: 'rgba(0,0,0,0.4)',
+                  fontFamily: 'Inter', letterSpacing: '0.05em'
+                }}>
+                  {SIZE_LABELS[selectedSize]} actual size
+                </span>
               </div>
             </div>
 

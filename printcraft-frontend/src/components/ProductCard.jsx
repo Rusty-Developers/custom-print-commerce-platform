@@ -57,7 +57,20 @@ const ProductCard = memo(forwardRef(function ProductCard({ product, className = 
       </div>
 
       <div className="pc-card-body">
-        <h3 className="pc-card-name">{product.productName}</h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+          {product.imageUrl && (
+            <img
+              src={product.imageUrl}
+              alt={product.productName}
+              width={40}
+              height={40}
+              style={{ borderRadius: '6px', objectFit: 'cover', flexShrink: 0 }}
+              loading="lazy"
+              onError={(e) => { e.target.style.display = 'none' }}
+            />
+          )}
+          <h3 className="pc-card-name" style={{ margin: 0 }}>{product.productName}</h3>
+        </div>
 
         <span className="pc-card-category-badge">
           {CATEGORY_LABELS[product.productCatagories] || product.productCatagories}

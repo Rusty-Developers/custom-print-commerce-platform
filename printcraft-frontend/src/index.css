@@ -160,6 +160,16 @@ img {
   50%       { transform: translateY(-6px); }
 }
 
+@keyframes waBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes waPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
 @keyframes heroEnter {
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -1496,27 +1506,11 @@ img {
 
 /* Frame Preview */
 .room-scene {
-  background: linear-gradient(160deg, #e8e4df 0%, #d4cfc9 100%);
-  border-radius: var(--radius-lg);
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 32px;
-  position: relative;
-  min-height: 480px;
-  overflow: hidden;
+  /* Styled inline in JSX — this class is kept for selector compatibility */
 }
 
 .room-scene::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30px;
-  background: #c4bfba;
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  display: none; /* Replaced by inline floor shadow div */
 }
 
 .frame-preview-area {
@@ -1543,55 +1537,15 @@ img {
   display: block;
 }
 
-/* Upload Zone */
-.upload-zone {
-  width: 100%;
-  border: 2.5px dashed var(--primary);
-  border-radius: var(--radius-md);
-  padding: 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: var(--transition);
-  background: rgba(192,57,43,0.02);
-  position: relative;
+/* Upload Zone — hover state via class (inline handles base) */
+.upload-zone:hover {
+  border-color: #C0392B !important;
+  background: rgba(192,57,43,0.02) !important;
 }
 
-.upload-zone:hover, .upload-zone.drag-over {
-  border-color: var(--primary-dark);
-  background: rgba(192,57,43,0.05);
-}
-
-.upload-zone input {
-  display: none;
-}
-
-.upload-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.upload-title {
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--primary);
-  margin-bottom: 4px;
-}
-
-.upload-sub {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.upload-success {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #166534;
-  margin-top: 8px;
+.upload-zone.drag-over {
+  border-color: #C0392B !important;
+  background: rgba(192,57,43,0.02) !important;
 }
 
 /* Scale Reference */
