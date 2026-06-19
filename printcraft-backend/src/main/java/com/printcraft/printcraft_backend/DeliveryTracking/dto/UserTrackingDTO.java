@@ -12,14 +12,14 @@ import java.util.List;
 @Getter
 @Setter
 public class UserTrackingDTO {
-    private String trackingId;
+    private Long orderId;
     private DeliveryStatus currentStatus;
     private String location;
     private LocalDate estimatedDeliveryDate;
     private List<EventDTO> eventDTOS;
     //we need constructor to map DTO->
-    public UserTrackingDTO(String trackingId, DeliveryStatus currentStatus, String location, LocalDate estimatedDeliveryDate,List<EventDTO> eventDTOS) {
-      this.trackingId=trackingId;
+    public UserTrackingDTO(Long orderId, DeliveryStatus currentStatus, String location, LocalDate estimatedDeliveryDate,List<EventDTO> eventDTOS) {
+    this.orderId=orderId;
       this.currentStatus=currentStatus;
       this.location=location;
       this.estimatedDeliveryDate=estimatedDeliveryDate;

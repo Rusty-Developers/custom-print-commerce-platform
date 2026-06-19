@@ -90,7 +90,8 @@ public class PaymentService {
 }
     @Transactional
     public void handleWebhook(String payload, String signature) {
-
+        System.out.println("========== WEBHOOK HIT ==========");
+        System.out.println(payload);
         try {
             //  STEP 1 : Cryptographically verify the webhook signature to protect against fraud
             boolean isValid = com.razorpay.Utils.verifyWebhookSignature(payload, signature, webhookSecret);

@@ -1,20 +1,27 @@
 package com.printcraft.printcraft_backend.DeliveryTracking;
 
 public enum DeliveryStatus {
-    CREATED(1),    //order placed
-    PACKED(2),  //ready in warehouse
-    SHIPPED(3), //handed over to courier
-    IN_TRANSIT(4),  //moving between hubs / cities 🚚
-    OUT_FOR_DELIVERY(5),  //with delivery agent
-    DELIVERED(6), //successfully delivered
-    FAILED(6) //delivery attempt failed
-    ;
+    CREATED(1),
+    PACKED(2),
+    SHIPPED(3),
+    IN_TRANSIT(4),
+    OUT_FOR_DELIVERY(5),
+    DELIVERY_ATTEMPTED(5),   // same rank as OUT_FOR_DELIVERY — it's a retry loop, not forward progress
+    DELIVERED(6),            // terminal, success
+    FAILED_FINAL(6),         // terminal, failure
+    RTO_INITIATED(6);        // terminal, ack-only
+
     private final int rank;
+
     DeliveryStatus(int rank) {
         this.rank = rank;
     }
-    //getter->>//  service class can call this
-    public int getRank(){
+
+    public int getRank() {
         return rank;
+    }
+
+    public boolean isTerminal() {
+        return this == DELIVERED || this == FAILED_FINAL || this == RTO_INITIATED;
     }
 }
