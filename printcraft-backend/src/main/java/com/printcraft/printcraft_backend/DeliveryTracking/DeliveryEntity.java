@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Table(indexes = @Index(name = "idx_awb_code", columnList = "awbCode"))
 @Builder
 @Getter
 @Setter
@@ -19,7 +20,10 @@ public class DeliveryEntity {
     private Long id;
     @OneToOne
     private Order order;
-    private String trackingId;
+    private String awbCode;            // courier's tracking number → webhook lookup key
+    private String shiprocketOrderId;  // Shiprocket's order reference
+    private String shiprocketShipmentId; // needed for AWB assignment API call
+    private int deliveryAttemptCount;  // track 1st, 2nd, 3rd attempt
     private String courierName;
     //delivery__status
     @Enumerated(EnumType.STRING)

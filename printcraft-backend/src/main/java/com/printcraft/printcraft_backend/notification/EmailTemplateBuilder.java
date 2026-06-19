@@ -55,7 +55,7 @@ public class EmailTemplateBuilder {
                         <tr><td>Frame Type</td><td>%s</td></tr>
                         <tr><td>Thickness</td><td>%s</td></tr>
                         <tr><td>Border Color</td><td>%s</td></tr>
-                        <tr><td>Delivery To</td><td>%s</td></tr>
+                        <tr><td>Delivery To -> </td><td>%s</td></tr>
                       </table>
                     </div>
                     <p>Amount Paid: <span class="amount">₹%s</span></p>
@@ -572,5 +572,109 @@ public class EmailTemplateBuilder {
             </body>
             </html>
             """.formatted(customerName, orderId, failureReason);
+    }
+    // ─────────────────────────────────────────
+// 8. IN TRANSIT → User
+// ─────────────────────────────────────────
+    public static String buildInTransit(
+            String customerName,
+            Long orderId,
+            String courierName,
+            String trackingId
+    ) {
+        return """
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8"/>
+              <style>
+                body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+                .container { max-width: 600px; margin: 30px auto; background: #fff;
+                             border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+                .header { background: #01579b; color: #fff; padding: 24px 32px; }
+                .header h1 { margin: 0; font-size: 20px; }
+                .body { padding: 28px 32px; color: #333; }
+                .tracking-box { background: #e1f5fe; border-left: 4px solid #01579b;
+                                padding: 16px 18px; border-radius: 4px; margin: 20px 0; }
+                .tracking-id { font-size: 20px; font-weight: bold; color: #01579b;
+                               letter-spacing: 1px; margin-top: 6px; }
+                .footer { background: #f4f4f4; padding: 16px 32px; font-size: 12px;
+                           color: #999; text-align: center; }
+              </style>
+            </head>
+            <body>
+            <div class="container">
+              <div class="header">
+                <h1>📍 Your Order Is in Transit</h1>
+              </div>
+              <div class="body">
+                <p>Hi <strong>%s</strong>,</p>
+                <p>Good news! Order <strong>#%d</strong> has been picked up by <strong>%s</strong>
+                   and is currently moving through the delivery network.</p>
+                <div class="tracking-box">
+                  <p style="margin: 0 0 4px 0; color: #555; font-size: 13px;">Tracking ID</p>
+                  <div class="tracking-id">%s</div>
+                </div>
+                <p>You can use the tracking ID on the courier's website to monitor your shipment in real time.
+                   Estimated delivery is typically within 2–5 business days from dispatch.</p>
+                <p>We'll send you another notification when your order is out for delivery.</p>
+                <p>— Team PrintCraft</p>
+              </div>
+              <div class="footer">PrintCraft · mkgroupprinting@gmail.com</div>
+            </div>
+            </body>
+            </html>
+            """.formatted(customerName, orderId, courierName, trackingId);
+    }
+
+    // ─────────────────────────────────────────
+// 9. RTO INITIATED → User
+// ─────────────────────────────────────────
+    public static String buildRtoInitiated(
+            String customerName,
+            Long orderId
+    ) {
+        return """
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8"/>
+              <style>
+                body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+                .container { max-width: 600px; margin: 30px auto; background: #fff;
+                             border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+                .header { background: #e65100; color: #fff; padding: 24px 32px; }
+                .header h1 { margin: 0; font-size: 20px; }
+                .body { padding: 28px 32px; color: #333; }
+                .warning-box { background: #fff3e0; border-left: 4px solid #e65100;
+                               padding: 16px 18px; border-radius: 4px; margin: 20px 0; }
+                .footer { background: #f4f4f4; padding: 16px 32px; font-size: 12px;
+                           color: #999; text-align: center; }
+              </style>
+            </head>
+            <body>
+            <div class="container">
+              <div class="header">
+                <h1>🔄 Your Order Is Being Returned</h1>
+              </div>
+              <div class="body">
+                <p>Hi <strong>%s</strong>,</p>
+                <p>We're sorry to inform you that Order <strong>#%d</strong> could not be delivered
+                   after multiple attempts, and a Return to Origin (RTO) has been initiated.</p>
+                <div class="warning-box">
+                  Your order is now on its way back to our facility. Once received,
+                  our support team will reach out to you regarding next steps,
+                  including re-shipment or a refund as applicable.
+                </div>
+                <p>If you believe this was an error or would like to arrange re-delivery,
+                   please reply to this email as soon as possible and we'll do our best to assist you.</p>
+                <p>We apologise for the inconvenience caused.</p>
+                <p>— Team PrintCraft</p>
+              </div>
+              <div class="footer">PrintCraft · mkgroupprinting@gmail.com</div>
+            </div>
+            </body>
+            </html>
+            """.formatted(customerName, orderId);
     }
 }

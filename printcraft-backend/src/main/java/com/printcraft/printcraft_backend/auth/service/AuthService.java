@@ -69,7 +69,7 @@ public class AuthService {
                 .name(request.getName())
                 .phoneNo(request.getPhoneno())
                 .email(request.getEmail())
-                .role(Role.USER)
+                .role(Role.USER)  //hardcoded to avoid anyone's trapping !!! 
                 .build();
        User savedUser =  userRepository.save(user);
        //logging

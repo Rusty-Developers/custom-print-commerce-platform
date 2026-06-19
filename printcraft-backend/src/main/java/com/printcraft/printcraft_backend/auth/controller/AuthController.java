@@ -50,6 +50,4 @@ private final AuthService authService;
                 token
         ));
     }
-
-
 }
