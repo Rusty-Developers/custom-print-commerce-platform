@@ -4,6 +4,7 @@ import com.printcraft.printcraft_backend.product.domain.Product;
 
 import com.printcraft.printcraft_backend.product.domain.ProductSizeInches;
 import com.printcraft.printcraft_backend.product.domain.ProductThickness;
+import com.printcraft.printcraft_backend.product.dto.response.PricingCellResponseDTO;
 import com.printcraft.printcraft_backend.product.service.PricingService;
 import com.printcraft.printcraft_backend.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,12 @@ private final PricingService pricingService;
                 "thickness",productThickness,
                 "price",price
         ));
+    }
+    @GetMapping("/{id}/pricing")
+    public ResponseEntity<List<PricingCellResponseDTO>> getAvailablePricing(@PathVariable Long id) {
+        // call the service method, wrap in ResponseEntity.ok(...)
+       List<PricingCellResponseDTO> res= pricingService.getAvailablePricing(id);
+       return ResponseEntity.ok(res);
     }
 
 }

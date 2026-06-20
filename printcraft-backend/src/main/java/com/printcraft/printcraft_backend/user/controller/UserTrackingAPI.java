@@ -14,12 +14,12 @@ public class UserTrackingAPI {
         this.userTrackingService = userTrackingService;
     }
 
-    //get details by trackingId
-    @GetMapping("/tracking/{trackingId}")
-    public ResponseEntity<UserTrackingDTO> getUserTracking(@PathVariable String trackingId){
-        //checking valid trackingId--spring-auto-handle it
-        UserTrackingDTO userTrackingDTO = userTrackingService.getByTrackingId(trackingId);
-        return ResponseEntity.ok(userTrackingDTO);
+    //get details by orderId
+    @GetMapping("/tracking/{orderId}")
+    public ResponseEntity<UserTrackingDTO> getUserTracking(@PathVariable Long orderId){
+        UserTrackingDTO userTrackingDTO =
+                userTrackingService.getByOrderId(orderId);
 
+        return ResponseEntity.ok(userTrackingDTO);
     }
 }

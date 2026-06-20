@@ -127,7 +127,7 @@ User user  = userRepository.findByphoneNo(phoneNo).orElseThrow(()->new RuntimeEx
                 .timestamp(e.getTimestamp())
                 .build()).collect(Collectors.toUnmodifiableList());
         return UserTrackingDTO.builder()
-                .trackingId(delivery.getTrackingId())
+                .orderId(delivery.getOrder().getId())
                 .currentStatus(delivery.getDeliveryStatus())
                 .location(delivery.getCurrentLocation())
                 .estimatedDeliveryDate(delivery.getEstimatedDeliveryDate()!=null ?delivery.getEstimatedDeliveryDate().toLocalDate():null) // if it's LocalDateTime

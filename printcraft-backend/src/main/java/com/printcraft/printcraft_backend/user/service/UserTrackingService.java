@@ -18,15 +18,17 @@ public class UserTrackingService {
         this.deliveryRepository = deliveryRepository;
     }
     @Transactional
-    public UserTrackingDTO getByTrackingId(String trackingId) {
+    public UserTrackingDTO getByOrderId(Long orderId) {
         //here, we will handle logic layer
-        DeliveryEntity deliveryEntity = deliveryRepository.getByTrackingId(trackingId).orElseThrow(
-                ()-> new ResourceNotFoundException( "Order not found with trackingId: " + trackingId )
-                       // 404
-                );
+        DeliveryEntity deliveryEntity =
+                deliveryRepository.findByOrderId(orderId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Order not found with orderId: " + orderId
+                                ));
 //calling converttolist method
         List<EventDTO> eventDTOList = convertToList(deliveryEntity);
-        return new UserTrackingDTO(deliveryEntity.getTrackingId(),
+        return new UserTrackingDTO(deliveryEntity.getOrder().getId(),
                 deliveryEntity.getDeliveryStatus(),
                 deliveryEntity.getCurrentLocation(),
                 deliveryEntity.getEstimatedDeliveryDate()!=null?deliveryEntity.getEstimatedDeliveryDate().toLocalDate():null, //usuing ternary operator

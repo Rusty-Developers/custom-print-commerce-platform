@@ -15,9 +15,13 @@ public class DeliveryTrackingController {
         this.deliveryServiceEngine = deliveryServiceEngine;
     }
 
-    @GetMapping("/api/tracking/{trackingId}")
-    public ResponseEntity<UserTrackingDTO> getTrackingIdDetails(@PathVariable String trackingId){
-        UserTrackingDTO userTrackingDTO = deliveryServiceEngine.getAllDetailsByTrackingId(trackingId);
+    @GetMapping("/api/tracking/{orderId}")
+    public ResponseEntity<UserTrackingDTO> getTrackingIdDetails(
+            @PathVariable Long orderId) {
+
+        UserTrackingDTO userTrackingDTO =
+                deliveryServiceEngine.getAllDetailsByOrderId(orderId);
+
         return ResponseEntity.ok(userTrackingDTO);
     }
 }
