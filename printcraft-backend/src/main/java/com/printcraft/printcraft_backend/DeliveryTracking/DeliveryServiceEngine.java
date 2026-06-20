@@ -9,6 +9,7 @@ import com.printcraft.printcraft_backend.notification.EmailService;
 import com.printcraft.printcraft_backend.notification.EmailTemplateBuilder;
 import com.printcraft.printcraft_backend.order.domain.Order;
 import com.printcraft.printcraft_backend.payment.domain.PaymentStatus;
+import com.printcraft.printcraft_backend.user.service.UserTrackingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,14 +28,16 @@ public class DeliveryServiceEngine{
     private final DeliveryRepository deliveryRepository;
     private final DeliveryEventHistoryRepository deliveryEventHistoryRepository;
     private final EmailService emailService;
+    private final UserTrackingService userTrackingService;
 
     public DeliveryServiceEngine(
             DeliveryRepository deliveryRepository,
             DeliveryEventHistoryRepository deliveryEventHistoryRepository,
-            EmailService emailService) {
+            EmailService emailService, UserTrackingService userTrackingService) {
         this.deliveryRepository = deliveryRepository;
         this.deliveryEventHistoryRepository = deliveryEventHistoryRepository;
         this.emailService = emailService;
+        this.userTrackingService = userTrackingService;
     }
 
     // =========================================================
@@ -320,5 +323,9 @@ public class DeliveryServiceEngine{
                         ? delivery.getEstimatedDeliveryDate().toLocalDate() : null)
                 .eventDTOS(events)
                 .build();
+    }
+
+    public UserTrackingDTO getAllDetailsByOrderId(Long orderId) {
+        return userTrackingService.getByOrderId(orderId);
     }
 }

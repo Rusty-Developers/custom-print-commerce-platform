@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "product_pricing")   //our DB - Table name
+@Table(name = "product_pricing", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"product_id", "productSizeInches", "productThickness"})
+})  //our DB - Table name
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +26,7 @@ public class ProductPricing {
     //BIGINT FK → products.id  AND One product → many price configs SO ONE - TO - MANY
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Product product;  //← points to ONE specific product (with its category+frameType already locked in)
     //    Size in inches
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
