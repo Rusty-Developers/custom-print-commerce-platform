@@ -54,6 +54,7 @@ export default function CheckoutPage() {
   const navigate  = useNavigate()
   const cart      = useStore((s) => s.cart)
   const clearCart = useStore((s) => s.clearCart)
+  const subtotal  = useStore((s) => s.cartTotal())
 
   const [addresses, setAddresses]             = useState([])
   const [selectedAddressId, setSelectedAddressId] = useState(null)
@@ -70,7 +71,6 @@ export default function CheckoutPage() {
       .finally(() => setLoadingAddr(false))
   }, [navigate, cart.length])
 
-  const subtotal = cart.reduce((a, i) => a + i.price * i.quantity, 0)
   const delivery = subtotal >= 599 ? 0 : 99
   const total    = subtotal + delivery
 
@@ -78,44 +78,53 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!selectedAddressId) { toast.error('Please select a delivery address'); return }
-    const item = cart[0]
     const addr = addresses.find(a => a.id === selectedAddressId)
     const deliverySnap = addr ? `${addr.fullName}, ${addr.addressLine}${addr.landmark?`, ${addr.landmark}`:''}, ${addr.city}, ${addr.state} - ${addr.pinCode}` : ''
     setPlacing(true)
     try {
-      // 1. Load Razorpay SDK
       const loaded = await loadRazorpay()
       if (!loaded) { toast.error('Razorpay not loaded. Please refresh.'); setPlacing(false); return }
 
-      // 2. Create order
-      const orderRes = await api.post('/api/createOrders', {
-        productId: item.productId,
-        sizeInches: item.selectedSize,
-        thicknessMm: item.selectedThickness,
-        frameType: item.selectedFrame,
-        borderColor: item.borderColor || '#C0392B',
-        customImageUrl: item.customImageUrl || null,
-        deliveryAddressSnapshot: deliverySnap,
-        addressId: selectedAddressId,
-      })
-      const orderId = orderRes.data.id
+      const orders = []
+      for (const item of cart) {
+        const orderRes = await api.post('/api/createOrders', {
+          productId: item.productId,
+          sizeInches: item.selectedSize,
+          thicknessMm: item.selectedThickness,
+          frameType: item.selectedFrame,
+          borderColor: item.borderColor || '#C0392B',
+          customImageUrl: item.customImageUrl || null,
+          deliveryAddressSnapshot: deliverySnap,
+          addressId: selectedAddressId,
+        })
+        orders.push(orderRes.data)
+      }
 
-      // 3. Create Razorpay order
-      const payRes = await api.post(`/create-order/${orderId}`)
-      const { razorpayOrderId, razorpayPublicKey, amount, currency } = payRes.data
+      const firstOrder = orders[0]
+      const ordersSubtotal = orders.reduce((sum, o) => sum + parseFloat(o.finalPrice), 0)
+      const totalAmount = ordersSubtotal + delivery
 
-      // 4. Open Razorpay
+      const payRes = await api.post(`/create-order/${firstOrder.id}`)
+      const { razorpayOrderId, razorpayPublicKey, currency } = payRes.data
+
       new window.Razorpay({
         key: razorpayPublicKey,
-        amount, currency: currency || 'INR',
+        amount: Math.round(totalAmount * 100),
+        currency: currency || 'INR',
         order_id: razorpayOrderId,
         name: 'MK Group Printing',
         description: 'Custom Print Order',
         theme: { color: '#C0392B' },
         handler: () => {
-          localStorage.setItem('last_order_id', String(orderId))
+          navigate('/order-success', {
+            state: {
+              orderId: firstOrder.id,
+              orderIds: orders.map((o) => o.id),
+              totalAmount,
+              productName: cart[0].productName,
+            },
+          })
           clearCart()
-          navigate('/order-success', { state: { orderId } })
         },
         modal: { ondismiss: () => { toast.error('Payment cancelled'); setPlacing(false) } },
       }).open()
@@ -180,15 +189,21 @@ export default function CheckoutPage() {
                       style={{ width:60, height:60, objectFit:'cover', borderRadius:'var(--radius-sm)', border:'1px solid var(--divider)' }} />
                     <div style={{ flex:1 }}>
                       <div style={{ fontWeight:600, fontSize:14, marginBottom:4 }}>{item.productName}</div>
-                      <div style={{ fontSize:12, color:'var(--text-muted)' }}>{SIZE_LABELS[item.selectedSize]} · {THICKNESS_LABELS[item.selectedThickness]} · {FRAME_LABELS[item.selectedFrame]}</div>
-                      <div style={{ fontSize:13, fontWeight:700, color:'var(--primary)', marginTop:4 }}>{formatINR(item.price)} × {item.quantity}</div>
+                      <div style={{ fontSize:12, color:'var(--text-muted)', lineHeight:1.6 }}>
+                        <div>Size: {SIZE_LABELS[item.selectedSize]}</div>
+                        <div>Thickness: {THICKNESS_LABELS[item.selectedThickness]}</div>
+                        <div>Frame: {FRAME_LABELS[item.selectedFrame]}</div>
+                      </div>
+                      <div style={{ fontSize:13, fontWeight:600, marginTop:6 }}>
+                        {item.quantity} × {formatINR(item.price)} = {formatINR(item.price * item.quantity)}
+                      </div>
                     </div>
                   </div>
                 ))}
                 <div className="price-row"><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
                 <div className="price-row"><span>Delivery</span><span style={{ color:delivery===0?'var(--green)':undefined }}>{delivery===0?'FREE':formatINR(delivery)}</span></div>
                 <div className="price-row"><span>Discount</span><span>₹0.00</span></div>
-                <div className="price-row total"><span>Total</span><span>{formatINR(total)}</span></div>
+                <div className="price-row total"><span>Total</span><span style={{ color:'var(--primary)' }}>{formatINR(total)}</span></div>
                 <div style={{ display:'flex', gap:8, flexWrap:'wrap', justifyContent:'center', paddingTop:4 }}>
                   {['💳 UPI','🏦 NetBanking','💳 Credit Card','💳 Debit Card'].map(m => (
                     <span key={m} style={{ fontSize:11, padding:'4px 10px', borderRadius:'var(--radius-full)', border:'1px solid var(--border-color)', color:'var(--text-muted)' }}>{m}</span>
