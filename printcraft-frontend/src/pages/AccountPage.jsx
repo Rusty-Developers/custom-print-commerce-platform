@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
@@ -202,6 +202,9 @@ export default function AccountPage() {
   const navigate = useNavigate()
   const clearToken = useStore((s) => s.clearToken)
   const clearCart  = useStore((s) => s.clearCart)
+  const profilePic    = useStore((s) => s.profilePic)
+  const setProfilePic = useStore((s) => s.setProfilePic)
+  const fileInputRef  = useRef(null)
 
   const [section, setSection]   = useState('profile')
   const [orders, setOrders]     = useState([])
@@ -257,13 +260,79 @@ export default function AccountPage() {
               <div>
                 <h2 style={{ fontFamily:'var(--font-heading)', fontSize:22, fontWeight:700, marginBottom:24 }}>My Profile</h2>
                 <div style={{ display:'flex', alignItems:'center', gap:20, padding:24, background:'var(--off-white)', borderRadius:'var(--radius-md)', border:'1px solid var(--divider)', marginBottom:24 }}>
-                  <div className="avatar-lg">{initials}</div>
+
+                  {/* Clickable avatar — stored in localStorage only (no backend profile update endpoint) */}
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    title="Click to change profile picture"
+                    style={{ position:'relative', cursor:'pointer', flexShrink:0 }}
+                  >
+                    {profilePic ? (
+                      <img
+                        src={profilePic}
+                        alt="Profile"
+                        style={{
+                          width: 80, height: 80,
+                          borderRadius: '50%',
+                          objectFit: 'cover',
+                          border: '3px solid var(--primary)',
+                          display: 'block',
+                        }}
+                      />
+                    ) : (
+                      <div className="avatar-lg">{initials}</div>
+                    )}
+
+                    {/* Camera icon overlay */}
+                    <div style={{
+                      position: 'absolute', bottom: 0, right: 0,
+                      width: 24, height: 24,
+                      borderRadius: '50%',
+                      background: '#C0392B',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      border: '2px solid white',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
+                    }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4z"/>
+                        <path d="M9 3L7.17 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.17L15 3H9zm3 14a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                      </svg>
+                    </div>
+
+                    {/* Hidden file input */}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={async (e) => {
+                        const file = e.target.files[0]
+                        if (!file) return
+                        const formData = new FormData()
+                        formData.append('file', file)
+                        try {
+                          const res = await api.post('/api/files/image', formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                            // Authorization is injected automatically by the axios interceptor
+                          })
+                          setProfilePic('http://localhost:8080' + res.data.url)
+                          toast.success('Profile picture updated!')
+                        } catch {
+                          toast.error('Upload failed')
+                        }
+                        // Reset so same file can be re-selected
+                        e.target.value = ''
+                      }}
+                    />
+                  </div>
+
                   <div>
                     <div style={{ fontFamily:'var(--font-heading)', fontSize:22, fontWeight:700 }}>{name || 'MK Group Printing Member'}</div>
                     <div style={{ color:'var(--text-muted)', fontSize:14, marginTop:4 }}>📞 +91 {phone}</div>
                     <span className="badge badge-red" style={{ marginTop:8 }}>Verified Member</span>
                   </div>
                 </div>
+
                 <div style={{ padding:20, background:'var(--off-white)', borderRadius:'var(--radius-md)', border:'1px solid var(--divider)' }}>
                   <h3 style={{ fontFamily:'var(--font-heading)', fontSize:17, marginBottom:12 }}>Account Details</h3>
                   <div style={{ fontSize:14, color:'var(--text-muted)', lineHeight:2 }}>

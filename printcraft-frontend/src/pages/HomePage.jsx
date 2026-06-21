@@ -1,11 +1,10 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
 import CyclingFrame from '../components/CyclingFrame'
-import Spinner from '../components/Spinner'
 import { ALL_CATEGORIES, CATEGORY_LABELS } from '../utils/format'
-import { HERO_PHOTOS, SAMPLE_PHOTOS, getCategoryFrameStyle } from '../utils/framePreview'
+import { SAMPLE_PHOTOS, getCategoryFrameStyle } from '../utils/framePreview'
 
 const CATEGORY_BACKGROUNDS = {
   TILES: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&fit=crop',
@@ -19,11 +18,12 @@ const CATEGORY_BACKGROUNDS = {
   CREATIVE: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&fit=crop',
 }
 
+// 3D rotation per frame position
 const HERO_FRAMES = [
-  { borderRadius: '8px', floatClass: 'hp-float-1' },
-  { borderRadius: '50%', floatClass: 'hp-float-2' },
-  { borderRadius: '36px', floatClass: 'hp-float-3' },
-  { border: '8px solid #5a3e2b', borderRadius: '8px', floatClass: 'hp-float-4' },
+  { borderRadius: '8px',  floatClass: 'hp-float-1', transform: 'rotateY(-8deg) rotateX(4deg)'  },
+  { borderRadius: '50%',  floatClass: 'hp-float-2', transform: 'rotateY(8deg) rotateX(-4deg)'  },
+  { borderRadius: '36px', floatClass: 'hp-float-3', transform: 'rotateY(-6deg) rotateX(-3deg)' },
+  { border: '8px solid #5a3e2b', borderRadius: '8px', floatClass: 'hp-float-4', transform: 'rotateY(6deg) rotateX(3deg)' },
 ]
 
 const FAQS = [
@@ -97,17 +97,53 @@ const FEATURES = [
   },
 ]
 
+/* ─── Scroll Reveal Hook ─────────────────────────────────── */
+function useScrollReveal(deps = []) {
+  useEffect(() => {
+    const els = document.querySelectorAll('.reveal')
+    if (!els.length) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            io.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps)
+}
+
+/* ─── Skeleton Card ────────────────────────────────────────── */
+function SkeletonCard() {
+  return (
+    <div style={{ borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+      <div className="skeleton" style={{ height: 220 }} />
+      <div style={{ padding: 12, background: '#fff' }}>
+        <div className="skeleton" style={{ height: 16, width: '70%', marginBottom: 8, borderRadius: 6 }} />
+        <div className="skeleton" style={{ height: 12, width: '40%', marginBottom: 12, borderRadius: 6 }} />
+        <div className="skeleton" style={{ height: 36, borderRadius: 8 }} />
+      </div>
+    </div>
+  )
+}
+
+/* ─── Hero Section ──────────────────────────────────────────── */
 function HeroSection() {
   const navigate = useNavigate()
   const [mounted, setMounted] = useState(false)
+  const framesContainerRef = useRef(null)
 
   const startIndices = useMemo(() => {
     const indices = []
     while (indices.length < 4) {
       const r = Math.floor(Math.random() * SAMPLE_PHOTOS.length)
-      if (!indices.includes(r)) {
-        indices.push(r)
-      }
+      if (!indices.includes(r)) indices.push(r)
     }
     return indices
   }, [])
@@ -116,8 +152,22 @@ function HeroSection() {
     setMounted(true)
   }, [])
 
+  const handleMouseMove = useCallback((e) => {
+    const el = framesContainerRef.current
+    if (!el) return
+    const x = (e.clientX / window.innerWidth  - 0.5) * 20
+    const y = (e.clientY / window.innerHeight - 0.5) * 20
+    el.style.transform = `rotateY(${x * 0.3}deg) rotateX(${-y * 0.3}deg)`
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    const el = framesContainerRef.current
+    if (!el) return
+    el.style.transform = 'rotateY(0deg) rotateX(0deg)'
+  }, [])
+
   return (
-    <section className="hp-hero">
+    <section className="hp-hero" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
       <div className="hp-hero-inner container">
         <div className="hp-hero-left">
           <p className="hp-hero-label">PREMIUM CUSTOM PRINTS</p>
@@ -147,22 +197,34 @@ function HeroSection() {
         </div>
 
         <div className="hp-hero-right">
-          <div className="hp-hero-frames">
+          {/* CSS perspective wrapper; JS applies rotateX/Y for parallax */}
+          <div
+            ref={framesContainerRef}
+            className="hp-hero-frames"
+            style={{
+              perspective: '1000px',
+              transition: 'transform 0.1s ease-out',
+            }}
+          >
             {HERO_FRAMES.map((frame, i) => (
-              <CyclingFrame
+              <div
                 key={i}
-                photos={SAMPLE_PHOTOS}
-                width={140}
-                height={175}
-                frameStyle={{
-                  borderRadius: frame.borderRadius,
-                  border: frame.border,
-                }}
                 className={`hp-hero-frame ${frame.floatClass}`}
-                eager={i === 0}
-                pauseWhenHidden
-                initialIndex={startIndices[i]}
-              />
+                style={{ transform: frame.transform, transition: 'transform 0.1s ease-out' }}
+              >
+                <CyclingFrame
+                  photos={SAMPLE_PHOTOS}
+                  width={140}
+                  height={175}
+                  frameStyle={{
+                    borderRadius: frame.borderRadius,
+                    border: frame.border,
+                  }}
+                  eager={i === 0}
+                  pauseWhenHidden
+                  initialIndex={startIndices[i]}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -210,7 +272,7 @@ function CategoryCard({ category }) {
 
 function CategoryShowcase() {
   return (
-    <section className="hp-section hp-section--white">
+    <section className="hp-section hp-section--white reveal">
       <div className="container">
         <h2 className="hp-section-title">Shop by Category</h2>
         <div className="hp-title-accent" />
@@ -241,12 +303,16 @@ function BestSellers() {
   }, [])
 
   return (
-    <section className="hp-section hp-section--gray">
+    <section className="hp-section hp-section--gray reveal">
       <div className="container">
         <h2 className="hp-section-title">Best Sellers</h2>
         <div className="hp-title-accent" />
         {loading ? (
-          <Spinner center />
+          <div className="pc-product-grid" style={{ marginTop: 40 }}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
         ) : (
           <>
             <div className="pc-product-grid">
@@ -268,7 +334,7 @@ function BestSellers() {
 
 function WhyChooseUs() {
   return (
-    <section className="hp-section hp-section--white">
+    <section className="hp-section hp-section--white reveal">
       <div className="container">
         <h2 className="hp-section-title hp-section-title--sm">Why Choose MK Group Printing</h2>
         <div className="hp-features-grid">
@@ -289,7 +355,7 @@ function FAQSection() {
   const [openIndex, setOpenIndex] = useState(null)
 
   return (
-    <section className="hp-section hp-section--gray">
+    <section className="hp-section hp-section--gray reveal">
       <div className="container">
         <h2 className="hp-section-title hp-section-title--sm">Frequently Asked Questions</h2>
         <div className="hp-faq-list">
@@ -329,6 +395,9 @@ function FAQSection() {
 }
 
 export default function HomePage() {
+  // Run scroll reveal after sections mount
+  useScrollReveal([])
+
   return (
     <div className="page-enter">
       <HeroSection />

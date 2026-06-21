@@ -44,6 +44,19 @@ const ProductCard = memo(forwardRef(function ProductCard({ product, className = 
       role="button"
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && goToProduct()}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transition = 'transform 0.1s ease-out'
+      }}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 10
+        const y = ((e.clientY - rect.top)  / rect.height - 0.5) * -10
+        e.currentTarget.style.transform = `perspective(800px) rotateX(${y}deg) rotateY(${x}deg) translateY(-8px)`
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)'
+        e.currentTarget.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
+      }}
     >
       <div className="pc-card-frame-wrapper">
         <CyclingFrame
