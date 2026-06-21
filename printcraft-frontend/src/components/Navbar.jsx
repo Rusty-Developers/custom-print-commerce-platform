@@ -68,9 +68,8 @@ export default function Navbar() {
             onClick={closeMobile}
           >
             <img
-              src="/mk-group-logo.svg"
+              src="/mk-group-logo.png"
               alt="MK Group Printing"
-              width={120}
               height={44}
               style={{ objectFit: 'contain', display: 'block' }}
             />

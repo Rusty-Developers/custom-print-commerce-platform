@@ -85,15 +85,15 @@ export default function CheckoutPage() {
         description: 'Custom Print Order',
         theme: { color: '#C0392B' },
         handler: () => {
+          clearCart()
+          localStorage.setItem('last_order_id', firstOrder.id)
           navigate('/order-success', {
             state: {
               orderId: firstOrder.id,
-              orderIds: orders.map((o) => o.id),
-              totalAmount,
-              productName: cart[0].productName,
+              productName: cart[0]?.productName,
+              totalAmount: Math.round(totalAmount * 100) / 100,
             },
           })
-          clearCart()
         },
         modal: { ondismiss: () => { toast.error('Payment cancelled'); setPlacing(false) } },
       }).open()

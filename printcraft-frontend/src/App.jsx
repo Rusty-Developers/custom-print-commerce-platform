@@ -2,7 +2,7 @@ import { lazy, Suspense, useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import api from './api/axios'
-import { isAdmin } from './utils/jwt'
+import { isAdmin, isLoggedIn } from './utils/jwt'
 
 import AnnouncementBar from './components/AnnouncementBar'
 import Navbar from './components/Navbar'
@@ -165,7 +165,7 @@ function Layout({ children, noFooter }) {
 }
 
 function AdminRouteGuard({ children }) {
-  if (!isAdmin()) return <Navigate to="/admin/login" replace />
+  if (!isLoggedIn() || !isAdmin()) return <Navigate to="/admin/login" replace />
   return children
 }
 

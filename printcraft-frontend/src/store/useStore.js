@@ -28,6 +28,14 @@ const useStore = create((set, get) => ({
     set({ token: null })
   },
 
+  // NOTE: Profile picture is stored locally only — no backend user profile
+  // update endpoint exists. This is intentional for the current scope.
+  profilePic: localStorage.getItem('printcraft_profile_pic') || null,
+  setProfilePic: (url) => {
+    localStorage.setItem('printcraft_profile_pic', url)
+    set({ profilePic: url })
+  },
+
   cart: loadCart(),
   cartOpen: false,
   setCartOpen: (val) => set({ cartOpen: val }),
