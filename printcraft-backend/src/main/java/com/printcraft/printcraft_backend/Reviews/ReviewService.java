@@ -35,15 +35,19 @@ public class ReviewService {
             throw new RuntimeException("You have already reviewed this product");
         }
         //now build the review -- Build and save review
-        Reviews reviews = Reviews.builder().user(user)
+        Reviews reviews = Reviews.builder()
+                .user(user)
                 .product(product)
                 .rating(reviewRequestDto.getRating())
                 .comment(reviewRequestDto.getComment())
-                .imageUrl(reviewRequestDto.getImageUrl())  // URL from FileStorageService
+                .imageUrl(reviewRequestDto.getImageUrl())// URL from FileStorageService
                 .build();
         //save it to the entity
         Reviews saved = reviewRepository.save(reviews);
         //Return responseDto
+        //reviewRepository.flush() forces Hibernate to actually run the INSERT right now (instead of queuing it for later),
+        // which is what makes @CreationTimestamp populate the value in time for mapToDTO to read it correctly.
+        reviewRepository.flush();
         return mapToDTO(saved);
     }
 
@@ -58,7 +62,9 @@ public class ReviewService {
                 .build();
     }
     //// Get all reviews for a product
+    ///
+    @Transactional(readOnly = true)
     public List<ReviewResponseDto> getAllReviewsOnProduct(Long productId){
-        return reviewRepository.findByProductId(productId).stream().map(this::mapToDTO).toList();
+        return reviewRepository.findByProductIdOrderByCreatedAtDesc(productId).stream().map(this::mapToDTO).toList();
     }
 }
