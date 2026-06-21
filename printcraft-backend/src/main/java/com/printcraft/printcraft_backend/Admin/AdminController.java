@@ -1,5 +1,6 @@
 package com.printcraft.printcraft_backend.Admin;
 
+import com.printcraft.printcraft_backend.Admin.DTO.UpdateProductImageRequestDTO;
 import com.printcraft.printcraft_backend.product.domain.Product;
 import com.printcraft.printcraft_backend.product.domain.ProductPricing;
 import com.printcraft.printcraft_backend.product.dto.request.ProductPricingRequestDTO;
@@ -58,5 +59,19 @@ public class AdminController {
     public ResponseEntity<List<PricingCellResponseDTO>> getPricingGrid(@PathVariable Long id) {
         List<PricingCellResponseDTO> grid = pricingService.getPricingGridGrid(id);
         return ResponseEntity.ok(grid);
+    }
+    //FOR IMAGE UPLOADING
+    @PatchMapping("/{id}/image")
+    public ResponseEntity<?> updateProductImage(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateProductImageRequestDTO dto) {
+
+        Product updated = productService.updateProductImage(id, dto);
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "productId", id,
+                "imageUrl", updated.getImageUrl()
+        ));
     }
 }

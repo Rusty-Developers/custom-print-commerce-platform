@@ -5,9 +5,10 @@ import api from '../api/axios'
 import useStore from '../store/useStore'
 import Spinner from '../components/Spinner'
 import { isLoggedIn, getPhone, getName } from '../utils/jwt'
-import { formatINR, SIZE_LABELS, THICKNESS_LABELS, FRAME_LABELS, ORDER_STATUS_BADGE, PAYMENT_STATUS_BADGE, ALL_SIZES, ALL_THICKNESSES, ALL_FRAMES } from '../utils/format'
+import { formatINR, SIZE_LABELS, THICKNESS_LABELS, FRAME_LABELS, ORDER_STATUS_BADGE, PAYMENT_STATUS_BADGE, DELIVERY_STATUS_LABELS, DELIVERY_STATUS_BADGE, ALL_SIZES, ALL_THICKNESSES, ALL_FRAMES } from '../utils/format'
 
-const DELIVERY_STEPS = ['CREATED','PACKED','SHIPPED','IN_TRANSIT','OUT_FOR_DELIVERY','DELIVERED']
+const DELIVERY_STEPS = ['CREATED', 'PACKED', 'SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED']
+const PLACEHOLDER_IMAGE = 'https://placehold.co/80x80/f9f9f9/ccc?text=Print'
 
 function AddressForm({ onSave, onCancel }) {
   const [form, setForm] = useState({ fullName:'', phoneNo:'', addressLine:'', landmark:'', city:'', state:'', pinCode:'' })
@@ -42,10 +43,26 @@ function AddressForm({ onSave, onCancel }) {
 function TrackingModal({ order, onClose }) {
   const [tracking, setTracking] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
   useEffect(() => {
-    api.get(`/api/orders/${order.id}/tracking`).then(r => setTracking(r.data)).catch(() => setTracking(null)).finally(() => setLoading(false))
+    api.get(`/api/tracking/${order.id}`)
+      .then((r) => setTracking(r.data))
+      .catch(() => { setTracking(null); setError(true) })
+      .finally(() => setLoading(false))
   }, [order.id])
-  const currentStepIdx = tracking ? DELIVERY_STEPS.indexOf(tracking.currentStatus) : -1
+
+  const currentStatus = tracking?.currentStatus
+  const isFailed = currentStatus === 'FAILED_FINAL' || currentStatus === 'RTO_INITIATED'
+  const isAttempted = currentStatus === 'DELIVERY_ATTEMPTED'
+
+  const currentStepIdx = tracking ? (() => {
+    if (isFailed) return DELIVERY_STEPS.indexOf('OUT_FOR_DELIVERY')
+    if (isAttempted) return DELIVERY_STEPS.indexOf('OUT_FOR_DELIVERY')
+    const idx = DELIVERY_STEPS.indexOf(currentStatus)
+    return idx >= 0 ? idx : -1
+  })() : -1
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" style={{ maxWidth:560 }} onClick={e => e.stopPropagation()}>
@@ -54,28 +71,78 @@ function TrackingModal({ order, onClose }) {
           <button className="cart-close-btn" onClick={onClose}>✕</button>
         </div>
         <div className="modal-body">
-          {loading ? <Spinner center /> : !tracking ? <p style={{ color:'var(--text-muted)' }}>Tracking info not available yet.</p> : (
+          {loading ? <Spinner center /> : error || !tracking ? (
+            <p style={{ color:'var(--text-muted)' }}>Tracking info not available yet.</p>
+          ) : (
             <>
+              {isFailed && (
+                <div style={{ marginBottom:16, padding:'12px 16px', borderRadius:8, background:'#FEF2F2', border:'1px solid #FECACA' }}>
+                  <span className={`badge ${DELIVERY_STATUS_BADGE[currentStatus] || 'badge-red'}`} style={{ marginBottom:6 }}>
+                    {DELIVERY_STATUS_LABELS[currentStatus] || currentStatus}
+                  </span>
+                  <div style={{ fontSize:13, color:'#991B1B' }}>
+                    {currentStatus === 'RTO_INITIATED'
+                      ? 'Your package is being returned to our facility.'
+                      : 'Delivery could not be completed. Please contact support.'}
+                  </div>
+                </div>
+              )}
+              {isAttempted && !isFailed && (
+                <div style={{ marginBottom:16, padding:'12px 16px', borderRadius:8, background:'#FFFBEB', border:'1px solid #FDE68A', fontSize:13, color:'#92400E' }}>
+                  {DELIVERY_STATUS_LABELS.DELIVERY_ATTEMPTED} — courier will retry delivery soon.
+                </div>
+              )}
               <div style={{ display:'flex', gap:12, alignItems:'center', flexWrap:'wrap', marginBottom:16, padding:'12px 16px', background:'var(--off-white)', borderRadius:8 }}>
-                <div><span style={{ fontSize:12, color:'var(--text-muted)' }}>Tracking ID</span><div style={{ fontWeight:700, fontFamily:'monospace', fontSize:15 }}>{tracking.trackingId}</div></div>
-                <button className="btn btn-ghost btn-sm" style={{ marginLeft:'auto' }} onClick={() => { navigator.clipboard.writeText(tracking.trackingId); toast.success('Copied!') }}>📋 Copy</button>
+                <div>
+                  <span style={{ fontSize:12, color:'var(--text-muted)' }}>Order ID</span>
+                  <div style={{ fontWeight:700, fontFamily:'monospace', fontSize:15 }}>#{tracking.orderId || order.id}</div>
+                </div>
+                {tracking.location && (
+                  <div>
+                    <span style={{ fontSize:12, color:'var(--text-muted)' }}>Location</span>
+                    <div style={{ fontWeight:600, fontSize:14 }}>{tracking.location}</div>
+                  </div>
+                )}
               </div>
-              {tracking.estimatedDeliveryDate && <div style={{ fontSize:13, color:'var(--text-muted)', marginBottom:16 }}>Estimated delivery: <strong>{new Date(tracking.estimatedDeliveryDate).toLocaleDateString('en-IN',{day:'numeric',month:'long'})}</strong></div>}
+              {tracking.estimatedDeliveryDate && (
+                <div style={{ fontSize:13, color:'var(--text-muted)', marginBottom:16 }}>
+                  Estimated delivery: <strong>{new Date(tracking.estimatedDeliveryDate).toLocaleDateString('en-IN', { day:'numeric', month:'long' })}</strong>
+                </div>
+              )}
               <div style={{ position:'relative', paddingLeft:28 }}>
                 {DELIVERY_STEPS.map((step, i) => {
-                  const done = i < currentStepIdx; const current = i === currentStepIdx
+                  const done = !isFailed && i < currentStepIdx
+                  const current = !isFailed && i === currentStepIdx
                   const event = tracking.eventDTOS?.find(e => e.status === step)
+                  const attemptedHere = isAttempted && step === 'OUT_FOR_DELIVERY'
                   return (
                     <div key={step} style={{ marginBottom:20, position:'relative' }}>
                       <div style={{ position:'absolute', left:-28, top:0, width:18, height:18, borderRadius:'50%',
-                        background: done||current ? '#C0392B':'#E5E7EB', border:`2px solid ${done||current?'#C0392B':'#D1D5DB'}`,
-                        animation: current ? 'pulse 1.5s infinite' : 'none', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                        background: done || current || attemptedHere ? '#C0392B' : '#E5E7EB',
+                        border:`2px solid ${done || current || attemptedHere ? '#C0392B' : '#D1D5DB'}`,
+                        animation: current || attemptedHere ? 'pulse 1.5s infinite' : 'none',
+                        display:'flex', alignItems:'center', justifyContent:'center' }}>
                         {done && <span style={{ color:'white', fontSize:10, lineHeight:1 }}>✓</span>}
                       </div>
-                      {i < DELIVERY_STEPS.length-1 && <div style={{ position:'absolute', left:-20, top:18, width:2, height:24, background: done?'#C0392B':'#E5E7EB' }} />}
-                      <div style={{ fontWeight:600, fontSize:13, color: done||current?'var(--text-dark)':'var(--text-muted)' }}>{step.replace(/_/g,' ')}</div>
-                      {event && <div style={{ fontSize:12, color:'var(--text-muted)', marginTop:2 }}>{event.description}{event.currentLocation ? ` — ${event.currentLocation}`:''}</div>}
-                      {event?.timestamp && <div style={{ fontSize:11, color:'var(--text-light)', marginTop:1 }}>{new Date(event.timestamp).toLocaleString('en-IN')}</div>}
+                      {i < DELIVERY_STEPS.length - 1 && (
+                        <div style={{ position:'absolute', left:-20, top:18, width:2, height:24, background: done ? '#C0392B' : '#E5E7EB' }} />
+                      )}
+                      <div style={{ fontWeight:600, fontSize:13, color: done || current || attemptedHere ? 'var(--text-dark)' : 'var(--text-muted)' }}>
+                        {DELIVERY_STATUS_LABELS[step] || step.replace(/_/g, ' ')}
+                      </div>
+                      {attemptedHere && (
+                        <div style={{ fontSize:12, color:'#B45309', marginTop:2 }}>{DELIVERY_STATUS_LABELS.DELIVERY_ATTEMPTED}</div>
+                      )}
+                      {event && (
+                        <div style={{ fontSize:12, color:'var(--text-muted)', marginTop:2 }}>
+                          {event.description}{event.currentLocation ? ` — ${event.currentLocation}` : ''}
+                        </div>
+                      )}
+                      {event?.timestamp && (
+                        <div style={{ fontSize:11, color:'var(--text-light)', marginTop:1 }}>
+                          {new Date(event.timestamp).toLocaleString('en-IN')}
+                        </div>
+                      )}
                     </div>
                   )
                 })}
@@ -153,6 +220,13 @@ const STATUS_BADGE = {
   PROCESSING:'badge-orange', SHIPPED:'badge-purple', DELIVERED:'badge-green',
 }
 
+function buildWhatsAppUrl(order) {
+  const size = encodeURIComponent(SIZE_LABELS[order.productSizeInches] || order.productSizeInches || '')
+  const frame = encodeURIComponent(FRAME_LABELS[order.frameTypes] || order.frameTypes || '')
+  const thickness = encodeURIComponent(THICKNESS_LABELS[order.productThickness] || order.productThickness || '')
+  return `https://wa.me/919999999999?text=ORDER_ID:${order.id}%0ASIZE:${size}%0AFRAME:${frame}%0ATHICKNESS:${thickness}`
+}
+
 export default function AccountPage() {
   const navigate = useNavigate()
   const clearToken = useStore((s) => s.clearToken)
@@ -162,6 +236,7 @@ export default function AccountPage() {
   const [orders, setOrders]     = useState([])
   const [addresses, setAddresses] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(false)
+  const [ordersError, setOrdersError]     = useState(false)
   const [addrLoading, setAddrLoading]     = useState(false)
   const [showAddForm, setShowAddForm]     = useState(false)
   const [trackingOrder, setTrackingOrder] = useState(null)
@@ -177,16 +252,20 @@ export default function AccountPage() {
 
   const loadOrders = useCallback(() => {
     setOrdersLoading(true)
-    api.get('/api/user/orders').then(r => setOrders(r.data || [])).catch(() => {}).finally(() => setOrdersLoading(false))
+    setOrdersError(false)
+    api.get('/api/user/orders')
+      .then((r) => setOrders(Array.isArray(r.data) ? r.data : []))
+      .catch(() => { setOrders([]); setOrdersError(true) })
+      .finally(() => setOrdersLoading(false))
   }, [])
 
   useEffect(() => {
-    if (section === 'orders' && orders.length === 0) loadOrders()
+    if (section === 'orders') loadOrders()
     if (section === 'addresses' && addresses.length === 0) {
       setAddrLoading(true)
       api.get('/api/user/addresses').then(r => setAddresses(r.data || [])).catch(() => {}).finally(() => setAddrLoading(false))
     }
-  }, [section])
+  }, [section, loadOrders, addresses.length])
 
   const handleLogout = () => { clearToken(); clearCart(); toast.success('Logged out successfully'); navigate('/') }
 
@@ -229,7 +308,12 @@ export default function AccountPage() {
             {section === 'orders' && (
               <div>
                 <h2 style={{ fontFamily:'var(--font-heading)', fontSize:22, fontWeight:700, marginBottom:24 }}>My Orders</h2>
-                {ordersLoading ? <Spinner center /> : orders.length === 0 ? (
+                {ordersLoading ? <Spinner center /> : ordersError ? (
+                  <div style={{ textAlign:'center', padding:60 }}>
+                    <p style={{ color:'var(--text-muted)' }}>Could not load orders. Please try again.</p>
+                    <button className="btn btn-outline" style={{ marginTop:16 }} onClick={loadOrders}>Retry</button>
+                  </div>
+                ) : orders.length === 0 ? (
                   <div style={{ textAlign:'center', padding:60 }}>
                     <div style={{ fontSize:48, marginBottom:12, opacity:0.3 }}>📦</div>
                     <p style={{ color:'var(--text-muted)' }}>No orders yet. Start customising!</p>
@@ -237,24 +321,41 @@ export default function AccountPage() {
                   </div>
                 ) : (
                   <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
-                    {orders.map(o => (
+                    {orders.map((o) => (
                       <div key={o.id} style={{ border:'1px solid var(--divider)', borderRadius:'var(--radius-md)', padding:20, background:'white', boxShadow:'var(--shadow-sm)' }}>
-                        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:8, marginBottom:12 }}>
-                          <div>
-                            <div style={{ fontWeight:700, fontSize:15 }}>{o.product?.productName || '—'}</div>
-                            <div style={{ fontSize:12, color:'var(--text-muted)', marginTop:2 }}>Order #{o.id} · {o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN') : '—'}</div>
+                        <div style={{ display:'flex', gap:16, marginBottom:12 }}>
+                          <img
+                            src={o.product?.imageUrl || o.customImageUrl || PLACEHOLDER_IMAGE}
+                            alt={o.product?.productName || 'Order'}
+                            style={{ width:80, height:80, objectFit:'cover', borderRadius:'var(--radius-sm)', border:'1px solid var(--divider)', flexShrink:0 }}
+                            onError={(e) => { e.target.src = PLACEHOLDER_IMAGE }}
+                          />
+                          <div style={{ flex:1, minWidth:0 }}>
+                            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:8 }}>
+                              <div>
+                                <div style={{ fontWeight:700, fontSize:15 }}>{o.product?.productName || 'Custom Print Order'}</div>
+                                <div style={{ fontSize:12, color:'var(--text-muted)', marginTop:2 }}>
+                                  Order #{o.id} · {o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN') : '—'}
+                                </div>
+                              </div>
+                              <div style={{ fontWeight:800, fontSize:18, color:'var(--primary)' }}>{formatINR(o.finalPrice)}</div>
+                            </div>
+                            <div style={{ display:'flex', flexWrap:'wrap', gap:12, fontSize:12, color:'var(--text-muted)', marginTop:10 }}>
+                              <span>Size: {SIZE_LABELS[o.productSizeInches] || o.productSizeInches}</span>
+                              <span>Thickness: {THICKNESS_LABELS[o.productThickness] || o.productThickness}</span>
+                              <span>Frame: {FRAME_LABELS[o.frameTypes] || o.frameTypes}</span>
+                              {o.borderColor && (
+                                <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
+                                  Border:
+                                  <span style={{ width:12, height:12, borderRadius:'50%', background:o.borderColor, display:'inline-block', border:'1px solid #eee' }} />
+                                </span>
+                              )}
+                            </div>
                           </div>
-                          <div style={{ fontWeight:800, fontSize:18, color:'var(--primary)' }}>{formatINR(o.finalPrice)}</div>
-                        </div>
-                        <div style={{ display:'flex', flexWrap:'wrap', gap:8, fontSize:12, color:'var(--text-muted)', marginBottom:12 }}>
-                          <span>{SIZE_LABELS[o.productSizeInches]||o.productSizeInches}</span>·
-                          <span>{THICKNESS_LABELS[o.productThickness]||o.productThickness}</span>·
-                          <span>{FRAME_LABELS[o.frameTypes]||o.frameTypes}</span>
-                          {o.borderColor && <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>· <span style={{ width:10,height:10,borderRadius:'50%',background:o.borderColor,display:'inline-block',border:'1px solid #eee' }}/>{o.borderColor}</span>}
                         </div>
                         <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:12 }}>
-                          <span className={`badge ${STATUS_BADGE[o.orderStatus]||'badge-grey'}`}>{o.orderStatus}</span>
-                          <span className={`badge ${PAYMENT_STATUS_BADGE[o.paymentStatus]||'badge-grey'}`}>{o.paymentStatus}</span>
+                          <span className={`badge ${STATUS_BADGE[o.orderStatus] || ORDER_STATUS_BADGE[o.orderStatus] || 'badge-grey'}`}>{o.orderStatus}</span>
+                          <span className={`badge ${PAYMENT_STATUS_BADGE[o.paymentStatus] || 'badge-grey'}`}>{o.paymentStatus}</span>
                         </div>
                         <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
                           <button className="btn btn-ghost btn-sm" onClick={() => setTrackingOrder(o)}>📍 Track Order</button>
@@ -263,7 +364,7 @@ export default function AccountPage() {
                           )}
                           {(o.orderStatus === 'CONFIRMED' || o.orderStatus === 'MODIFICATION_ALLOWED') && (
                             <a
-                              href={`https://wa.me/919999999999?text=ORDER_ID:${o.id}%0ASIZE:%0AFRAME:%0ATHICKNESS:`}
+                              href={buildWhatsAppUrl(o)}
                               target="_blank"
                               rel="noopener noreferrer"
                               title="Available during modification window"

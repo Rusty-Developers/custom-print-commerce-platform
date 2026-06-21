@@ -9,7 +9,7 @@ import {
   formatINR,
   SIZE_LABELS, THICKNESS_LABELS, FRAME_LABELS,
   CATEGORY_LABELS,
-  ALL_SIZES, ALL_THICKNESSES, ALL_FRAMES,
+  ALL_FRAMES,
   SIZE_PREVIEW_DIMS, THICKNESS_BORDER,
 } from '../utils/format'
 
@@ -335,8 +335,7 @@ export default function ProductPage() {
 
   const [product, setProduct]         = useState(null)
   const [loading, setLoading]         = useState(true)
-  const [price, setPrice]             = useState(null)
-  const [priceLoading, setPriceLoading] = useState(false)
+  const [availablePricing, setAvailablePricing] = useState([])
   const [previewSrc, setPreviewSrc]   = useState(null)   // FileReader data URL (local preview only)
   const [customImageUrl, setCustomImageUrl] = useState('') // real backend URL /uploads/...
   const [activeTab, setActiveTab]     = useState('description')
@@ -354,32 +353,66 @@ export default function ProductPage() {
       .finally(() => setLoading(false))
   }, [id, navigate])
 
-  const fetchPrice = useCallback(() => {
+  useEffect(() => {
     if (!id) return
-    setPriceLoading(true)
-    api.get(`/api/products/pricing/${id}`, { params: { productSizeInches: selectedSize, productThickness: selectedThickness } })
-      .then((r) => setPrice(r.data.price))
-      .catch(() => setPrice(null))
-      .finally(() => setPriceLoading(false))
-  }, [id, selectedSize, selectedThickness])
+    api.get(`/api/products/${id}/pricing`)
+      .then((r) => setAvailablePricing(r.data || []))
+      .catch(() => setAvailablePricing([]))
+  }, [id])
 
-  useEffect(() => { if (product) fetchPrice() }, [product, fetchPrice])
+  const availableSizes = [...new Set(availablePricing.map((p) => p.sizeInches))]
+
+  const availableThicknessesForSize = [...new Set(
+    availablePricing.filter((p) => p.sizeInches === selectedSize).map((p) => p.thickness),
+  )]
+
+  const currentPrice = availablePricing.find(
+    (p) => p.sizeInches === selectedSize && p.thickness === selectedThickness,
+  )?.basePrice ?? null
+
+  useEffect(() => {
+    if (availablePricing.length === 0) return
+    const sizes = [...new Set(availablePricing.map((p) => p.sizeInches))]
+    if (!sizes.includes(selectedSize)) {
+      setSelectedSize(sizes[0])
+    }
+  }, [availablePricing, selectedSize])
+
+  useEffect(() => {
+    if (availablePricing.length === 0) return
+    const thicknesses = availablePricing
+      .filter((p) => p.sizeInches === selectedSize)
+      .map((p) => p.thickness)
+    if (thicknesses.length > 0 && !thicknesses.includes(selectedThickness)) {
+      setSelectedThickness(thicknesses[0])
+    }
+  }, [selectedSize, availablePricing, selectedThickness])
+
+  const handleSizeSelect = (size) => {
+    setSelectedSize(size)
+    const thicknesses = availablePricing
+      .filter((p) => p.sizeInches === size)
+      .map((p) => p.thickness)
+    if (thicknesses.length > 0 && !thicknesses.includes(selectedThickness)) {
+      setSelectedThickness(thicknesses[0])
+    }
+  }
 
   const cartItem = () => ({
     productId: product.id, productName: product.productName, imageUrl: product.imageUrl,
     selectedSize, selectedThickness, selectedFrame, borderColor,
     uploadedImageDataUrl: previewSrc, customImageUrl,
-    quantity, price: parseFloat(price),
+    quantity, price: parseFloat(currentPrice),
   })
 
   const handleAddToCart = () => {
-    if (!price) { toast.error('Please wait for pricing to load'); return }
+    if (!currentPrice) { toast.error('Please select size & thickness'); return }
     addToCart(cartItem()); toast.success('Added to cart! 🎉'); setCartOpen(true)
   }
 
   const handleBuyNow = () => {
     if (!isLoggedIn()) { navigate('/login?redirect=/checkout'); return }
-    if (!price) { toast.error('Please wait for pricing to load'); return }
+    if (!currentPrice) { toast.error('Please select size & thickness'); return }
     addToCart(cartItem()); navigate('/checkout')
   }
 
@@ -562,7 +595,7 @@ export default function ProductPage() {
 
             <div className="config-section">
               <div className="config-price">
-                {priceLoading ? <Spinner size="sm" /> : price ? formatINR(price) : <span style={{ fontSize: 20, color: 'var(--text-muted)' }}>Select size &amp; thickness</span>}
+                {currentPrice ? formatINR(currentPrice) : <span style={{ fontSize: 20, color: 'var(--text-muted)' }}>Select size &amp; thickness</span>}
               </div>
               <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>Inclusive of all taxes</div>
             </div>
@@ -570,8 +603,8 @@ export default function ProductPage() {
             <div className="config-section">
               <div className="config-label">Size</div>
               <div className="pill-group">
-                {ALL_SIZES.map((s) => (
-                  <button key={s} className={`pill${selectedSize === s ? ' active' : ''}`} onClick={() => setSelectedSize(s)}>{SIZE_LABELS[s]}</button>
+                {availableSizes.map((s) => (
+                  <button key={s} className={`pill${selectedSize === s ? ' active' : ''}`} onClick={() => handleSizeSelect(s)}>{SIZE_LABELS[s]}</button>
                 ))}
               </div>
             </div>
@@ -579,7 +612,7 @@ export default function ProductPage() {
             <div className="config-section">
               <div className="config-label">Thickness</div>
               <div className="pill-group">
-                {ALL_THICKNESSES.map((t) => (
+                {availableThicknessesForSize.map((t) => (
                   <button key={t} className={`pill${selectedThickness === t ? ' active' : ''}`} onClick={() => setSelectedThickness(t)}>{THICKNESS_LABELS[t]}</button>
                 ))}
               </div>

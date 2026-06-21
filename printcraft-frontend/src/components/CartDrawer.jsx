@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useShallow } from 'zustand/react/shallow'
 import useStore from '../store/useStore'
@@ -16,11 +16,9 @@ export default memo(function CartDrawer() {
     }))
   )
 
-  const { subtotal, delivery, total } = useMemo(() => {
-    const sub = cart.reduce((a, i) => a + i.price * i.quantity, 0)
-    const del = sub >= 599 ? 0 : 99
-    return { subtotal: sub, delivery: del, total: sub + del }
-  }, [cart])
+  const subtotal = useStore((s) => s.cartTotal())
+  const delivery = subtotal >= 599 ? 0 : 99
+  const total = subtotal + delivery
 
   if (!cartOpen) return null
 
@@ -73,7 +71,7 @@ export default memo(function CartDrawer() {
                   </div>
                   <div className="cart-item-actions">
                     <div className="qty-control">
-                      <button className="qty-btn" onClick={() => updateQty(idx, item.quantity - 1)}>−</button>
+                      <button className="qty-btn" onClick={() => useStore.getState().updateQty(idx, item.quantity - 1)}>−</button>
                       <span className="qty-num">{item.quantity}</span>
                       <button className="qty-btn" onClick={() => updateQty(idx, item.quantity + 1)}>+</button>
                     </div>

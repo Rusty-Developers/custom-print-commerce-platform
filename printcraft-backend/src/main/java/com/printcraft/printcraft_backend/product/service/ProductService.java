@@ -1,10 +1,12 @@
 package com.printcraft.printcraft_backend.product.service;
 
 import com.printcraft.printcraft_backend.Admin.CreateProductRequestDTO;
+import com.printcraft.printcraft_backend.Admin.DTO.UpdateProductImageRequestDTO;
 import com.printcraft.printcraft_backend.product.domain.Product;
 import com.printcraft.printcraft_backend.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,5 +41,12 @@ public class ProductService {
        Product product = getProductById(id);
        product.setProductActive(!product.isProductActive());
        productRepository.save(product);
+    }
+    //used for admin
+    @Transactional
+    public Product updateProductImage(Long productId, UpdateProductImageRequestDTO dto) {
+        Product product = getProductById(productId);   // reuse your existing method — already throws if missing
+        product.setImageUrl(dto.getImageUrl());
+        return productRepository.save(product);
     }
 }
