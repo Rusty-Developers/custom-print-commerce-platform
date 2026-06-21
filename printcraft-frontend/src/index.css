@@ -2136,6 +2136,14 @@ img {
   background: var(--off-white);
 }
 
+.admin-table-zebra tbody tr:nth-child(even) td {
+  background: #FAFAFA;
+}
+
+.admin-table-zebra tbody tr:nth-child(even):hover td {
+  background: var(--off-white);
+}
+
 .admin-thumbnail {
   width: 44px;
   height: 44px;

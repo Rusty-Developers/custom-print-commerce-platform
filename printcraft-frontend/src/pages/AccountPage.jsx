@@ -6,39 +6,10 @@ import useStore from '../store/useStore'
 import Spinner from '../components/Spinner'
 import { isLoggedIn, getPhone, getName } from '../utils/jwt'
 import { formatINR, SIZE_LABELS, THICKNESS_LABELS, FRAME_LABELS, ORDER_STATUS_BADGE, PAYMENT_STATUS_BADGE, DELIVERY_STATUS_LABELS, DELIVERY_STATUS_BADGE, ALL_SIZES, ALL_THICKNESSES, ALL_FRAMES } from '../utils/format'
+import AddressForm from '../components/AddressForm'
 
 const DELIVERY_STEPS = ['CREATED', 'PACKED', 'SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED']
 const PLACEHOLDER_IMAGE = 'https://placehold.co/80x80/f9f9f9/ccc?text=Print'
-
-function AddressForm({ onSave, onCancel }) {
-  const [form, setForm] = useState({ fullName:'', phoneNo:'', addressLine:'', landmark:'', city:'', state:'', pinCode:'' })
-  const [loading, setLoading] = useState(false)
-  const set = (f) => (e) => setForm((p) => ({ ...p, [f]: e.target.value }))
-  const handleSubmit = async (e) => {
-    e.preventDefault(); setLoading(true)
-    try { const res = await api.post('/api/user/addresses', { ...form, pinCode: parseInt(form.pinCode) }); toast.success('Address saved!'); onSave(res.data) }
-    catch { toast.error('Failed to save address') } finally { setLoading(false) }
-  }
-  return (
-    <form onSubmit={handleSubmit} style={{ display:'flex', flexDirection:'column', gap:12 }}>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
-        <div className="form-group"><label className="form-label">Full Name *</label><input className="form-input" value={form.fullName} onChange={set('fullName')} required /></div>
-        <div className="form-group"><label className="form-label">Phone *</label><input className="form-input" value={form.phoneNo} onChange={set('phoneNo')} maxLength={10} required /></div>
-      </div>
-      <div className="form-group"><label className="form-label">Address Line *</label><input className="form-input" value={form.addressLine} onChange={set('addressLine')} required /></div>
-      <div className="form-group"><label className="form-label">Landmark</label><input className="form-input" value={form.landmark} onChange={set('landmark')} /></div>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:12 }}>
-        <div className="form-group"><label className="form-label">City *</label><input className="form-input" value={form.city} onChange={set('city')} required /></div>
-        <div className="form-group"><label className="form-label">State *</label><input className="form-input" value={form.state} onChange={set('state')} required /></div>
-        <div className="form-group"><label className="form-label">PIN *</label><input className="form-input" value={form.pinCode} onChange={set('pinCode')} maxLength={6} required /></div>
-      </div>
-      <div style={{ display:'flex', gap:10 }}>
-        <button type="submit" className="btn btn-primary btn-sm" disabled={loading}>{loading ? <Spinner size="sm" white /> : 'Save'}</button>
-        {onCancel && <button type="button" className="btn btn-ghost btn-sm" onClick={onCancel}>Cancel</button>}
-      </div>
-    </form>
-  )
-}
 
 function TrackingModal({ order, onClose }) {
   const [tracking, setTracking] = useState(null)
@@ -412,7 +383,7 @@ export default function AccountPage() {
                       <button className="add-address-btn" onClick={() => setShowAddForm(true)}>+ Add New Address</button>
                     ) : (
                       <div style={{ border:'1.5px solid var(--primary)', borderRadius:'var(--radius-md)', padding:20, marginTop:12 }}>
-                        <AddressForm onSave={(a) => { setAddresses(p => [...p, a]); setShowAddForm(false) }} onCancel={() => setShowAddForm(false)} />
+                        <AddressForm compact onSave={(a) => { setAddresses(p => [...p, a]); setShowAddForm(false) }} onCancel={() => setShowAddForm(false)} />
                       </div>
                     )}
                   </>

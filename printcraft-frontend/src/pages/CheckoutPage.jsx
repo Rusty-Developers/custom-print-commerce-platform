@@ -6,38 +6,7 @@ import useStore from '../store/useStore'
 import Spinner from '../components/Spinner'
 import { isLoggedIn } from '../utils/jwt'
 import { formatINR, SIZE_LABELS, THICKNESS_LABELS, FRAME_LABELS } from '../utils/format'
-
-function AddressForm({ onSave, onCancel }) {
-  const [form, setForm] = useState({ fullName:'', phoneNo:'', addressLine:'', landmark:'', city:'', state:'', pinCode:'' })
-  const [loading, setLoading] = useState(false)
-  const set = (f) => (e) => setForm((p) => ({ ...p, [f]: e.target.value }))
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!/^[0-9]{6}$/.test(form.pinCode)) { toast.error('PIN code must be 6 digits'); return }
-    setLoading(true)
-    try { const res = await api.post('/api/user/addresses', { ...form, pinCode: parseInt(form.pinCode) }); toast.success('Address saved!'); onSave(res.data) }
-    catch { toast.error('Failed to save address') } finally { setLoading(false) }
-  }
-  return (
-    <form onSubmit={handleSubmit} style={{ display:'flex', flexDirection:'column', gap:12, padding:'16px 0' }}>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
-        <div className="form-group"><label className="form-label">Full Name *</label><input className="form-input" placeholder="Full Name" value={form.fullName} onChange={set('fullName')} required /></div>
-        <div className="form-group"><label className="form-label">Phone *</label><input className="form-input" placeholder="10-digit mobile" value={form.phoneNo} onChange={set('phoneNo')} maxLength={10} required /></div>
-      </div>
-      <div className="form-group"><label className="form-label">Address Line *</label><input className="form-input" placeholder="House no., Street, Area" value={form.addressLine} onChange={set('addressLine')} required /></div>
-      <div className="form-group"><label className="form-label">Landmark <span style={{ color:'var(--text-muted)', fontSize:12 }}>(optional)</span></label><input className="form-input" placeholder="Near landmark" value={form.landmark} onChange={set('landmark')} /></div>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:12 }}>
-        <div className="form-group"><label className="form-label">City *</label><input className="form-input" placeholder="City" value={form.city} onChange={set('city')} required /></div>
-        <div className="form-group"><label className="form-label">State *</label><input className="form-input" placeholder="State" value={form.state} onChange={set('state')} required /></div>
-        <div className="form-group"><label className="form-label">PIN Code *</label><input className="form-input" placeholder="6 digits" value={form.pinCode} onChange={set('pinCode')} maxLength={6} required /></div>
-      </div>
-      <div style={{ display:'flex', gap:10 }}>
-        <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? <Spinner size="sm" white /> : 'Save Address'}</button>
-        {onCancel && <button type="button" className="btn btn-ghost" onClick={onCancel}>Cancel</button>}
-      </div>
-    </form>
-  )
-}
+import AddressForm from '../components/AddressForm'
 
 function loadRazorpay() {
   return new Promise(resolve => {
