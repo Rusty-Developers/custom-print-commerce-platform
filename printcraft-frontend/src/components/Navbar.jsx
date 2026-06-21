@@ -69,9 +69,14 @@ export default function Navbar() {
           >
             <img
               src="/mk-group-logo.png"
-              alt="MK Group Printing"
-              height={44}
-              style={{ objectFit: 'contain', display: 'block' }}
+              alt="MK Group Logo"
+              style={{
+                height: '44px',
+                width: 'auto',
+                maxWidth: '180px',
+                objectFit: 'contain',
+                display: 'block',
+              }}
             />
             <span className="navbar-brand-name">MK Group Printing</span>
           </Link>
