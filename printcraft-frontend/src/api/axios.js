@@ -20,7 +20,8 @@ api.interceptors.response.use(
   (err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem('printcraft_token')
-      window.location.href = '/login'
+      const isAdminRoute = window.location.pathname.startsWith('/admin')
+      window.location.href = isAdminRoute ? '/admin/login' : '/login'
     }
     return Promise.reject(err)
   }

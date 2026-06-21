@@ -1,7 +1,8 @@
 import { lazy, Suspense, useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import api from './api/axios'
+import { isAdmin } from './utils/jwt'
 
 import AnnouncementBar from './components/AnnouncementBar'
 import Navbar from './components/Navbar'
@@ -19,6 +20,7 @@ const CheckoutPage = lazy(() => import('./pages/CheckoutPage'))
 const AccountPage = lazy(() => import('./pages/AccountPage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
+const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const TrackingPage = lazy(() => import('./pages/TrackingPage'))
@@ -162,6 +164,11 @@ function Layout({ children, noFooter }) {
   )
 }
 
+function AdminRouteGuard({ children }) {
+  if (!isAdmin()) return <Navigate to="/admin/login" replace />
+  return children
+}
+
 function PageLoader() {
   return (
     <div style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -202,7 +209,12 @@ export default function App() {
           <Route path="/account" element={<Layout><AccountPage /></Layout>} />
           <Route path="/order-success" element={<Layout noFooter><OrderSuccessPage /></Layout>} />
 
-          <Route path="/admin/*" element={<Layout noFooter><AdminPage /></Layout>} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin/*" element={
+            <AdminRouteGuard>
+              <AdminPage />
+            </AdminRouteGuard>
+          } />
 
           <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
         </Routes>

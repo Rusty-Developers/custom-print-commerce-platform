@@ -195,11 +195,24 @@ function UploadZone({ onPreview, onUploaded, uploadedUrl, onRemove }) {
   )
 }
 // ── Reviews Section (real API) ──
+const StarDisplay = ({ rating }) => (
+  <div style={{ display: 'flex', gap: 2 }}>
+    {[1, 2, 3, 4, 5].map((star) => (
+      <svg key={star} width="14" height="14" viewBox="0 0 24 24"
+        fill={star <= rating ? '#C0392B' : 'none'}
+        stroke={star <= rating ? '#C0392B' : '#DDD'}
+        strokeWidth="2">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    ))}
+  </div>
+)
+
 function StarPicker({ value, onChange }) {
   const [hovered, setHovered] = useState(0)
   return (
     <div style={{ display: 'flex', gap: 4, cursor: 'pointer' }}>
-      {[1,2,3,4,5].map((s) => (
+      {[1, 2, 3, 4, 5].map((s) => (
         <span key={s} style={{ fontSize: 28, color: (hovered || value) >= s ? '#C0392B' : '#ddd', transition: 'color 0.15s' }}
           onMouseEnter={() => setHovered(s)} onMouseLeave={() => setHovered(0)}
           onClick={() => onChange(s)}>★</span>
@@ -214,15 +227,16 @@ function ReviewsSection({ productId }) {
   const [showForm, setShowForm] = useState(false)
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
-  const [reviewImg, setReviewImg] = useState('')
+  const [uploadedReviewImageUrl, setUploadedReviewImageUrl] = useState('')
   const [reviewImgPreview, setReviewImgPreview] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [formError, setFormError] = useState('')
   const loggedIn = isLoggedIn()
 
   const fetchReviews = useCallback(() => {
     setLoading(true)
     api.get(`/api/reviews/${productId}`)
-      .then(r => setReviews(r.data || []))
+      .then((r) => setReviews(Array.isArray(r.data) ? r.data : []))
       .catch(() => setReviews([]))
       .finally(() => setLoading(false))
   }, [productId])
@@ -232,72 +246,149 @@ function ReviewsSection({ productId }) {
   const handleReviewImage = async (file) => {
     if (!file) return
     const reader = new FileReader()
-    reader.onload = e => setReviewImgPreview(e.target.result)
+    reader.onload = (e) => setReviewImgPreview(e.target.result)
     reader.readAsDataURL(file)
     try {
-      const fd = new FormData(); fd.append('file', file)
+      const fd = new FormData()
+      fd.append('file', file)
       const res = await api.post('/api/files/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
-      setReviewImg(res.data.url)
-    } catch { toast.error('Image upload failed') }
+      setUploadedReviewImageUrl(res.data.url)
+    } catch {
+      toast.error('Image upload failed')
+    }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setFormError('')
     if (!rating) { toast.error('Please select a star rating'); return }
+    if (comment.trim().length < 10) { toast.error('Comment must be at least 10 characters'); return }
+    if (comment.length > 500) { toast.error('Comment must be 500 characters or less'); return }
     setSubmitting(true)
     try {
-      await api.post('/api/reviews', { productId: productId.toString(), rating, comment, imageUrl: reviewImg })
-      toast.success('Review submitted! ⭐')
-      setShowForm(false); setRating(0); setComment(''); setReviewImg(''); setReviewImgPreview('')
-      fetchReviews()
+      const res = await api.post('/api/reviews', {
+        productId: productId.toString(),
+        rating,
+        comment: comment.trim(),
+        imageUrl: uploadedReviewImageUrl || '',
+      })
+      toast.success('Review submitted!')
+      setShowForm(false)
+      setRating(0)
+      setComment('')
+      setUploadedReviewImageUrl('')
+      setReviewImgPreview('')
+      setReviews((prev) => [res.data, ...prev])
     } catch (err) {
-      const msg = err.response?.data?.message || ''
-      if (msg.toLowerCase().includes('duplicate') || err.response?.status === 409)
-        toast.error("You've already reviewed this product")
-      else toast.error('Failed to submit review')
-    } finally { setSubmitting(false) }
+      const msg = err.response?.data?.message || err.response?.data?.error || String(err.response?.data || '')
+      if (
+        err.response?.status === 500 && msg.toLowerCase().includes('already reviewed')
+        || msg.toLowerCase().includes('duplicate')
+        || err.response?.status === 409
+      ) {
+        setFormError("You've already reviewed this product")
+      } else {
+        toast.error('Failed to submit review')
+      }
+    } finally {
+      setSubmitting(false)
+    }
   }
 
-  const avgRating = reviews.length ? (reviews.reduce((a, r) => a + r.rating, 0) / reviews.length).toFixed(1) : null
+  const avgRating = reviews.length
+    ? (reviews.reduce((a, r) => a + r.rating, 0) / reviews.length).toFixed(1)
+    : null
+
+  const distribution = [5, 4, 3, 2, 1].map((stars) => {
+    const count = reviews.filter((r) => r.rating === stars).length
+    return {
+      stars,
+      count,
+      pct: reviews.length ? (count / reviews.length) * 100 : 0,
+    }
+  })
+
+  const openForm = () => {
+    setFormError('')
+    setShowForm(true)
+  }
 
   return (
     <div style={{ marginTop: 48 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: 12 }}>
         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: 22, fontWeight: 700 }}>Customer Reviews</h3>
         {loggedIn && !showForm && (
-          <button className="btn btn-outline btn-sm" onClick={() => setShowForm(true)} id="write-review-btn">✍️ Write a Review</button>
+          <button className="btn btn-outline btn-sm" onClick={openForm} id="write-review-btn">✍️ Write a Review</button>
         )}
       </div>
 
-      {avgRating && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-          <span style={{ display: 'flex', gap: 2, color: '#C0392B', fontSize: 16 }}>{'★'.repeat(Math.round(Number(avgRating)))}{'☆'.repeat(5 - Math.round(Number(avgRating)))}</span>
-          <span style={{ fontWeight: 700, fontSize: 18 }}>{avgRating}</span>
-          <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>— {reviews.length} review{reviews.length !== 1 ? 's' : ''}</span>
+      {!loading && reviews.length > 0 && (
+        <div style={{
+          display: 'flex', gap: 32, alignItems: 'center', flexWrap: 'wrap',
+          marginBottom: 28, padding: 24, background: 'var(--off-white)',
+          borderRadius: 12, border: '1px solid var(--divider)',
+        }}>
+          <div style={{ textAlign: 'center', minWidth: 100 }}>
+            <div style={{ fontSize: 48, fontWeight: 800, lineHeight: 1, color: 'var(--text-dark)' }}>{avgRating}</div>
+            <StarDisplay rating={Math.round(Number(avgRating))} />
+            <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 6 }}>
+              {reviews.length} review{reviews.length !== 1 ? 's' : ''}
+            </div>
+          </div>
+          <div style={{ flex: 1, minWidth: 220, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {distribution.map(({ stars, count, pct }) => (
+              <div key={stars} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, width: 28, textAlign: 'right', color: 'var(--text-muted)' }}>{stars}★</span>
+                <div style={{ flex: 1, height: 8, background: '#E5E7EB', borderRadius: 999, overflow: 'hidden' }}>
+                  <div style={{ width: `${pct}%`, height: '100%', background: '#C0392B', borderRadius: 999, transition: 'width 0.3s ease' }} />
+                </div>
+                <span style={{ fontSize: 12, color: 'var(--text-muted)', width: 24 }}>{count}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Review Form Modal */}
-      {showForm && (
+      {showForm && loggedIn && (
         <div style={{ border: '1.5px solid var(--primary)', borderRadius: 12, padding: 24, marginBottom: 28, background: '#FEF9F9' }}>
           <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: 17, marginBottom: 16 }}>Write Your Review</h4>
+          {formError && (
+            <div style={{ marginBottom: 14, padding: '10px 14px', borderRadius: 8, background: '#FEF2F2', border: '1px solid #FECACA', color: '#991B1B', fontSize: 13, fontWeight: 600 }}>
+              {formError}
+            </div>
+          )}
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Rating *</div>
               <StarPicker value={rating} onChange={setRating} />
             </div>
             <div className="form-group">
-              <label className="form-label">Comment</label>
-              <textarea className="form-input form-textarea" value={comment} onChange={e => setComment(e.target.value)} placeholder="Share your experience..." />
+              <label className="form-label">Comment *</label>
+              <textarea
+                className="form-input form-textarea"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Share your experience..."
+                minLength={10}
+                maxLength={500}
+                required
+              />
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4, textAlign: 'right' }}>
+                {comment.length}/500
+              </div>
             </div>
             <div className="form-group">
               <label className="form-label">Photo (optional)</label>
-              <input type="file" accept="image/*" onChange={e => handleReviewImage(e.target.files[0])} />
-              {reviewImgPreview && <img src={reviewImgPreview} alt="preview" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, marginTop: 8, border: '1px solid var(--divider)' }} />}
+              <input type="file" accept="image/*" onChange={(e) => handleReviewImage(e.target.files[0])} />
+              {reviewImgPreview && (
+                <img src={reviewImgPreview} alt="preview" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, marginTop: 8, border: '1px solid var(--divider)' }} />
+              )}
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button type="submit" className="btn btn-primary btn-sm" disabled={submitting}>{submitting ? <Spinner size="sm" white /> : 'Submit Review'}</button>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={() => setShowForm(false)}>Cancel</button>
+              <button type="submit" className="btn btn-primary btn-sm" disabled={submitting}>
+                {submitting ? <Spinner size="sm" white /> : 'Submit Review'}
+              </button>
+              <button type="button" className="btn btn-ghost btn-sm" onClick={() => { setShowForm(false); setFormError('') }}>Cancel</button>
             </div>
           </form>
         </div>
@@ -307,18 +398,28 @@ function ReviewsSection({ productId }) {
         <p style={{ color: 'var(--text-muted)', padding: '24px 0' }}>No reviews yet. Be the first to review!</p>
       ) : (
         <div className="reviews-grid">
-          {reviews.map((r, i) => (
-            <div key={r.id || i} className="review-card">
+          {reviews.map((r) => (
+            <div key={r.id} className="review-card">
               <div className="review-header">
-                <div className="review-avatar">{(r.username || 'U').slice(0, 2).toUpperCase()}</div>
-                <div>
-                  <div className="review-name">{r.username || 'Customer'}</div>
-                  <div className="review-date">{r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : ''}</div>
+                <div className="review-avatar">{(r.username || 'U').charAt(0).toUpperCase()}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="review-name" style={{ fontWeight: 700 }}>{r.username || 'Customer'}</div>
+                  <StarDisplay rating={r.rating} />
+                  <div className="review-date">
+                    {r.createdAt
+                      ? new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                      : ''}
+                  </div>
                 </div>
-                <div style={{ marginLeft: 'auto', color: '#C0392B', fontSize: 13 }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
               </div>
-              <p className="review-text">"{r.comment}"</p>
-              {r.imageUrl && <img src={r.imageUrl} alt="review" style={{ width: '100%', maxHeight: 160, objectFit: 'cover', borderRadius: 8, marginTop: 8 }} />}
+              {r.comment && <p className="review-text">{r.comment}</p>}
+              {r.imageUrl && (
+                <img
+                  src={r.imageUrl}
+                  alt="Review"
+                  style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, marginTop: 8, border: '1px solid var(--divider)' }}
+                />
+              )}
             </div>
           ))}
         </div>
