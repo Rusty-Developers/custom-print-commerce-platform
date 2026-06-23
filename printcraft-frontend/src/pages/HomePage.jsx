@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
 import CyclingFrame from '../components/CyclingFrame'
@@ -7,21 +7,21 @@ import { ALL_CATEGORIES, CATEGORY_LABELS } from '../utils/format'
 import { SAMPLE_PHOTOS, getCategoryFrameStyle } from '../utils/framePreview'
 
 const CATEGORY_BACKGROUNDS = {
-  TILES: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&fit=crop',
-  PVC: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&fit=crop',
-  GLASS: 'https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=400&fit=crop',
-  METAL: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=400&fit=crop',
-  WOOD: 'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=400&fit=crop',
-  ACRYLIC: 'https://images.unsplash.com/photo-1502014822147-1aedfb0676e0?w=400&fit=crop',
-  PHOTO_FRAME: 'https://images.unsplash.com/photo-1531685250784-7569952593d2?w=400&fit=crop',
-  POSTER: 'https://images.unsplash.com/photo-1579762715118-a6f1d4b934f1?w=400&fit=crop',
-  CREATIVE: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&fit=crop',
+  TILES:       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&fit=crop&auto=format&q=80',
+  PVC:         'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&fit=crop&auto=format&q=80',
+  GLASS:       'https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=400&fit=crop&auto=format&q=80',
+  METAL:       'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=400&fit=crop&auto=format&q=80',
+  WOOD:        'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=400&fit=crop&auto=format&q=80',
+  ACRYLIC:     'https://images.unsplash.com/photo-1502014822147-1aedfb0676e0?w=400&fit=crop&auto=format&q=80',
+  PHOTO_FRAME: 'https://images.unsplash.com/photo-1531685250784-7569952593d2?w=400&fit=crop&auto=format&q=80',
+  POSTER:      'https://images.unsplash.com/photo-1579762715118-a6f1d4b934f1?w=400&fit=crop&auto=format&q=80',
+  CREATIVE:    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&fit=crop&auto=format&q=80',
 }
 
-// 3D rotation per frame position
+// Per-frame 3D rotation — static, applied only as initial style (no JS transition needed)
 const HERO_FRAMES = [
-  { borderRadius: '8px',  floatClass: 'hp-float-1', transform: 'rotateY(-8deg) rotateX(4deg)'  },
-  { borderRadius: '50%',  floatClass: 'hp-float-2', transform: 'rotateY(8deg) rotateX(-4deg)'  },
+  { borderRadius: '8px',  floatClass: 'hp-float-1', transform: 'rotateY(-8deg) rotateX(4deg)' },
+  { borderRadius: '50%',  floatClass: 'hp-float-2', transform: 'rotateY(8deg) rotateX(-4deg)' },
   { borderRadius: '36px', floatClass: 'hp-float-3', transform: 'rotateY(-6deg) rotateX(-3deg)' },
   { border: '8px solid #5a3e2b', borderRadius: '8px', floatClass: 'hp-float-4', transform: 'rotateY(6deg) rotateX(3deg)' },
 ]
@@ -37,7 +37,7 @@ const FAQS = [
   },
   {
     q: 'What sizes are available?',
-    a: 'We offer 6 standard sizes: 8×12, 12×18, 17×24, 20×30, 24×36, and 36×48 inches. Custom sizes available on request.',
+    a: 'We offer 7 standard sizes: 8×12, 12×18, 17×24, 19×28, 20×30, 24×36, and 36×48 inches. Custom sizes available on request.',
   },
   {
     q: 'How long does delivery take?',
@@ -58,16 +58,16 @@ const FEATURES = [
     title: 'Premium Materials',
     desc: 'UV-resistant inks on Glass, Acrylic, Metal & more',
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M12 2L2 9l10 13L22 9 12 2z" />
       </svg>
     ),
   },
   {
     title: 'Custom Sizes',
-    desc: '6 sizes from 8×12 to 36×48 inches',
+    desc: '7 sizes from 8×12 to 36×48 inches',
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="2" y="8" width="20" height="8" rx="1" />
         <path d="M6 8v8M10 8v5M14 8v8M18 8v5" />
       </svg>
@@ -77,7 +77,7 @@ const FEATURES = [
     title: 'Fast Delivery',
     desc: 'Delivered across India in 5-7 working days',
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="1" y="6" width="15" height="10" rx="1" />
         <path d="M16 10h4l3 4v2h-7V10z" />
         <circle cx="5.5" cy="18.5" r="2.5" />
@@ -89,7 +89,7 @@ const FEATURES = [
     title: 'Secure Payments',
     desc: '100% prepaid via Razorpay — UPI, Cards, NetBanking',
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4z" />
         <path d="M9 12l2 2 4-4" />
       </svg>
@@ -111,11 +111,11 @@ function useScrollReveal(deps = []) {
           }
         })
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
     )
     els.forEach((el) => io.observe(el))
     return () => io.disconnect()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
 }
 
@@ -130,6 +130,35 @@ function SkeletonCard() {
         <div className="skeleton" style={{ height: 36, borderRadius: 8 }} />
       </div>
     </div>
+  )
+}
+
+/* ─── Hero Trust Badge Icons ─────────────────────────────── */
+function IconShield() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  )
+}
+
+function IconTruck() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="1" y="6" width="15" height="10" rx="1" />
+      <path d="M16 10h4l3 4v2h-7V10z" />
+      <circle cx="5.5" cy="18.5" r="2.5" />
+      <circle cx="18.5" cy="18.5" r="2.5" />
+    </svg>
+  )
+}
+
+function IconStar() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
   )
 }
 
@@ -152,10 +181,13 @@ function HeroSection() {
     setMounted(true)
   }, [])
 
+  // Parallax only on pointer-accurate devices (mouse).
+  // Skipping on touch/coarse devices prevents unintended transforms during scroll.
   const handleMouseMove = useCallback((e) => {
+    if (window.matchMedia('(pointer: coarse)').matches) return
     const el = framesContainerRef.current
     if (!el) return
-    const x = (e.clientX / window.innerWidth  - 0.5) * 20
+    const x = (e.clientX / window.innerWidth - 0.5) * 20
     const y = (e.clientY / window.innerHeight - 0.5) * 20
     el.style.transform = `rotateY(${x * 0.3}deg) rotateX(${-y * 0.3}deg)`
   }, [])
@@ -170,7 +202,7 @@ function HeroSection() {
     <section className="hp-hero" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
       <div className="hp-hero-inner container">
         <div className="hp-hero-left">
-          <p className="hp-hero-label">PREMIUM CUSTOM PRINTS</p>
+          <p className="hp-hero-label">Premium Custom Prints</p>
           <h1 className={`hp-hero-title${mounted ? ' hp-hero-title--enter' : ''}`}>
             Your Memories
             <br />
@@ -188,29 +220,41 @@ function HeroSection() {
             </button>
           </div>
           <div className="hp-hero-trust">
-            <span>🔒 Secure Payment</span>
-            <span className="hp-trust-sep">•</span>
-            <span>🚚 Pan-India Delivery</span>
-            <span className="hp-trust-sep">•</span>
-            <span>⭐ 4.8/5 Rating</span>
+            <span className="hp-trust-item">
+              <IconShield />
+              Secure Payment
+            </span>
+            <span className="hp-trust-sep" aria-hidden="true">·</span>
+            <span className="hp-trust-item">
+              <IconTruck />
+              Pan-India Delivery
+            </span>
+            <span className="hp-trust-sep" aria-hidden="true">·</span>
+            <span className="hp-trust-item">
+              <IconStar />
+              4.8/5 Rating
+            </span>
           </div>
         </div>
 
         <div className="hp-hero-right">
-          {/* CSS perspective wrapper; JS applies rotateX/Y for parallax */}
+          {/* Perspective wrapper — JS applies container-level rotateX/Y for parallax.
+              Individual frame divs have only their static initial transform (no JS transition)
+              so there is no competing transition between container and children. */}
           <div
             ref={framesContainerRef}
             className="hp-hero-frames"
             style={{
               perspective: '1000px',
-              transition: 'transform 0.1s ease-out',
+              transition: 'transform 0.12s ease-out',
+              willChange: 'transform',
             }}
           >
             {HERO_FRAMES.map((frame, i) => (
               <div
                 key={i}
                 className={`hp-hero-frame ${frame.floatClass}`}
-                style={{ transform: frame.transform, transition: 'transform 0.1s ease-out' }}
+                style={{ transform: frame.transform }}
               >
                 <CyclingFrame
                   photos={SAMPLE_PHOTOS}
@@ -233,17 +277,15 @@ function HeroSection() {
   )
 }
 
+/* ─── Category Card ─────────────────────────────────────────── */
 function CategoryCard({ category }) {
-  const navigate = useNavigate()
   const frameStyle = getCategoryFrameStyle(category)
 
   return (
-    <div
+    <Link
+      to={`/products?category=${category}`}
       className="hp-category-card"
-      onClick={() => navigate(`/products?category=${category}`)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && navigate(`/products?category=${category}`)}
+      aria-label={`Browse ${CATEGORY_LABELS[category]} prints`}
     >
       <div
         className="hp-category-preview"
@@ -266,7 +308,7 @@ function CategoryCard({ category }) {
         <h3 className="hp-category-name">{CATEGORY_LABELS[category]}</h3>
         <p className="hp-category-explore">Explore →</p>
       </div>
-    </div>
+    </Link>
   )
 }
 
@@ -298,7 +340,7 @@ function BestSellers() {
     api
       .get('/api/products')
       .then((r) => setProducts(r.data))
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false))
   }, [])
 
@@ -308,7 +350,7 @@ function BestSellers() {
         <h2 className="hp-section-title">Best Sellers</h2>
         <div className="hp-title-accent" />
         {loading ? (
-          <div className="pc-product-grid" style={{ marginTop: 40 }}>
+          <div className="pc-product-grid" style={{ marginTop: 0 }}>
             {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
@@ -337,10 +379,11 @@ function WhyChooseUs() {
     <section className="hp-section hp-section--white reveal">
       <div className="container">
         <h2 className="hp-section-title hp-section-title--sm">Why Choose MK Group Printing</h2>
+        <div className="hp-title-accent" />
         <div className="hp-features-grid">
           {FEATURES.map((f) => (
             <div key={f.title} className="hp-feature-card">
-              <div className="hp-feature-icon-wrap">{f.icon}</div>
+              <div className="hp-feature-icon-wrap" aria-hidden="true">{f.icon}</div>
               <h3 className="hp-feature-title">{f.title}</h3>
               <p className="hp-feature-desc">{f.desc}</p>
             </div>
@@ -358,16 +401,21 @@ function FAQSection() {
     <section className="hp-section hp-section--gray reveal">
       <div className="container">
         <h2 className="hp-section-title hp-section-title--sm">Frequently Asked Questions</h2>
+        <div className="hp-title-accent" />
         <div className="hp-faq-list">
           {FAQS.map((item, i) => {
             const isOpen = openIndex === i
+            const panelId = `faq-panel-${i}`
+            const triggerId = `faq-trigger-${i}`
             return (
               <div key={item.q} className="hp-faq-item">
                 <button
+                  id={triggerId}
                   type="button"
                   className="hp-faq-question"
                   onClick={() => setOpenIndex(isOpen ? null : i)}
                   aria-expanded={isOpen}
+                  aria-controls={panelId}
                 >
                   {item.q}
                   <svg
@@ -378,11 +426,18 @@ function FAQSection() {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
+                    strokeLinecap="round"
+                    aria-hidden="true"
                   >
                     <path d="M6 9l6 6 6-6" />
                   </svg>
                 </button>
-                <div className={`hp-faq-answer${isOpen ? ' hp-faq-answer--open' : ''}`}>
+                <div
+                  id={panelId}
+                  className={`hp-faq-answer${isOpen ? ' hp-faq-answer--open' : ''}`}
+                  role="region"
+                  aria-labelledby={triggerId}
+                >
                   <div className="hp-faq-answer-inner">{item.a}</div>
                 </div>
               </div>

@@ -43,14 +43,16 @@ const ProductCard = memo(forwardRef(function ProductCard({ product, className = 
       onClick={goToProduct}
       role="button"
       tabIndex={0}
+      aria-label={`${product.productName} — customise this product`}
       onKeyDown={(e) => e.key === 'Enter' && goToProduct()}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transition = 'transform 0.1s ease-out'
+        // Apply quick-response transition only on enter so JS rotations are smooth
+        e.currentTarget.style.transition = 'transform 0.08s ease-out'
       }}
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect()
-        const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 10
-        const y = ((e.clientY - rect.top)  / rect.height - 0.5) * -10
+        const x = ((e.clientX - rect.left)  / rect.width  - 0.5) * 10
+        const y = ((e.clientY - rect.top)   / rect.height - 0.5) * -10
         e.currentTarget.style.transform = `perspective(800px) rotateX(${y}deg) rotateY(${x}deg) translateY(-8px)`
       }}
       onMouseLeave={(e) => {

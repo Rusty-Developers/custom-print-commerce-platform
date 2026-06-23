@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 
 export const SAMPLE_PHOTOS = [
-  'https://images.unsplash.com/photo-1511895426328-dc8714191011?w=400&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=400&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1581952976147-5a2d15560349?w=400&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=400&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1511895426328-dc8714191011?w=400&h=500&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=500&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=400&h=500&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1581952976147-5a2d15560349?w=400&h=500&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=400&h=500&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?w=400&h=500&fit=crop&auto=format&q=80',
 ]
 
 export const HERO_PHOTOS = SAMPLE_PHOTOS.slice(0, 4)
@@ -149,7 +149,7 @@ export function usePhotoCycle(photos, active = true, initialIndex) {
         setPrevOpacity(1)
         return (idx + 1) % photos.length
       })
-    }, 3500)
+    }, 4500)
     return () => clearInterval(interval)
   }, [photos.length, running])
 
