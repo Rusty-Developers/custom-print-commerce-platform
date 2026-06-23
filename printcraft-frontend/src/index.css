@@ -2592,7 +2592,9 @@ img {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.1s ease-out, box-shadow 0.25s ease;
+  /* No CSS transition here — transition is managed entirely via JS onMouseEnter/Leave
+     to prevent CSS transition fighting the 60fps onMouseMove style writes */
+  transition: box-shadow 0.25s ease;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -2835,6 +2837,12 @@ img {
   opacity: 0.6;
 }
 
+.hp-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .hp-hero-right {
   flex: 0 0 45%;
   display: flex;
@@ -2887,7 +2895,8 @@ img {
   width: 60px;
   height: 3px;
   background: #C0392B;
-  margin: 12px auto 0;
+  border-radius: 2px;
+  margin: 12px auto 40px;
 }
 
 .hp-section-sub {
@@ -3032,6 +3041,38 @@ img {
   margin: 8px 0 0;
 }
 
+/* ── Focus Rings ── */
+.hp-btn-primary:focus-visible,
+.hp-btn-outline:focus-visible {
+  outline: 3px solid #C0392B;
+  outline-offset: 3px;
+}
+
+.hp-category-card:focus-visible {
+  outline: 3px solid #C0392B;
+  outline-offset: 2px;
+  border-radius: 16px;
+}
+
+.hp-faq-question:focus-visible {
+  outline: 3px solid #C0392B;
+  outline-offset: -3px;
+  border-radius: 0;
+}
+
+.hp-view-all-btn:focus-visible {
+  outline: 3px solid #C0392B;
+  outline-offset: 3px;
+}
+
+.navbar-nav-link:focus-visible,
+.navbar-icon-btn:focus-visible,
+.navbar-mobile-link:focus-visible {
+  outline: 2px solid #C0392B;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* ── FAQ ── */
 .hp-faq-list {
   max-width: 720px;
@@ -3136,5 +3177,38 @@ img {
 
   .hp-section-title--sm {
     font-size: 28px;
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .hp-float-1,
+  .hp-float-2,
+  .hp-float-3,
+  .hp-float-4 {
+    animation: none;
+  }
+
+  .hp-hero-title--enter {
+    animation: none;
+    opacity: 1;
+  }
+
+  .page-enter {
+    animation: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .skeleton {
+    animation: none;
+  }
+
+  .announcement-bar-track {
+    animation: none;
   }
 }
