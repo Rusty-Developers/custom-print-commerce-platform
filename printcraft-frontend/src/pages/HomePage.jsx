@@ -1,11 +1,20 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  AnimatePresence,
+} from 'framer-motion'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
 import CyclingFrame from '../components/CyclingFrame'
 import { ALL_CATEGORIES, CATEGORY_LABELS } from '../utils/format'
 import { SAMPLE_PHOTOS, getCategoryFrameStyle } from '../utils/framePreview'
+import { PHOTO_POOL, getFrameStartIndexes } from '../utils/photoPool'
 
+/* ─── Category Backgrounds ────────────────────────────────── */
 const CATEGORY_BACKGROUNDS = {
   TILES:       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&fit=crop&auto=format&q=80',
   PVC:         'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&fit=crop&auto=format&q=80',
@@ -18,97 +27,93 @@ const CATEGORY_BACKGROUNDS = {
   CREATIVE:    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&fit=crop&auto=format&q=80',
 }
 
-// Per-frame 3D rotation — static, applied only as initial style (no JS transition needed)
+/**
+ * Hero frame config.
+ * translateZ values create multi-plane depth so mouse parallax moves
+ * each frame at a different visual rate — the near frames shift more than
+ * the far ones, producing a natural stereo-depth showroom feel.
+ */
 const HERO_FRAMES = [
-  { borderRadius: '8px',  floatClass: 'hp-float-1', transform: 'rotateY(-8deg) rotateX(4deg)' },
-  { borderRadius: '50%',  floatClass: 'hp-float-2', transform: 'rotateY(8deg) rotateX(-4deg)' },
-  { borderRadius: '36px', floatClass: 'hp-float-3', transform: 'rotateY(-6deg) rotateX(-3deg)' },
-  { border: '8px solid #5a3e2b', borderRadius: '8px', floatClass: 'hp-float-4', transform: 'rotateY(6deg) rotateX(3deg)' },
+  {
+    borderRadius: '10px',
+    translateZ:   20,
+    floatDuration: 5.5,
+    floatDelay:    0,
+    shadow: '0 2px 4px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.18), 0 28px 72px rgba(0,0,0,0.32)',
+    glow:   'rgba(192, 100, 80, 0.22)',
+    baseTransform: 'rotateY(-7deg) rotateX(4deg)',
+  },
+  {
+    borderRadius: '50%',
+    translateZ:   35,
+    floatDuration: 6.8,
+    floatDelay:    1.4,
+    shadow: '0 2px 4px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.16), 0 24px 60px rgba(0,0,0,0.28)',
+    glow:   'rgba(139, 80, 200, 0.18)',
+    baseTransform: 'rotateY(6deg) rotateX(-3deg)',
+  },
+  {
+    borderRadius: '38px',
+    translateZ:   50,
+    floatDuration: 7.2,
+    floatDelay:    0.7,
+    shadow: '0 2px 4px rgba(0,0,0,0.10), 0 10px 28px rgba(0,0,0,0.22), 0 32px 80px rgba(0,0,0,0.38)',
+    glow:   'rgba(200, 140, 60, 0.20)',
+    baseTransform: 'rotateY(-5deg) rotateX(-2deg)',
+  },
+  {
+    border:       '8px solid #5a3e2b',
+    borderRadius: '10px',
+    translateZ:   30,
+    floatDuration: 6.0,
+    floatDelay:    2.1,
+    shadow: '0 2px 4px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.20), 0 26px 68px rgba(0,0,0,0.34)',
+    glow:   'rgba(90, 62, 43, 0.25)',
+    baseTransform: 'rotateY(7deg) rotateX(3deg)',
+  },
 ]
 
 const FAQS = [
-  {
-    q: 'What materials do you print on?',
-    a: 'We print on premium Glass, Acrylic, Metal, Wood, PVC, Tiles and more. Each material gives a distinct premium look and finish.',
-  },
-  {
-    q: 'Can I upload my own photo?',
-    a: 'Yes! On any product page you can upload your photo and see it instantly previewed in the actual frame shape and size before ordering.',
-  },
-  {
-    q: 'What sizes are available?',
-    a: 'We offer 7 standard sizes: 8×12, 12×18, 17×24, 19×28, 20×30, 24×36, and 36×48 inches. Custom sizes available on request.',
-  },
-  {
-    q: 'How long does delivery take?',
-    a: 'We deliver across India in 5-7 working days after production. You receive email + WhatsApp updates at every step.',
-  },
-  {
-    q: 'Can I cancel my order?',
-    a: 'Orders cannot be cancelled once confirmed and payment is received. Modification requests (size/frame changes) can be submitted within the modification window via WhatsApp or your account.',
-  },
-  {
-    q: 'What payment methods do you accept?',
-    a: 'We accept UPI, Net Banking, Credit Card and Debit Card via Razorpay. We do not offer Cash on Delivery — all orders are prepaid.',
-  },
+  { q: 'What materials do you print on?',   a: 'We print on premium Glass, Acrylic, Metal, Wood, PVC, Tiles and more. Each material gives a distinct premium look and finish.' },
+  { q: 'Can I upload my own photo?',         a: 'Yes! On any product page you can upload your photo and see it instantly previewed in the actual frame shape and size before ordering.' },
+  { q: 'What sizes are available?',          a: 'We offer 7 standard sizes: 8×12, 12×18, 17×24, 19×28, 20×30, 24×36, and 36×48 inches. Custom sizes available on request.' },
+  { q: 'How long does delivery take?',       a: 'We deliver across India in 5-7 working days after production. You receive email + WhatsApp updates at every step.' },
+  { q: 'Can I cancel my order?',             a: 'Orders cannot be cancelled once confirmed and payment is received. Modification requests can be submitted within the window via WhatsApp or your account.' },
+  { q: 'What payment methods do you accept?',a: 'We accept UPI, Net Banking, Credit Card and Debit Card via Razorpay. We do not offer Cash on Delivery — all orders are prepaid.' },
 ]
 
 const FEATURES = [
   {
     title: 'Premium Materials',
-    desc: 'UV-resistant inks on Glass, Acrylic, Metal & more',
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M12 2L2 9l10 13L22 9 12 2z" />
-      </svg>
-    ),
+    desc:  'UV-resistant inks on Glass, Acrylic, Metal & more',
+    icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2L2 9l10 13L22 9 12 2z"/></svg>,
   },
   {
     title: 'Custom Sizes',
-    desc: '7 sizes from 8×12 to 36×48 inches',
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="2" y="8" width="20" height="8" rx="1" />
-        <path d="M6 8v8M10 8v5M14 8v8M18 8v5" />
-      </svg>
-    ),
+    desc:  '7 sizes from 8×12 to 36×48 inches',
+    icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="8" width="20" height="8" rx="1"/><path d="M6 8v8M10 8v5M14 8v8M18 8v5"/></svg>,
   },
   {
     title: 'Fast Delivery',
-    desc: 'Delivered across India in 5-7 working days',
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="1" y="6" width="15" height="10" rx="1" />
-        <path d="M16 10h4l3 4v2h-7V10z" />
-        <circle cx="5.5" cy="18.5" r="2.5" />
-        <circle cx="18.5" cy="18.5" r="2.5" />
-      </svg>
-    ),
+    desc:  'Delivered across India in 5-7 working days',
+    icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="1" y="6" width="15" height="10" rx="1"/><path d="M16 10h4l3 4v2h-7V10z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>,
   },
   {
     title: 'Secure Payments',
-    desc: '100% prepaid via Razorpay — UPI, Cards, NetBanking',
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4z" />
-        <path d="M9 12l2 2 4-4" />
-      </svg>
-    ),
+    desc:  '100% prepaid via Razorpay — UPI, Cards, NetBanking',
+    icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4z"/><path d="M9 12l2 2 4-4"/></svg>,
   },
 ]
 
-/* ─── Scroll Reveal Hook ─────────────────────────────────── */
+/* ─── Scroll Reveal Hook ──────────────────────────────────── */
 function useScrollReveal(deps = []) {
   useEffect(() => {
     const els = document.querySelectorAll('.reveal')
     if (!els.length) return
     const io = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible')
-            io.unobserve(entry.target)
-          }
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target) }
         })
       },
       { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
@@ -119,7 +124,7 @@ function useScrollReveal(deps = []) {
   }, deps)
 }
 
-/* ─── Skeleton Card ────────────────────────────────────────── */
+/* ─── Skeleton Card ───────────────────────────────────────── */
 function SkeletonCard() {
   return (
     <div style={{ borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
@@ -133,74 +138,161 @@ function SkeletonCard() {
   )
 }
 
-/* ─── Hero Trust Badge Icons ─────────────────────────────── */
-function IconShield() {
+/* ─── Hero Trust Icons ───────────────────────────────────── */
+const IconShield = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4z"/><path d="M9 12l2 2 4-4"/>
+  </svg>
+)
+const IconTruck = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="1" y="6" width="15" height="10" rx="1"/><path d="M16 10h4l3 4v2h-7V10z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+  </svg>
+)
+const IconStar = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+  </svg>
+)
+
+/* ─── Single Hero Frame ───────────────────────────────────── */
+/**
+ * Renders one floating frame with:
+ * - Framer Motion float animation (translateY loop, unique duration + delay)
+ * - Spring-driven parallax derived from parent mouse motion values
+ * - Ambient glow blob behind the frame
+ * - Contact shadow beneath
+ */
+function HeroFrame({ frame, index, startIndex, sharedIndexes, springX, springY }) {
+  // Map the parent's spring values to a subtle per-frame offset.
+  // Near frames (large translateZ) shift more than far ones for natural parallax.
+  const depth    = frame.translateZ / 50    // 0.4 – 1.0
+  const rotateX  = useTransform(springY, v => v * depth * 0.4)
+  const rotateY  = useTransform(springX, v => v * depth * 0.4)
+
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4z" />
-      <path d="M9 12l2 2 4-4" />
-    </svg>
+    <motion.div
+      style={{
+        position:   'relative',
+        transformStyle: 'preserve-3d',
+        willChange: 'transform',
+        // Static per-frame 3D tilt — applied as CSS for GPU compositing
+        transform:  `${frame.baseTransform} translateZ(${frame.translateZ}px)`,
+      }}
+      // Framer Motion float animation — each frame at its own speed + delay
+      animate={{ y: [0, -13, 0] }}
+      transition={{
+        duration: frame.floatDuration,
+        delay:    frame.floatDelay,
+        repeat:   Infinity,
+        ease:     'easeInOut',
+      }}
+    >
+      {/* Ambient glow blob */}
+      <div
+        aria-hidden="true"
+        style={{
+          position:     'absolute',
+          inset:        '-30px',
+          borderRadius: '50%',
+          background:   `radial-gradient(ellipse at 50% 50%, ${frame.glow} 0%, transparent 70%)`,
+          filter:       'blur(24px)',
+          zIndex:       -1,
+          pointerEvents:'none',
+        }}
+      />
+
+      {/* Contact shadow */}
+      <div
+        aria-hidden="true"
+        style={{
+          position:     'absolute',
+          bottom:       -20,
+          left:         '10%',
+          width:        '80%',
+          height:       20,
+          background:   'radial-gradient(ellipse 100% 100% at 50% 0%, rgba(0,0,0,0.32) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter:       'blur(6px)',
+          pointerEvents:'none',
+          zIndex:       -1,
+        }}
+      />
+
+      {/* Spring parallax wrapper — subtle rotational shift on cursor move */}
+      <motion.div style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}>
+        <CyclingFrame
+          photos={PHOTO_POOL}
+          width={140}
+          height={175}
+          frameStyle={{
+            borderRadius: frame.borderRadius,
+            border:       frame.border,
+          }}
+          boxShadow={frame.shadow}
+          eager={index === 0}
+          pauseWhenHidden
+          initialIndex={startIndex}
+          cyclePeriod={8000}
+          staggerOffset={index * 2000}
+          frameSlot={index}
+          sharedIndexes={sharedIndexes}
+        />
+      </motion.div>
+    </motion.div>
   )
 }
 
-function IconTruck() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="1" y="6" width="15" height="10" rx="1" />
-      <path d="M16 10h4l3 4v2h-7V10z" />
-      <circle cx="5.5" cy="18.5" r="2.5" />
-      <circle cx="18.5" cy="18.5" r="2.5" />
-    </svg>
-  )
-}
-
-function IconStar() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-    </svg>
-  )
-}
-
-/* ─── Hero Section ──────────────────────────────────────────── */
+/* ─── Hero Section ────────────────────────────────────────── */
 function HeroSection() {
   const navigate = useNavigate()
   const [mounted, setMounted] = useState(false)
-  const framesContainerRef = useRef(null)
+  const heroRef   = useRef(null)
 
-  const startIndices = useMemo(() => {
-    const indices = []
-    while (indices.length < 4) {
-      const r = Math.floor(Math.random() * SAMPLE_PHOTOS.length)
-      if (!indices.includes(r)) indices.push(r)
-    }
-    return indices
-  }, [])
+  const startIndexes  = useMemo(() => getFrameStartIndexes(4), [])
+  const sharedIndexes = useRef([...startIndexes])
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  useEffect(() => { setMounted(true) }, [])
 
-  // Parallax only on pointer-accurate devices (mouse).
-  // Skipping on touch/coarse devices prevents unintended transforms during scroll.
+  // Raw mouse position as motion values (0 = no movement yet)
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  // Spring smoothing — slow, physical feel (stiffness 80, damping 20)
+  const springX = useSpring(mouseX, { stiffness: 80, damping: 20 })
+  const springY = useSpring(mouseY, { stiffness: 80, damping: 20 })
+
   const handleMouseMove = useCallback((e) => {
     if (window.matchMedia('(pointer: coarse)').matches) return
-    const el = framesContainerRef.current
-    if (!el) return
-    const x = (e.clientX / window.innerWidth - 0.5) * 20
-    const y = (e.clientY / window.innerHeight - 0.5) * 20
-    el.style.transform = `rotateY(${x * 0.3}deg) rotateX(${-y * 0.3}deg)`
-  }, [])
+    const rect = heroRef.current?.getBoundingClientRect()
+    if (!rect) return
+    // Normalize to -5 → 5 range (subtle rotation)
+    mouseX.set(((e.clientX - rect.left) / rect.width  - 0.5) * 10)
+    mouseY.set(((e.clientY - rect.top)  / rect.height - 0.5) * 10)
+  }, [mouseX, mouseY])
 
   const handleMouseLeave = useCallback(() => {
-    const el = framesContainerRef.current
-    if (!el) return
-    el.style.transform = 'rotateY(0deg) rotateX(0deg)'
-  }, [])
+    mouseX.set(0)
+    mouseY.set(0)
+  }, [mouseX, mouseY])
 
   return (
-    <section className="hp-hero" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+    <section
+      ref={heroRef}
+      className="hp-hero"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Slow ambient breathing glow behind the entire hero */}
+      <motion.div
+        className="hp-hero-ambient"
+        aria-hidden="true"
+        animate={{ opacity: [0.06, 0.14, 0.06], scale: [1, 1.10, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
       <div className="hp-hero-inner container">
+        {/* ── Left — Copy ── */}
         <div className="hp-hero-left">
           <p className="hp-hero-label">Premium Custom Prints</p>
           <h1 className={`hp-hero-title${mounted ? ' hp-hero-title--enter' : ''}`}>
@@ -220,55 +312,41 @@ function HeroSection() {
             </button>
           </div>
           <div className="hp-hero-trust">
-            <span className="hp-trust-item">
-              <IconShield />
-              Secure Payment
-            </span>
+            <span className="hp-trust-item"><IconShield /> Secure Payment</span>
             <span className="hp-trust-sep" aria-hidden="true">·</span>
-            <span className="hp-trust-item">
-              <IconTruck />
-              Pan-India Delivery
-            </span>
+            <span className="hp-trust-item"><IconTruck /> Pan-India Delivery</span>
             <span className="hp-trust-sep" aria-hidden="true">·</span>
-            <span className="hp-trust-item">
-              <IconStar />
-              4.8/5 Rating
-            </span>
+            <span className="hp-trust-item"><IconStar /> 4.8/5 Rating</span>
           </div>
         </div>
 
+        {/* ── Right — Floating Frames ── */}
         <div className="hp-hero-right">
-          {/* Perspective wrapper — JS applies container-level rotateX/Y for parallax.
-              Individual frame divs have only their static initial transform (no JS transition)
-              so there is no competing transition between container and children. */}
+          {/*
+            Perspective wrapper — all 4 frames live inside a single 3D
+            perspective context. Their individual translateZ values separate
+            them in Z-space, creating genuine depth layering.
+          */}
           <div
-            ref={framesContainerRef}
-            className="hp-hero-frames"
             style={{
-              perspective: '1000px',
-              transition: 'transform 0.12s ease-out',
-              willChange: 'transform',
+              perspective:       '1400px',
+              perspectiveOrigin: '50% 50%',
+              display:           'grid',
+              gridTemplateColumns: 'repeat(2, 140px)',
+              gap:               '28px',
+              transformStyle:    'preserve-3d',
             }}
           >
             {HERO_FRAMES.map((frame, i) => (
-              <div
+              <HeroFrame
                 key={i}
-                className={`hp-hero-frame ${frame.floatClass}`}
-                style={{ transform: frame.transform }}
-              >
-                <CyclingFrame
-                  photos={SAMPLE_PHOTOS}
-                  width={140}
-                  height={175}
-                  frameStyle={{
-                    borderRadius: frame.borderRadius,
-                    border: frame.border,
-                  }}
-                  eager={i === 0}
-                  pauseWhenHidden
-                  initialIndex={startIndices[i]}
-                />
-              </div>
+                frame={frame}
+                index={i}
+                startIndex={startIndexes[i]}
+                sharedIndexes={sharedIndexes}
+                springX={springX}
+                springY={springY}
+              />
             ))}
           </div>
         </div>
@@ -277,10 +355,9 @@ function HeroSection() {
   )
 }
 
-/* ─── Category Card ─────────────────────────────────────────── */
+/* ─── Category Card ───────────────────────────────────────── */
 function CategoryCard({ category }) {
   const frameStyle = getCategoryFrameStyle(category)
-
   return (
     <Link
       to={`/products?category=${category}`}
@@ -298,8 +375,8 @@ function CategoryCard({ category }) {
           height={140}
           frameStyle={{
             borderRadius: frameStyle.borderRadius,
-            border: frameStyle.border,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+            border:       frameStyle.border,
+            boxShadow:    '0 8px 32px rgba(0,0,0,0.25)',
           }}
           className="hp-category-frame"
         />
@@ -318,13 +395,9 @@ function CategoryShowcase() {
       <div className="container">
         <h2 className="hp-section-title">Shop by Category</h2>
         <div className="hp-title-accent" />
-        <p className="hp-section-sub">
-          See how your photos look in every frame — tap to explore
-        </p>
+        <p className="hp-section-sub">See how your photos look in every frame — tap to explore</p>
         <div className="hp-category-grid">
-          {ALL_CATEGORIES.map((cat) => (
-            <CategoryCard key={cat} category={cat} />
-          ))}
+          {ALL_CATEGORIES.map((cat) => <CategoryCard key={cat} category={cat} />)}
         </div>
       </div>
     </section>
@@ -334,14 +407,10 @@ function CategoryShowcase() {
 function BestSellers() {
   const navigate = useNavigate()
   const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading]   = useState(true)
 
   useEffect(() => {
-    api
-      .get('/api/products')
-      .then((r) => setProducts(r.data))
-      .catch(() => { })
-      .finally(() => setLoading(false))
+    api.get('/api/products').then((r) => setProducts(r.data)).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   return (
@@ -351,16 +420,12 @@ function BestSellers() {
         <div className="hp-title-accent" />
         {loading ? (
           <div className="pc-product-grid" style={{ marginTop: 0 }}>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
+            {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : (
           <>
             <div className="pc-product-grid">
-              {products.slice(0, 6).map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
+              {products.slice(0, 6).map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
             <div className="hp-view-all-wrap">
               <button type="button" className="hp-view-all-btn" onClick={() => navigate('/products')}>
@@ -396,7 +461,6 @@ function WhyChooseUs() {
 
 function FAQSection() {
   const [openIndex, setOpenIndex] = useState(null)
-
   return (
     <section className="hp-section hp-section--gray reveal">
       <div className="container">
@@ -404,8 +468,8 @@ function FAQSection() {
         <div className="hp-title-accent" />
         <div className="hp-faq-list">
           {FAQS.map((item, i) => {
-            const isOpen = openIndex === i
-            const panelId = `faq-panel-${i}`
+            const isOpen    = openIndex === i
+            const panelId   = `faq-panel-${i}`
             const triggerId = `faq-trigger-${i}`
             return (
               <div key={item.q} className="hp-faq-item">
@@ -418,18 +482,8 @@ function FAQSection() {
                   aria-controls={panelId}
                 >
                   {item.q}
-                  <svg
-                    className={`hp-faq-chevron${isOpen ? ' hp-faq-chevron--open' : ''}`}
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M6 9l6 6 6-6" />
+                  <svg className={`hp-faq-chevron${isOpen ? ' hp-faq-chevron--open' : ''}`} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                    <path d="M6 9l6 6 6-6"/>
                   </svg>
                 </button>
                 <div
@@ -450,9 +504,7 @@ function FAQSection() {
 }
 
 export default function HomePage() {
-  // Run scroll reveal after sections mount
   useScrollReveal([])
-
   return (
     <div className="page-enter">
       <HeroSection />

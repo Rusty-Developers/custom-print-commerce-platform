@@ -1,15 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
+import { PHOTO_POOL } from './photoPool'
 
-export const SAMPLE_PHOTOS = [
-  'https://images.unsplash.com/photo-1511895426328-dc8714191011?w=400&h=500&fit=crop&auto=format&q=80',
-  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=500&fit=crop&auto=format&q=80',
-  'https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=400&h=500&fit=crop&auto=format&q=80',
-  'https://images.unsplash.com/photo-1581952976147-5a2d15560349?w=400&h=500&fit=crop&auto=format&q=80',
-  'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=400&h=500&fit=crop&auto=format&q=80',
-  'https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?w=400&h=500&fit=crop&auto=format&q=80',
-]
-
-export const HERO_PHOTOS = SAMPLE_PHOTOS.slice(0, 4)
+/**
+ * Backward-compatible alias — every existing consumer (CategoryShowcase, etc.)
+ * keeps working without changes while now drawing from local photos.
+ */
+export const SAMPLE_PHOTOS = PHOTO_POOL
+export const HERO_PHOTOS   = PHOTO_POOL.slice(0, 4)
 
 export const DEFAULT_SHADOW = '0 8px 32px rgba(0,0,0,0.2), 0 20px 60px rgba(0,0,0,0.12)'
 
@@ -40,7 +37,8 @@ export const IMG_BASE = {
   width: '100%',
   height: '100%',
   objectFit: 'cover',
-  transition: 'opacity 0.6s ease-in-out',
+  // Individual transition overridden per-usage in CyclingFrame
+  transition: 'opacity 1.2s ease-in-out',
 }
 
 export function getFrameShapeStyles(frameType, productName) {
@@ -125,13 +123,33 @@ export function getCategoryFrameStyle(category) {
   return { borderRadius: '8px', border: '1.5px solid rgba(0,0,0,0.15)' }
 }
 
-/** Photo cycle hook — pauses when inactive or tab hidden */
-export function usePhotoCycle(photos, active = true, initialIndex) {
-  const startRef = useRef(initialIndex !== undefined ? initialIndex : Math.floor(Math.random() * photos.length))
+/**
+ * Photo cycle hook — pauses when inactive or tab hidden.
+ *
+ * @param {string[]}          photos           Photo URL array
+ * @param {boolean}           active           Pause cycling when false
+ * @param {number}            initialIndex     Starting photo index
+ * @param {number}            period           Cycle interval in ms (default 7500)
+ * @param {number}            staggerOffset    Delay before first tick in ms (default 0)
+ * @param {number|undefined}  frameSlot        This frame's slot (for collision check)
+ * @param {React.RefObject}   sharedIndexesRef Shared ref holding all frames' current indexes
+ */
+export function usePhotoCycle(
+  photos,
+  active = true,
+  initialIndex,
+  period = 7500,
+  staggerOffset = 0,
+  frameSlot = undefined,
+  sharedIndexesRef = undefined
+) {
+  const startRef = useRef(
+    initialIndex !== undefined ? initialIndex : Math.floor(Math.random() * photos.length)
+  )
   const [currentIndex, setCurrentIndex] = useState(startRef.current)
-  const [prevIndex, setPrevIndex] = useState(null)
-  const [prevOpacity, setPrevOpacity] = useState(1)
-  const [tabVisible, setTabVisible] = useState(() => !document.hidden)
+  const [prevIndex, setPrevIndex]       = useState(null)
+  const [prevOpacity, setPrevOpacity]   = useState(1)
+  const [tabVisible, setTabVisible]     = useState(() => !document.hidden)
 
   useEffect(() => {
     const onVisibility = () => setTabVisible(!document.hidden)
@@ -143,22 +161,48 @@ export function usePhotoCycle(photos, active = true, initialIndex) {
 
   useEffect(() => {
     if (!running) return
-    const interval = setInterval(() => {
-      setCurrentIndex((idx) => {
+
+    const tick = () => {
+      setCurrentIndex(idx => {
         setPrevIndex(idx)
         setPrevOpacity(1)
-        return (idx + 1) % photos.length
-      })
-    }, 4500)
-    return () => clearInterval(interval)
-  }, [photos.length, running])
+        let next = (idx + 1) % photos.length
 
+        // Collision prevention — skip indexes already displayed by sibling frames
+        if (sharedIndexesRef && frameSlot !== undefined) {
+          const others = sharedIndexesRef.current.filter((_, s) => s !== frameSlot)
+          let attempts = 0
+          while (others.includes(next) && attempts < photos.length) {
+            next = (next + 1) % photos.length
+            attempts++
+          }
+          sharedIndexesRef.current[frameSlot] = next
+        }
+
+        return next
+      })
+    }
+
+    let intervalId
+    // Stagger: delay the first tick, then run at steady period
+    const timeoutId = setTimeout(() => {
+      intervalId = setInterval(tick, period)
+    }, staggerOffset)
+
+    return () => {
+      clearTimeout(timeoutId)
+      if (intervalId) clearInterval(intervalId)
+    }
+  }, [photos.length, running, period, staggerOffset, frameSlot, sharedIndexesRef])
+
+  // Fade out the previous image
   useEffect(() => {
     if (prevIndex === null) return
     const raf = requestAnimationFrame(() => {
       requestAnimationFrame(() => setPrevOpacity(0))
     })
-    const timeout = setTimeout(() => setPrevIndex(null), 650)
+    // Clear after fade completes (matches 1.2s transition)
+    const timeout = setTimeout(() => setPrevIndex(null), 1300)
     return () => {
       cancelAnimationFrame(raf)
       clearTimeout(timeout)
