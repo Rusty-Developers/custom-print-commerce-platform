@@ -34,7 +34,7 @@ public class OrderService {
     private final ProductRepository productRepository;
 //    private final Discount discount;
     private final OrderRepository orderRepository;
-    private DeliveryRepository deliveryRepository;
+    private final DeliveryRepository deliveryRepository;
     @Transactional
     public Order createOrder(CreateOrderRequest request, String phoneNo) {
 

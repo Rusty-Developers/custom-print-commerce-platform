@@ -315,7 +315,7 @@ export default function AccountPage() {
                             headers: { 'Content-Type': 'multipart/form-data' },
                             // Authorization is injected automatically by the axios interceptor
                           })
-                          setProfilePic('http://localhost:8080' + res.data.url)
+                          setProfilePic(res.data.url)
                           toast.success('Profile picture updated!')
                         } catch {
                           toast.error('Upload failed')

@@ -5,7 +5,7 @@ import Logo from '../components/Logo'
 import { isAdmin } from '../utils/jwt'
 import useStore from '../store/useStore'
 
-const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_PLACEHOLDER'
+const GOOGLE_CLIENT_ID = '77738261734-9cdvibem3dicur2tl1j5r607uf951mms.apps.googleusercontent.com'
 
 export default function AdminLoginPage() {
   const navigate = useNavigate()
