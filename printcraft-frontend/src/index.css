@@ -26,6 +26,14 @@
   --text-light: #9B9B9B;
   --border-color: #E8E8E8;
 
+  /* ── Cinematic Dark Palette ── */
+  --cinema-black:  #080808;
+  --cinema-deep:   #0e0c0c;
+  --cinema-surface:#141212;
+  --cinema-lift:   rgba(255,255,255,0.04);
+  --cinema-border: rgba(255,255,255,0.07);
+  --grain-opacity: 0.045;   /* film grain strength — tweak here */
+
   /* Dark Footer */
   --dark-bg: #1A1A1A;
 
@@ -186,8 +194,62 @@ img {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Cinematic Keyframes ── */
+
+/* Film grain tile shift — moves the noise pattern each frame */
+@keyframes grain-shift {
+  0%   { transform: translate(0,   0);   }
+  10%  { transform: translate(-2%, -3%); }
+  20%  { transform: translate(3%,  1%);  }
+  30%  { transform: translate(-1%, 4%);  }
+  40%  { transform: translate(4%, -1%);  }
+  50%  { transform: translate(-3%, 3%);  }
+  60%  { transform: translate(1%, -4%);  }
+  70%  { transform: translate(-4%, 2%);  }
+  80%  { transform: translate(2%, -2%);  }
+  90%  { transform: translate(-2%, 4%);  }
+  100% { transform: translate(0,   0);   }
+}
+
+/* Slow ambient light drift across hero */
+@keyframes light-drift {
+  0%   { opacity: 0.06; transform: translateX(0)   scale(1);    }
+  33%  { opacity: 0.14; transform: translateX(6%)  scale(1.08); }
+  66%  { opacity: 0.09; transform: translateX(-4%) scale(1.04); }
+  100% { opacity: 0.06; transform: translateX(0)   scale(1);    }
+}
+
+/* Cinematic vignette pulse — very subtle breathe */
+@keyframes vignette-breathe {
+  0%,100% { opacity: 0.72; }
+  50%     { opacity: 0.82; }
+}
+
 .page-enter {
   animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CINEMATIC FILM GRAIN
+   Implemented as a fixed pseudo-element using an inline SVG
+   feTurbulence filter so the noise is always covering the
+   viewport. Grain-shift animation randomises the tile offset
+   every frame to simulate real 35mm grain flutter.
+   ═══════════════════════════════════════════════════════════ */
+body::after {
+  content:    '';
+  position:   fixed;
+  inset:      -20%;        /* oversize so animation never shows edges */
+  width:      140%;
+  height:     140%;
+  z-index:    9998;        /* above everything except modals (z:9999+) */
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23grain)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity:    var(--grain-opacity);
+  animation:  grain-shift 0.12s steps(1) infinite;
+  mix-blend-mode: overlay;
+  will-change: transform;
 }
 
 /* ─── Scroll Reveal ─────────────────────────────────── */
@@ -556,19 +618,24 @@ img {
    NAVBAR
    ========================================= */
 .navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 150;
-  background: rgba(255,255,255,0.96);
+  background: rgba(255,255,255,0.05);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: box-shadow 0.3s ease, background 0.3s ease;
-  border-bottom: 1px solid transparent;
+  transition: background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .navbar.scrolled {
-  box-shadow: 0 1px 0 rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
-  border-bottom-color: rgba(0,0,0,0.06);
+  background: rgba(15, 10, 10, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom-color: rgba(255,255,255,0.10);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.28);
 }
 
 .navbar-inner {
@@ -594,10 +661,11 @@ img {
   font-family: 'Playfair Display', var(--font-heading);
   font-size: 17px;
   font-weight: 700;
-  color: #1A1A1A;
+  color: rgba(255,255,255,0.92);
   display: none;
   white-space: nowrap;
   letter-spacing: -0.01em;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.3);
 }
 
 @media (min-width: 768px) {
@@ -633,21 +701,24 @@ img {
   font-family: 'Inter', var(--font-body);
   font-size: 14px;
   font-weight: 500;
-  color: #555;
+  color: rgba(255,255,255,0.80);
   border-radius: var(--radius-sm);
-  transition: color 180ms ease;
+  transition: color 180ms ease, background 180ms ease;
   cursor: pointer;
   letter-spacing: 0.01em;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.25);
 }
 
 .navbar-nav-link:hover {
-  color: #C0392B;
-  background: transparent;
+  color: #fff;
+  background: rgba(255,255,255,0.10);
 }
 
 .navbar-nav-link.active {
-  color: #C0392B;
+  color: #fff;
   font-weight: 600;
+  background: rgba(192,57,43,0.30);
+  border-radius: var(--radius-sm);
 }
 
 .navbar-actions {
@@ -666,15 +737,16 @@ img {
   border-radius: 50%;
   border: none;
   background: transparent;
-  color: #555;
+  color: rgba(255,255,255,0.80);
   cursor: pointer;
   transition: background 140ms ease, color 140ms ease;
   font-size: 17px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.3);
 }
 
 .navbar-icon-btn:hover {
-  background: rgba(0,0,0,0.05);
-  color: var(--primary);
+  background: rgba(255,255,255,0.14);
+  color: #fff;
 }
 
 .cart-badge {
@@ -705,14 +777,14 @@ img {
   border: none;
   background: transparent;
   font-size: 20px;
-  color: #555;
+  color: rgba(255,255,255,0.85);
   cursor: pointer;
   border-radius: 50%;
   transition: background 140ms ease;
 }
 
 .navbar-mobile-toggle:hover {
-  background: rgba(0,0,0,0.05);
+  background: rgba(255,255,255,0.14);
 }
 
 .navbar-mobile-overlay {
@@ -2846,36 +2918,82 @@ img {
 /* ── Hero ──
    hpFloat and hpAmbientBreath are now driven by Framer Motion (animate prop).
    CSS keyframes removed to avoid competing with JS animation values. */
+/* ═══════════════════════════════════════════════════════
+   HERO — Cinematic Treatment
+   ═══════════════════════════════════════════════════════ */
 .hp-hero {
   min-height: 100vh;
-  background: linear-gradient(150deg, #0d0d0d 0%, #161616 55%, #0a0a0a 100%);
+  /* Richer near-black base — cooler left, warmer right */
+  background:
+    linear-gradient(160deg,
+      #050404 0%,
+      #0c0909 35%,
+      #100b0b 65%,
+      #060404 100%);
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
+  /* Subtle horizontal scanline texture */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 3px
+    ),
+    linear-gradient(160deg, #050404 0%, #0c0909 35%, #100b0b 65%, #060404 100%);
 }
 
+/* Cinematic vignette — soft black edges that breathe */
 .hp-hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 60% at 70% 50%, rgba(192,57,43,0.04) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    transparent 40%,
+    rgba(0,0,0,0.55) 80%,
+    rgba(0,0,0,0.82) 100%
+  );
   pointer-events: none;
+  z-index: 1;
+  animation: vignette-breathe 8s ease-in-out infinite;
 }
 
-/* Ambient breathing glow — opacity/scale animated by Framer Motion inline */
+/* Slow warm light sweep — cinematic key light from upper-right */
+.hp-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 70% at 75% 30%,
+    rgba(192, 80, 43, 0.12) 0%,
+    rgba(120, 30, 10, 0.06) 50%,
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: 1;
+  animation: light-drift 22s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Ambient breathing glow — deeper red core, CSS-animated drift */
 .hp-hero-ambient {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse 55% 50% at 68% 48%,
-    rgba(192, 57, 43, 0.55) 0%,
-    rgba(139, 0, 0, 0.18) 40%,
+    ellipse 50% 55% at 65% 52%,
+    rgba(180, 45, 30, 0.50) 0%,
+    rgba(120,  0,  0, 0.16) 45%,
     transparent 70%
   );
   pointer-events: none;
   will-change: opacity, transform;
   z-index: 0;
+  /* Slow drift layered under Framer Motion breathing */
+  animation: light-drift 28s ease-in-out infinite reverse;
 }
 
 .hp-hero-inner {
@@ -2884,7 +3002,10 @@ img {
   width: 100%;
   padding-top: 48px;
   padding-bottom: 48px;
-  gap: 40px;
+  gap: 72px;
+  /* Sit above vignette + light-sweep pseudo-elements (z:1) */
+  position: relative;
+  z-index: 2;
 }
 
 .hp-hero-left {
@@ -2893,11 +3014,14 @@ img {
 
 .hp-hero-label {
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.3em;
+  font-weight: 400;
+  letter-spacing: 0.18em;
   color: rgba(192,57,43,0.9);
   margin: 0 0 18px;
   text-transform: uppercase;
+  /* Red accent line on the left */
+  border-left: 3px solid #C0392B;
+  padding-left: 10px;
 }
 
 .hp-hero-title {
@@ -2908,7 +3032,7 @@ img {
   line-height: 1.1;
   margin: 0;
   opacity: 0;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 
 .hp-hero-title--enter {
@@ -2918,7 +3042,7 @@ img {
 .hp-hero-sub {
   font-family: 'Inter', var(--font-body);
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.70);
   margin-top: 22px;
   max-width: 420px;
   line-height: 1.75;
@@ -2941,40 +3065,50 @@ img {
   font-size: 14px;
   border: none;
   cursor: pointer;
-  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Premium transition with custom bezier */
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   font-family: var(--font-body);
   letter-spacing: 0.02em;
-  box-shadow: 0 4px 16px rgba(192,57,43,0.3);
+  box-shadow: 0 4px 16px rgba(192,57,43,0.30);
+  will-change: transform, box-shadow;
+  /* Magnetic offset starts at neutral — driven by JS via CSS custom props */
+  transform: translate(var(--mag-x, 0px), var(--mag-y, 0px)) scale(1);
 }
 
 .hp-btn-primary:hover {
-  background: #a83224;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(192, 57, 43, 0.38);
+  transform: translate(var(--mag-x, 0px), var(--mag-y, 0px)) scale(1.04);
+  box-shadow: 0 0 24px rgba(200,0,0,0.5), 0 8px 32px rgba(192,57,43,0.45);
+  background: #C0392B;
 }
 
 .hp-btn-primary:active {
-  transform: translateY(1px);
+  transform: translate(var(--mag-x, 0px), var(--mag-y, 0px)) scale(0.97);
   box-shadow: 0 2px 8px rgba(192,57,43,0.25);
 }
 
 .hp-btn-outline {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255,255,255,0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  color: rgba(255,255,255,0.88);
   background: transparent;
   padding: 13px 26px;
   border-radius: 8px;
   font-weight: 500;
   font-size: 14px;
   cursor: pointer;
-  transition: border-color 200ms ease, color 200ms ease;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
   font-family: var(--font-body);
   letter-spacing: 0.01em;
 }
 
 .hp-btn-outline:hover {
-  border-color: rgba(255,255,255,0.5);
-  color: #FFFFFF;
+  background: #ffffff;
+  color: #C0392B;
+  border-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.hp-btn-outline:active {
+  transform: translateY(1px);
 }
 
 .hp-hero-trust {
@@ -2995,6 +3129,13 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  transition: color 0.25s ease, filter 0.25s ease;
+  cursor: default;
+}
+
+.hp-trust-item:hover {
+  color: rgba(255,255,255,0.9);
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.35));
 }
 
 .hp-hero-right {
@@ -3065,70 +3206,179 @@ img {
   letter-spacing: 0.01em;
 }
 
-/* ── Category Grid ── */
+/* ── Category Grid — Borderless Premium ── */
 .hp-category-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 24px;
   margin-top: 48px;
 }
 
 .hp-category-card {
-  background: #FFFFFF;
-  border-radius: 16px;
-  padding: 0;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  position: relative;
+  border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(0,0,0,0.06);
+  display: block;
+  /* no border, no white bg, no box-shadow — pure image tile */
+  aspect-ratio: 3/4;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  text-decoration: none;
 }
 
 .hp-category-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.11), 0 0 0 1.5px rgba(192,57,43,0.25);
+  transform: scale(1.015);
 }
 
+/* Full-bleed background image (zoom on hover via inner div) */
 .hp-category-preview {
-  position: relative;
-  height: 180px;
+  position: absolute;
+  inset: 0;
   background-size: cover;
   background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
 }
 
+.hp-category-card:hover .hp-category-preview {
+  transform: scale(1.07);
+}
+
+/* Static dark scrim — always present so text is legible */
 .hp-category-preview-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.72) 0%,
+    rgba(0,0,0,0.18) 50%,
+    rgba(0,0,0,0.04) 100%
+  );
+  transition: opacity 0.35s ease;
+  z-index: 1;
 }
 
+/* Hover: deepen the gradient overlay */
+.hp-category-card:hover .hp-category-preview-overlay {
+  opacity: 0.9;
+}
+
+/* Floating frame — centered inside card */
 .hp-category-frame {
-  position: relative;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 2;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.hp-category-card:hover .hp-category-frame {
+  transform: translateY(-8px) scale(1.03);
+}
+
+/* Text overlay at the bottom of card */
 .hp-category-body {
-  padding: 14px 16px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 0 16px 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
 .hp-category-name {
-  font-family: 'Playfair Display', var(--font-heading);
-  font-size: 15px;
-  font-weight: 700;
-  color: #1A1A1A;
+  font-family: 'Inter', var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
   margin: 0;
-  letter-spacing: -0.005em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
 }
 
+/* Pill badge — hidden below, slides up on hover */
 .hp-category-explore {
   font-size: 11px;
-  color: rgba(192,57,43,0.8);
-  margin: 4px 0 0;
-  letter-spacing: 0.02em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: rgba(192,57,43,0.85);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 999px;
+  padding: 4px 12px;
+  white-space: nowrap;
+  transform: translateY(14px);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.hp-category-card:hover .hp-category-explore {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ── Staggered Scroll Reveal for Product Cards ── */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays — applied via inline style or nth-child in JS */
+.reveal-item:nth-child(1) { transition-delay: 0.0s; }
+.reveal-item:nth-child(2) { transition-delay: 0.1s; }
+.reveal-item:nth-child(3) { transition-delay: 0.2s; }
+.reveal-item:nth-child(4) { transition-delay: 0.3s; }
+.reveal-item:nth-child(5) { transition-delay: 0.4s; }
+.reveal-item:nth-child(6) { transition-delay: 0.5s; }
+
+/* ── Material Toggle Pills ── */
+.hp-material-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.hp-material-pill {
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  background: transparent;
+  color: rgba(255,255,255,0.65);
+  font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-family: var(--font-body);
+}
+
+.hp-material-pill:hover {
+  border-color: rgba(255,255,255,0.6);
+  color: #fff;
+  background: rgba(255,255,255,0.08);
+}
+
+.hp-material-pill.active {
+  background: #C0392B;
+  border-color: #C0392B;
+  color: #fff;
+  box-shadow: 0 0 14px rgba(192,57,43,0.45);
 }
 
 /* ── Best Sellers CTA ── */
@@ -3363,6 +3613,18 @@ img {
     opacity: 0.07 !important;
     transform: none !important;
     animation: none !important;
+  }
+
+  /* Freeze cinematic overlays */
+  .hp-hero::before,
+  .hp-hero::after {
+    animation: none !important;
+  }
+
+  /* Kill film grain flutter — freeze at position 0 */
+  body::after {
+    animation: none !important;
+    transform: translate(0, 0) !important;
   }
 
   .hp-float-1, .hp-float-2, .hp-float-3, .hp-float-4 {

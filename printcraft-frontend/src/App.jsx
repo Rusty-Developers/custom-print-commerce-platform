@@ -51,7 +51,8 @@ function WhatsAppFAB() {
         const orders = res.data
         const activeOrder = orders.find(o =>
           o.orderStatus === 'CONFIRMED' ||
-          o.orderStatus === 'MODIFICATION_ALLOWED'
+          o.orderStatus === 'MODIFICATION_ALLOWED' ||
+          o.orderStatus === 'PROCESSING'
         )
         if (activeOrder) {
           setShowWhatsApp(true)
@@ -152,13 +153,14 @@ function WhatsAppFAB() {
   )
 }
 
-function Layout({ children, noFooter }) {
+function Layout({ children, noFooter, heroPage }) {
   return (
     <>
       <AnnouncementBar />
       <Navbar />
       <CartDrawer />
-      <main>{children}</main>
+      {/* Fixed navbar is 64px tall; hero pages intentionally bleed under it */}
+      <main style={heroPage ? undefined : { paddingTop: 64 }}>{children}</main>
       {!noFooter && <Footer />}
     </>
   )
@@ -194,7 +196,7 @@ export default function App() {
 
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          <Route path="/" element={<Layout><HomePage /></Layout>} />
+          <Route path="/" element={<Layout heroPage><HomePage /></Layout>} />
           <Route path="/products" element={<Layout><ProductsPage /></Layout>} />
           <Route path="/products/:id" element={<Layout><ProductPage /></Layout>} />
           <Route path="/about" element={<Layout><AboutPage /></Layout>} />
