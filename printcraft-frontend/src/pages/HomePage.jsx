@@ -27,6 +27,42 @@ const CATEGORY_BACKGROUNDS = {
   CREATIVE:    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&fit=crop&auto=format&q=80',
 }
 
+/* ─── Material Toggle Photo Pools ─────────────────────────── */
+const MATERIAL_PHOTOS = {
+  all:     null, // null = default PHOTO_POOL
+  acrylic: [
+    'https://images.unsplash.com/photo-1502014822147-1aedfb0676e0?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1509718443690-d8e2fb3474b7?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1531685250784-7569952593d2?w=300&fit=crop&q=80',
+  ],
+  glass: [
+    'https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=300&fit=crop&q=80',
+  ],
+  wood: [
+    'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1581781870027-0f1c48c1bada?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=300&fit=crop&q=80',
+  ],
+  metal: [
+    'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1509718443690-d8e2fb3474b7?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1531685250784-7569952593d2?w=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1502014822147-1aedfb0676e0?w=300&fit=crop&q=80',
+  ],
+}
+
+const MATERIAL_PILLS = [
+  { key: 'acrylic', label: 'Acrylic' },
+  { key: 'glass',   label: 'Glass'   },
+  { key: 'wood',    label: 'Wood'    },
+  { key: 'metal',   label: 'Metal'   },
+]
+
 /**
  * Hero frame config.
  * translateZ values create multi-plane depth so mouse parallax moves
@@ -163,12 +199,15 @@ const IconStar = () => (
  * - Ambient glow blob behind the frame
  * - Contact shadow beneath
  */
-function HeroFrame({ frame, index, startIndex, sharedIndexes, springX, springY }) {
+function HeroFrame({ frame, index, startIndex, sharedIndexes, springX, springY, photoOverride }) {
   // Map the parent's spring values to a subtle per-frame offset.
   // Near frames (large translateZ) shift more than far ones for natural parallax.
-  const depth    = frame.translateZ / 50    // 0.4 – 1.0
-  const rotateX  = useTransform(springY, v => v * depth * 0.4)
-  const rotateY  = useTransform(springX, v => v * depth * 0.4)
+  const depth   = frame.translateZ / 50    // 0.4 – 1.0
+  const rotateX = useTransform(springY, v => v * depth * 0.4)
+  const rotateY = useTransform(springX, v => v * depth * 0.4)
+
+  // Use material override photos if provided, else fall back to shared pool
+  const photos = photoOverride || PHOTO_POOL
 
   return (
     <motion.div
@@ -222,7 +261,7 @@ function HeroFrame({ frame, index, startIndex, sharedIndexes, springX, springY }
       {/* Spring parallax wrapper — subtle rotational shift on cursor move */}
       <motion.div style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}>
         <CyclingFrame
-          photos={PHOTO_POOL}
+          photos={photos}
           width={140}
           height={175}
           frameStyle={{
@@ -246,8 +285,10 @@ function HeroFrame({ frame, index, startIndex, sharedIndexes, springX, springY }
 /* ─── Hero Section ────────────────────────────────────────── */
 function HeroSection() {
   const navigate = useNavigate()
-  const [mounted, setMounted] = useState(false)
-  const heroRef   = useRef(null)
+  const [mounted, setMounted]         = useState(false)
+  const [activeMaterial, setActiveMaterial] = useState(null) // null = default PHOTO_POOL
+  const heroRef    = useRef(null)
+  const shopBtnRef = useRef(null)
 
   const startIndexes  = useMemo(() => getFrameStartIndexes(4), [])
   const sharedIndexes = useRef([...startIndexes])
@@ -276,6 +317,27 @@ function HeroSection() {
     mouseY.set(0)
   }, [mouseX, mouseY])
 
+  // ── Magnetic effect for "Shop Now" ────────────────────────
+  const handleMagMove = useCallback((e) => {
+    const btn = shopBtnRef.current
+    if (!btn) return
+    const rect = btn.getBoundingClientRect()
+    const cx = rect.left + rect.width  / 2
+    const cy = rect.top  + rect.height / 2
+    // Normalise cursor distance to ±5px (max magnetic pull)
+    const dx = ((e.clientX - cx) / rect.width)  * 5
+    const dy = ((e.clientY - cy) / rect.height) * 5
+    btn.style.setProperty('--mag-x', `${dx.toFixed(2)}px`)
+    btn.style.setProperty('--mag-y', `${dy.toFixed(2)}px`)
+  }, [])
+
+  const handleMagLeave = useCallback(() => {
+    const btn = shopBtnRef.current
+    if (!btn) return
+    btn.style.setProperty('--mag-x', '0px')
+    btn.style.setProperty('--mag-y', '0px')
+  }, [])
+
   return (
     <section
       ref={heroRef}
@@ -303,8 +365,32 @@ function HeroSection() {
           <p className="hp-hero-sub">
             Premium custom prints on Glass, Acrylic, Metal, Wood &amp; more. Delivered across India.
           </p>
+
+          {/* Material Toggle Pills */}
+          <div className="hp-material-toggle" role="group" aria-label="Filter by material">
+            {MATERIAL_PILLS.map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                className={`hp-material-pill${activeMaterial === key ? ' active' : ''}`}
+                onClick={() => setActiveMaterial(activeMaterial === key ? null : key)}
+                aria-pressed={activeMaterial === key}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
           <div className="hp-hero-buttons">
-            <button type="button" className="hp-btn-primary" onClick={() => navigate('/products')}>
+            <button
+              ref={shopBtnRef}
+              type="button"
+              id="hero-shop-now-btn"
+              className="hp-btn-primary"
+              onClick={() => navigate('/products')}
+              onMouseMove={handleMagMove}
+              onMouseLeave={handleMagLeave}
+            >
               Shop Now →
             </button>
             <button type="button" className="hp-btn-outline" onClick={() => navigate('/products')}>
@@ -346,6 +432,8 @@ function HeroSection() {
                 sharedIndexes={sharedIndexes}
                 springX={springX}
                 springY={springY}
+                // Pass material-specific photos when a pill is active
+                photoOverride={activeMaterial ? MATERIAL_PHOTOS[activeMaterial] : null}
               />
             ))}
           </div>
@@ -364,11 +452,15 @@ function CategoryCard({ category }) {
       className="hp-category-card"
       aria-label={`Browse ${CATEGORY_LABELS[category]} prints`}
     >
+      {/* Full-bleed background image — zooms on hover via CSS */}
       <div
         className="hp-category-preview"
         style={{ backgroundImage: `url(${CATEGORY_BACKGROUNDS[category]})` }}
-      >
-        <div className="hp-category-preview-overlay" />
+      />
+      {/* Gradient scrim */}
+      <div className="hp-category-preview-overlay" />
+      {/* Floating frame preview */}
+      <div className="hp-category-frame">
         <CyclingFrame
           photos={SAMPLE_PHOTOS}
           width={110}
@@ -378,9 +470,9 @@ function CategoryCard({ category }) {
             border:       frameStyle.border,
             boxShadow:    '0 8px 32px rgba(0,0,0,0.25)',
           }}
-          className="hp-category-frame"
         />
       </div>
+      {/* Overlay text at bottom */}
       <div className="hp-category-body">
         <h3 className="hp-category-name">{CATEGORY_LABELS[category]}</h3>
         <p className="hp-category-explore">Explore →</p>
@@ -405,13 +497,31 @@ function CategoryShowcase() {
 }
 
 function BestSellers() {
-  const navigate = useNavigate()
+  const navigate  = useNavigate()
   const [products, setProducts] = useState([])
   const [loading, setLoading]   = useState(true)
+  const gridRef = useRef(null)
 
   useEffect(() => {
     api.get('/api/products').then((r) => setProducts(r.data)).catch(() => {}).finally(() => setLoading(false))
   }, [])
+
+  // Staggered scroll-reveal for product cards
+  useEffect(() => {
+    if (loading || !gridRef.current) return
+    const items = gridRef.current.querySelectorAll('.reveal-item')
+    if (!items.length) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target) }
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    )
+    items.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [loading])
 
   return (
     <section className="hp-section hp-section--gray reveal">
@@ -424,8 +534,16 @@ function BestSellers() {
           </div>
         ) : (
           <>
-            <div className="pc-product-grid">
-              {products.slice(0, 6).map((p) => <ProductCard key={p.id} product={p} />)}
+            <div className="pc-product-grid" ref={gridRef}>
+              {products.slice(0, 6).map((p, i) => (
+                <div
+                  key={p.id}
+                  className="reveal-item"
+                  style={{ transitionDelay: `${i * 0.1}s` }}
+                >
+                  <ProductCard product={p} />
+                </div>
+              ))}
             </div>
             <div className="hp-view-all-wrap">
               <button type="button" className="hp-view-all-btn" onClick={() => navigate('/products')}>
