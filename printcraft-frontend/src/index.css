@@ -1,5 +1,5 @@
 /* ============================================
-   PRINTCRAFT — GLOBAL DESIGN SYSTEM
+   PRINTCRAFT â€” GLOBAL DESIGN SYSTEM
    Premium Indian Print Studio
    ============================================ */
 
@@ -26,13 +26,13 @@
   --text-light: #9B9B9B;
   --border-color: #E8E8E8;
 
-  /* ── Cinematic Dark Palette ── */
+  /* â”€â”€ Cinematic Dark Palette â”€â”€ */
   --cinema-black:  #080808;
   --cinema-deep:   #0e0c0c;
   --cinema-surface:#141212;
   --cinema-lift:   rgba(255,255,255,0.04);
   --cinema-border: rgba(255,255,255,0.07);
-  --grain-opacity: 0.045;   /* film grain strength — tweak here */
+  --grain-opacity: 0.045;   /* film grain strength â€” tweak here */
 
   /* Dark Footer */
   --dark-bg: #1A1A1A;
@@ -45,7 +45,7 @@
   --green: #22C55E;
   --red-light: #FEF2F2;
 
-  /* Shadows — layered ambient + key light */
+  /* Shadows â€” layered ambient + key light */
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.04);
   --shadow-md: 0 2px 8px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05);
   --shadow-lg: 0 8px 24px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
@@ -61,7 +61,7 @@
   --radius-xl: 26px;
   --radius-full: 9999px;
 
-  /* Transitions — spring-like easing */
+  /* Transitions â€” spring-like easing */
   --transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: all 0.14s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-slow: all 0.48s cubic-bezier(0.16, 1, 0.3, 1);
@@ -194,9 +194,9 @@ img {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Cinematic Keyframes ── */
+/* â”€â”€ Cinematic Keyframes â”€â”€ */
 
-/* Film grain tile shift — moves the noise pattern each frame */
+/* Film grain tile shift â€” moves the noise pattern each frame */
 @keyframes grain-shift {
   0%   { transform: translate(0,   0);   }
   10%  { transform: translate(-2%, -3%); }
@@ -219,7 +219,7 @@ img {
   100% { opacity: 0.06; transform: translateX(0)   scale(1);    }
 }
 
-/* Cinematic vignette pulse — very subtle breathe */
+/* Cinematic vignette pulse â€” very subtle breathe */
 @keyframes vignette-breathe {
   0%,100% { opacity: 0.72; }
   50%     { opacity: 0.82; }
@@ -229,13 +229,13 @@ img {
   animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CINEMATIC FILM GRAIN
    Implemented as a fixed pseudo-element using an inline SVG
    feTurbulence filter so the noise is always covering the
    viewport. Grain-shift animation randomises the tile offset
    every frame to simulate real 35mm grain flutter.
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 body::after {
   content:    '';
   position:   fixed;
@@ -252,7 +252,7 @@ body::after {
   will-change: transform;
 }
 
-/* ─── Scroll Reveal ─────────────────────────────────── */
+/* â”€â”€â”€ Scroll Reveal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .reveal {
   opacity: 0;
   transform: translateY(32px);
@@ -264,7 +264,7 @@ body::after {
   transform: translateY(0);
 }
 
-/* ─── Loading Skeleton ──────────────────────────────── */
+/* â”€â”€â”€ Loading Skeleton â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .skeleton {
   background: linear-gradient(90deg, #f2f2f2 25%, #e8e8e8 50%, #f2f2f2 75%);
   background-size: 200% 100%;
@@ -1690,7 +1690,7 @@ body::after {
 
 /* Frame Preview */
 .room-scene {
-  /* Styled inline in JSX — this class is kept for selector compatibility */
+  /* Styled inline in JSX â€” this class is kept for selector compatibility */
 }
 
 .room-scene::before {
@@ -1721,7 +1721,7 @@ body::after {
   display: block;
 }
 
-/* Upload Zone — hover state via class (inline handles base) */
+/* Upload Zone â€” hover state via class (inline handles base) */
 .upload-zone:hover {
   border-color: #C0392B !important;
   background: rgba(192,57,43,0.02) !important;
@@ -2632,7 +2632,7 @@ body::after {
 }
 
 /* =========================================
-   PRODUCTS PAGE — REDESIGNED
+   PRODUCTS PAGE â€” REDESIGNED
    ========================================= */
 
 .pc-products-header {
@@ -2679,7 +2679,7 @@ body::after {
   animation: pulse 2.5s ease-in-out infinite;
 }
 
-/* ── Filter Tabs ── */
+/* â”€â”€ Filter Tabs â”€â”€ */
 .pc-filter-tabs-wrap {
   background: #FFFFFF;
   border-bottom: 1px solid #F0F0F0;
@@ -2726,7 +2726,7 @@ body::after {
   box-shadow: 0 2px 8px rgba(192,57,43,0.25);
 }
 
-/* ── Results Count ── */
+/* â”€â”€ Results Count â”€â”€ */
 .pc-results-count {
   font-size: 13px;
   color: var(--text-muted);
@@ -2739,7 +2739,7 @@ body::after {
   }
 }
 
-/* ── Product Grid ── */
+/* â”€â”€ Product Grid â”€â”€ */
 .pc-product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2753,7 +2753,7 @@ body::after {
   }
 }
 
-/* ── Empty State ── */
+/* â”€â”€ Empty State â”€â”€ */
 .pc-empty-state {
   text-align: center;
   padding: 80px 20px;
@@ -2777,7 +2777,7 @@ body::after {
 }
 
 /* =========================================
-   PRODUCT CARD — REDESIGNED
+   PRODUCT CARD â€” REDESIGNED
    ========================================= */
 
 .pc-product-card {
@@ -2818,7 +2818,7 @@ body::after {
   transform: translateY(-8px);
 }
 
-/* ── Frame Preview Wrapper ── */
+/* â”€â”€ Frame Preview Wrapper â”€â”€ */
 .pc-card-frame-wrapper {
   display: flex;
   align-items: center;
@@ -2835,7 +2835,7 @@ body::after {
   }
 }
 
-/* ── Card Body ── */
+/* â”€â”€ Card Body â”€â”€ */
 .pc-card-body {
   padding: 12px;
   display: flex;
@@ -2844,7 +2844,7 @@ body::after {
   background: #FFFFFF;
 }
 
-/* ── Product Name ── */
+/* â”€â”€ Product Name â”€â”€ */
 .pc-card-name {
   font-family: 'Playfair Display', var(--font-heading);
   font-size: 15px;
@@ -2859,7 +2859,7 @@ body::after {
   margin: 0;
 }
 
-/* ── Category Badge ── */
+/* â”€â”€ Category Badge â”€â”€ */
 .pc-card-category-badge {
   display: inline-flex;
   align-self: flex-start;
@@ -2872,7 +2872,7 @@ body::after {
   font-weight: 600;
 }
 
-/* ── Price ── */
+/* â”€â”€ Price â”€â”€ */
 .pc-card-price {
   font-size: 14px;
   font-weight: 700;
@@ -2885,7 +2885,7 @@ body::after {
   font-weight: 500;
 }
 
-/* ── CTA Button ── */
+/* â”€â”€ CTA Button â”€â”€ */
 .pc-card-cta {
   display: flex;
   align-items: center;
@@ -2912,18 +2912,18 @@ body::after {
 }
 
 /* =========================================
-   HOMEPAGE — REDESIGNED
+   HOMEPAGE â€” REDESIGNED
    ========================================= */
 
-/* ── Hero ──
+/* â”€â”€ Hero â”€â”€
    hpFloat and hpAmbientBreath are now driven by Framer Motion (animate prop).
    CSS keyframes removed to avoid competing with JS animation values. */
-/* ═══════════════════════════════════════════════════════
-   HERO — Cinematic Treatment
-   ═══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO â€” Cinematic Treatment
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .hp-hero {
   min-height: 100vh;
-  /* Richer near-black base — cooler left, warmer right */
+  /* Richer near-black base â€” cooler left, warmer right */
   background:
     linear-gradient(160deg,
       #050404 0%,
@@ -2946,7 +2946,7 @@ body::after {
     linear-gradient(160deg, #050404 0%, #0c0909 35%, #100b0b 65%, #060404 100%);
 }
 
-/* Cinematic vignette — soft black edges that breathe */
+/* Cinematic vignette â€” soft black edges that breathe */
 .hp-hero::before {
   content: '';
   position: absolute;
@@ -2962,7 +2962,7 @@ body::after {
   animation: vignette-breathe 8s ease-in-out infinite;
 }
 
-/* Slow warm light sweep — cinematic key light from upper-right */
+/* Slow warm light sweep â€” cinematic key light from upper-right */
 .hp-hero::after {
   content: '';
   position: absolute;
@@ -2979,7 +2979,7 @@ body::after {
   will-change: transform, opacity;
 }
 
-/* Ambient breathing glow — deeper red core, CSS-animated drift */
+/* Ambient breathing glow â€” deeper red core, CSS-animated drift */
 .hp-hero-ambient {
   position: absolute;
   inset: 0;
@@ -3071,7 +3071,7 @@ body::after {
   letter-spacing: 0.02em;
   box-shadow: 0 4px 16px rgba(192,57,43,0.30);
   will-change: transform, box-shadow;
-  /* Magnetic offset starts at neutral — driven by JS via CSS custom props */
+  /* Magnetic offset starts at neutral â€” driven by JS via CSS custom props */
   transform: translate(var(--mag-x, 0px), var(--mag-y, 0px)) scale(1);
 }
 
@@ -3206,7 +3206,7 @@ body::after {
   letter-spacing: 0.01em;
 }
 
-/* ── Category Grid — Borderless Premium ── */
+/* â”€â”€ Category Grid â€” Borderless Premium â”€â”€ */
 .hp-category-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -3220,7 +3220,7 @@ body::after {
   overflow: hidden;
   cursor: pointer;
   display: block;
-  /* no border, no white bg, no box-shadow — pure image tile */
+  /* no border, no white bg, no box-shadow â€” pure image tile */
   aspect-ratio: 3/4;
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   text-decoration: none;
@@ -3244,7 +3244,7 @@ body::after {
   transform: scale(1.07);
 }
 
-/* Static dark scrim — always present so text is legible */
+/* Static dark scrim â€” always present so text is legible */
 .hp-category-preview-overlay {
   position: absolute;
   inset: 0;
@@ -3263,7 +3263,7 @@ body::after {
   opacity: 0.9;
 }
 
-/* Floating frame — centered inside card */
+/* Floating frame â€” centered inside card */
 .hp-category-frame {
   position: absolute;
   inset: 0;
@@ -3302,7 +3302,7 @@ body::after {
   text-shadow: 0 2px 8px rgba(0,0,0,0.7);
 }
 
-/* Pill badge — hidden below, slides up on hover */
+/* Pill badge â€” hidden below, slides up on hover */
 .hp-category-explore {
   font-size: 11px;
   font-weight: 600;
@@ -3325,7 +3325,7 @@ body::after {
   opacity: 1;
 }
 
-/* ── Staggered Scroll Reveal for Product Cards ── */
+/* â”€â”€ Staggered Scroll Reveal for Product Cards â”€â”€ */
 .reveal-item {
   opacity: 0;
   transform: translateY(30px);
@@ -3338,7 +3338,7 @@ body::after {
   transform: translateY(0);
 }
 
-/* Stagger delays — applied via inline style or nth-child in JS */
+/* Stagger delays â€” applied via inline style or nth-child in JS */
 .reveal-item:nth-child(1) { transition-delay: 0.0s; }
 .reveal-item:nth-child(2) { transition-delay: 0.1s; }
 .reveal-item:nth-child(3) { transition-delay: 0.2s; }
@@ -3346,7 +3346,7 @@ body::after {
 .reveal-item:nth-child(5) { transition-delay: 0.4s; }
 .reveal-item:nth-child(6) { transition-delay: 0.5s; }
 
-/* ── Material Toggle Pills ── */
+/* â”€â”€ Material Toggle Pills â”€â”€ */
 .hp-material-toggle {
   display: flex;
   flex-wrap: wrap;
@@ -3381,7 +3381,7 @@ body::after {
   box-shadow: 0 0 14px rgba(192,57,43,0.45);
 }
 
-/* ── Best Sellers CTA ── */
+/* â”€â”€ Best Sellers CTA â”€â”€ */
 .hp-view-all-wrap {
   text-align: center;
   margin-top: 40px;
@@ -3411,7 +3411,7 @@ body::after {
   box-shadow: 0 4px 16px rgba(192,57,43,0.3);
 }
 
-/* ── Features ── */
+/* â”€â”€ Features â”€â”€ */
 .hp-features-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -3463,7 +3463,7 @@ body::after {
   margin: 8px 0 0;
 }
 
-/* ── Focus Rings ── */
+/* â”€â”€ Focus Rings â”€â”€ */
 .hp-btn-primary:focus-visible,
 .hp-btn-outline:focus-visible {
   outline: 3px solid #C0392B;
@@ -3495,7 +3495,7 @@ body::after {
   border-radius: 4px;
 }
 
-/* ── FAQ ── */
+/* â”€â”€ FAQ â”€â”€ */
 .hp-faq-list {
   max-width: 720px;
   margin: 48px auto 0;
@@ -3558,7 +3558,7 @@ body::after {
   padding-top: 16px;
 }
 
-/* ── Mobile ── */
+/* â”€â”€ Mobile â”€â”€ */
 @media (max-width: 767px) {
   .hp-hero-inner {
     flex-direction: column;
@@ -3577,10 +3577,11 @@ body::after {
   .hp-hero-right {
     flex: none;
     width: 100%;
-    height: 300px;
     align-items: center;
     justify-content: center;
   }
+
+
 
   .hp-hero-frames {
     gap: 16px;
@@ -3605,7 +3606,7 @@ body::after {
   }
 }
 
-/* ── Reduced Motion ── */
+/* â”€â”€ Reduced Motion â”€â”€ */
 @media (prefers-reduced-motion: reduce) {
   /* Framer Motion respects this via its own reduced-motion checks.
      CSS fallback: freeze ambient and floats. */
@@ -3621,7 +3622,7 @@ body::after {
     animation: none !important;
   }
 
-  /* Kill film grain flutter — freeze at position 0 */
+  /* Kill film grain flutter â€” freeze at position 0 */
   body::after {
     animation: none !important;
     transform: translate(0, 0) !important;

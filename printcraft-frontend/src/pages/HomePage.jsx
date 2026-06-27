@@ -5,7 +5,6 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
-  AnimatePresence,
 } from 'framer-motion'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
@@ -13,6 +12,9 @@ import CyclingFrame from '../components/CyclingFrame'
 import { ALL_CATEGORIES, CATEGORY_LABELS } from '../utils/format'
 import { SAMPLE_PHOTOS, getCategoryFrameStyle } from '../utils/framePreview'
 import { PHOTO_POOL, getFrameStartIndexes } from '../utils/photoPool'
+
+
+
 
 /* ─── Category Backgrounds ────────────────────────────────── */
 const CATEGORY_BACKGROUNDS = {
@@ -282,6 +284,7 @@ function HeroFrame({ frame, index, startIndex, sharedIndexes, springX, springY, 
   )
 }
 
+
 /* ─── Hero Section ────────────────────────────────────────── */
 function HeroSection() {
   const navigate = useNavigate()
@@ -307,7 +310,6 @@ function HeroSection() {
     if (window.matchMedia('(pointer: coarse)').matches) return
     const rect = heroRef.current?.getBoundingClientRect()
     if (!rect) return
-    // Normalize to -5 → 5 range (subtle rotation)
     mouseX.set(((e.clientX - rect.left) / rect.width  - 0.5) * 10)
     mouseY.set(((e.clientY - rect.top)  / rect.height - 0.5) * 10)
   }, [mouseX, mouseY])
@@ -324,7 +326,6 @@ function HeroSection() {
     const rect = btn.getBoundingClientRect()
     const cx = rect.left + rect.width  / 2
     const cy = rect.top  + rect.height / 2
-    // Normalise cursor distance to ±5px (max magnetic pull)
     const dx = ((e.clientX - cx) / rect.width)  * 5
     const dy = ((e.clientY - cy) / rect.height) * 5
     btn.style.setProperty('--mag-x', `${dx.toFixed(2)}px`)
@@ -406,21 +407,16 @@ function HeroSection() {
           </div>
         </div>
 
-        {/* ── Right — Floating Frames ── */}
+        {/* ── Right — Floating 3D Frames ── */}
         <div className="hp-hero-right">
-          {/*
-            Perspective wrapper — all 4 frames live inside a single 3D
-            perspective context. Their individual translateZ values separate
-            them in Z-space, creating genuine depth layering.
-          */}
           <div
             style={{
-              perspective:       '1400px',
-              perspectiveOrigin: '50% 50%',
-              display:           'grid',
+              perspective:         '1400px',
+              perspectiveOrigin:   '50% 50%',
+              display:             'grid',
               gridTemplateColumns: 'repeat(2, 140px)',
-              gap:               '28px',
-              transformStyle:    'preserve-3d',
+              gap:                 '24px',
+              transformStyle:      'preserve-3d',
             }}
           >
             {HERO_FRAMES.map((frame, i) => (
@@ -432,7 +428,6 @@ function HeroSection() {
                 sharedIndexes={sharedIndexes}
                 springX={springX}
                 springY={springY}
-                // Pass material-specific photos when a pill is active
                 photoOverride={activeMaterial ? MATERIAL_PHOTOS[activeMaterial] : null}
               />
             ))}
