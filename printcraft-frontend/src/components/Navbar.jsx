@@ -134,14 +134,16 @@ export default function Navbar() {
             onClick={closeMobile}
           >
             <img
-              src="/mk-group-logo.png"
+              src="/mk-group-logo.jpg"
               alt="MK Group Logo"
               style={{
-                height: '44px',
+                height: '48px',
                 width: 'auto',
-                maxWidth: '180px',
+                maxWidth: '200px',
                 objectFit: 'contain',
+                objectPosition: 'left center',
                 display: 'block',
+                borderRadius: '6px',
               }}
             />
             <span className="navbar-brand-name">MK Group Printing</span>
