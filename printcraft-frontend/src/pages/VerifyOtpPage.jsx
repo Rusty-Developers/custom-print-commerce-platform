@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
@@ -101,19 +101,47 @@ export default function VerifyOtpPage() {
     }
   }
 
+  const filled = digits.filter(Boolean).length
+
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <div className="auth-card-header">
-          <Logo size={24} />
-          <h1 className="auth-title" style={{ marginTop: 20 }}>Verify OTP</h1>
-          <p className="auth-subtitle">
-            Sent to <strong>+91 {phone}</strong>&nbsp;
-            <Link to="/login" style={{ color: 'var(--primary)', fontSize: 13, fontWeight: 600 }}>Change</Link>
-          </p>
-        </div>
-        <div className="auth-card-body">
+    <div className="auth-page-cinema">
+      <div className="auth-bg-cinema" />
+
+      <div className="auth-panel-cinema">
+        <div className="auth-deco-strip" />
+
+        <div style={{ padding: '44px 44px 40px' }}>
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <Logo size={28} />
+            <h1 style={{
+              fontFamily: 'var(--font-heading)', fontSize: 26, fontWeight: 800,
+              marginTop: 18, marginBottom: 6, color: 'var(--text-dark)',
+              letterSpacing: '-0.02em',
+            }}>
+              Verify OTP
+            </h1>
+            <p style={{ fontSize: 13.5, color: 'var(--text-muted)', lineHeight: 1.55 }}>
+              Sent to <strong style={{ color: 'var(--text-dark)' }}>+91 {phone}</strong>&nbsp;
+              <Link to="/login" style={{ color: 'var(--primary)', fontSize: 12.5, fontWeight: 700 }}>Change</Link>
+            </p>
+          </div>
+
+          {/* Progress bar */}
+          <div style={{
+            height: 3, background: 'var(--divider)', borderRadius: 2, marginBottom: 32, overflow: 'hidden',
+          }}>
+            <div style={{
+              height: '100%',
+              width: `${(filled / OTP_LENGTH) * 100}%`,
+              background: 'var(--primary-gradient)',
+              borderRadius: 2,
+              transition: 'width 200ms ease',
+            }} />
+          </div>
+
           <form onSubmit={handleVerify} noValidate>
+            {/* OTP Inputs */}
             <div className={`otp-inputs${shake ? ' shake' : ''}`} onPaste={handlePaste}>
               {digits.map((d, i) => (
                 <input
@@ -131,21 +159,31 @@ export default function VerifyOtpPage() {
                   autoFocus={i === 0}
                   disabled={attempts >= 5}
                   aria-label={`OTP digit ${i + 1}`}
+                  style={{
+                    background: d ? 'linear-gradient(135deg, #fff5f5, #fff)' : 'var(--white)',
+                    borderColor: d ? 'var(--primary)' : undefined,
+                    boxShadow: d ? '0 0 0 2px rgba(192,57,43,0.08)' : undefined,
+                  }}
                 />
               ))}
             </div>
 
             {/* Timer */}
-            <div className="otp-timer">
+            <div className="otp-timer" style={{ marginBottom: 8 }}>
               {timer > 0 ? (
-                <>OTP expires in <strong>{formatTimer(timer)}</strong></>
+                <>
+                  <span style={{ fontSize: 12 }}>OTP expires in</span>{' '}
+                  <strong style={{ color: timer < 60 ? 'var(--primary)' : 'var(--text-dark)', fontVariantNumeric: 'tabular-nums' }}>
+                    {formatTimer(timer)}
+                  </strong>
+                </>
               ) : (
-                <span className="otp-resend" onClick={handleResend}>Resend OTP →</span>
+                <span className="otp-resend" onClick={handleResend}>↺ Resend OTP</span>
               )}
             </div>
 
             {attempts >= 5 && (
-              <div style={{ textAlign: 'center', color: 'var(--primary)', fontSize: 13, marginBottom: 12 }}>
+              <div style={{ textAlign: 'center', color: 'var(--primary)', fontSize: 13, marginBottom: 12, fontWeight: 500 }}>
                 Too many wrong attempts.{' '}
                 <span className="otp-resend" onClick={handleResend}>Request a new OTP</span>
               </div>
@@ -153,14 +191,18 @@ export default function VerifyOtpPage() {
 
             <button
               type="submit"
-              className="btn btn-primary btn-full btn-lg"
+              className="btn btn-primary btn-full"
               id="verify-otp-btn"
-              disabled={loading || attempts >= 5}
-              style={{ marginTop: 8 }}
+              disabled={loading || attempts >= 5 || filled < OTP_LENGTH}
+              style={{ padding: '14px 28px', fontSize: 14.5, marginTop: 16 }}
             >
-              {loading ? <Spinner size="sm" white /> : 'Verify OTP'}
+              {loading ? <Spinner size="sm" white /> : 'Verify & Login'}
             </button>
           </form>
+
+          <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-light)', marginTop: 24 }}>
+            🔒 Your OTP is valid for 5 minutes only
+          </p>
         </div>
       </div>
     </div>

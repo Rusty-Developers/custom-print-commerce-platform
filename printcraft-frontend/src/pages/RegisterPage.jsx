@@ -49,14 +49,52 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <div className="auth-card-header">
-          <Logo size={24} />
-          <h1 className="auth-title" style={{ marginTop: 20 }}>Create Account</h1>
-          <p className="auth-subtitle">Join MK Group Printing — your prints await</p>
-        </div>
-        <div className="auth-card-body">
+    <div className="auth-page-cinema">
+      <div className="auth-bg-cinema" />
+
+      <div className="auth-panel-cinema" style={{ maxWidth: 480 }}>
+        <div className="auth-deco-strip" />
+
+        <div style={{ padding: '40px 44px 40px' }}>
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <Logo size={28} />
+            <h1 style={{
+              fontFamily: 'var(--font-heading)', fontSize: 26, fontWeight: 800,
+              marginTop: 18, marginBottom: 6, color: 'var(--text-dark)',
+              letterSpacing: '-0.02em',
+            }}>
+              Create Account
+            </h1>
+            <p style={{ fontSize: 13.5, color: 'var(--text-muted)', lineHeight: 1.55 }}>
+              Join MK Group Printing — your prints await
+            </p>
+          </div>
+
+          {/* Steps indicator */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            gap: 8, marginBottom: 28,
+          }}>
+            {['Details', 'Verify OTP', 'Done'].map((s, i) => (
+              <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{
+                  width: 24, height: 24, borderRadius: '50%',
+                  background: i === 0 ? 'var(--primary-gradient)' : 'var(--divider)',
+                  color: i === 0 ? 'white' : 'var(--text-light)',
+                  fontSize: 11, fontWeight: 700,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {i + 1}
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 500, color: i === 0 ? 'var(--primary)' : 'var(--text-light)' }}>
+                  {s}
+                </span>
+                {i < 2 && <div style={{ width: 20, height: 1, background: 'var(--divider)' }} />}
+              </div>
+            ))}
+          </div>
+
           <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div className="form-group">
               <label className="form-label" htmlFor="reg-name">Full Name</label>
@@ -64,7 +102,7 @@ export default function RegisterPage() {
                 id="reg-name"
                 className={`form-input${errors.name ? ' error' : ''}`}
                 type="text"
-                placeholder="e.g. Priya Sharma"
+                placeholder="e.g. Manas Kundu"
                 value={form.name}
                 onChange={set('name')}
                 onBlur={validate}
@@ -95,7 +133,7 @@ export default function RegisterPage() {
                 id="reg-email"
                 className={`form-input${errors.email ? ' error' : ''}`}
                 type="email"
-                placeholder="hello@example.com"
+                placeholder="you@example.com"
                 value={form.email}
                 onChange={set('email')}
                 onBlur={validate}
@@ -104,15 +142,51 @@ export default function RegisterPage() {
               {errors.email && <span className="form-error">{errors.email}</span>}
             </div>
 
-            <button type="submit" className="btn btn-primary btn-full btn-lg" id="register-btn" disabled={loading}>
-              {loading ? <Spinner size="sm" white /> : 'Create Account'}
+            <button
+              type="submit"
+              className="btn btn-primary btn-full"
+              id="register-btn"
+              disabled={loading}
+              style={{ padding: '14px 28px', fontSize: 14.5, marginTop: 4 }}
+            >
+              {loading ? <Spinner size="sm" white /> : 'Create Account →'}
             </button>
           </form>
 
-          <div className="auth-footer-link">
-            Already have an account?{' '}
-            <Link to="/login">Login →</Link>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            margin: '22px 0', color: 'var(--text-light)', fontSize: 12,
+          }}>
+            <div style={{ flex: 1, height: 1, background: 'var(--divider)' }} />
+            <span>HAVE AN ACCOUNT?</span>
+            <div style={{ flex: 1, height: 1, background: 'var(--divider)' }} />
           </div>
+
+          <Link
+            to="/login"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: '100%', padding: '13px 28px',
+              border: '1.5px solid var(--border-color)',
+              borderRadius: 'var(--radius-sm)', fontSize: 14, fontWeight: 600,
+              color: 'var(--text-dark)', textDecoration: 'none',
+              transition: 'border-color 180ms ease, color 180ms ease',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = 'var(--primary)'
+              e.currentTarget.style.color = 'var(--primary)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'var(--border-color)'
+              e.currentTarget.style.color = 'var(--text-dark)'
+            }}
+          >
+            Login Instead
+          </Link>
+
+          <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-light)', marginTop: 20 }}>
+            🔒 Your data is safe with us — we never share it
+          </p>
         </div>
       </div>
     </div>
