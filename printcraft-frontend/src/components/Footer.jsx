@@ -38,7 +38,7 @@ function IconX() {
 
 const SOCIAL_LINKS = [
   { icon: <IconFacebook />, label: 'Follow us on Facebook',  href: '#' },
-  { icon: <IconInstagram />, label: 'Follow us on Instagram', href: '#' },
+  { icon: <IconInstagram />, label: 'Follow us on Instagram', href: 'https://www.instagram.com/mkgroupprinting?igsh=ZmJhdmYxZjF1OWsz' },
   { icon: <IconX />,        label: 'Follow us on X',         href: '#' },
   { icon: <IconYouTube />,  label: 'Watch us on YouTube',    href: '#' },
 ]
@@ -158,19 +158,15 @@ export default function Footer() {
             <h4 className="footer-heading">Contact Info</h4>
             <div className="footer-contact-item">
               <IconPin />
-              <span>42, Craft Lane, Koramangala,<br />Bengaluru, Karnataka 560034</span>
+              <span>Manas Kundu, Girjapara (Kathgada),<br />Dist. Paschim Burdwan,<br />West Bengal – 713347</span>
             </div>
             <div className="footer-contact-item">
               <IconPhone />
-              <span>+91 98765 43210</span>
+              <a href="tel:+919647212171" style={{ color: 'inherit', textDecoration: 'none' }}>+91 96472 12171</a>
             </div>
             <div className="footer-contact-item">
               <IconMail />
-              <span>hello@mkgroupprinting.in</span>
-            </div>
-            <div className="footer-contact-item">
-              <IconClock />
-              <span>Mon–Sat: 9AM – 7PM IST</span>
+              <a href="mailto:mkgroupprinting@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>mkgroupprinting@gmail.com</a>
             </div>
           </div>
         </div>
