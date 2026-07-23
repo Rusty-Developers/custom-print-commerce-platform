@@ -44,8 +44,8 @@ function WhatsAppFAB() {
       return
     }
 
-    // Check if user has any CONFIRMED or MODIFICATION_ALLOWED orders
-    const checkOrders = async () => {
+    // Debounce API call by 600ms to avoid hammering on rapid navigations
+    const timer = setTimeout(async () => {
       try {
         const res = await api.get('/api/user/orders')
         const orders = res.data
@@ -64,10 +64,11 @@ function WhatsAppFAB() {
       } catch {
         setShowWhatsApp(false)
       }
-    }
+    }, 600)
 
-    checkOrders()
+    return () => clearTimeout(timer)
   }, [location.pathname, token])
+
 
   if (!showWhatsApp) return null
 
@@ -153,14 +154,14 @@ function WhatsAppFAB() {
   )
 }
 
-function Layout({ children, noFooter, heroPage }) {
+function Layout({ children, noFooter }) {
   return (
     <>
       <AnnouncementBar />
       <Navbar />
       <CartDrawer />
-      {/* Fixed navbar is 64px tall; hero pages intentionally bleed under it */}
-      <main style={heroPage ? undefined : { paddingTop: 64 }}>{children}</main>
+      {/* Sticky navbar flows in the document — no padding offset needed */}
+      <main>{children}</main>
       {!noFooter && <Footer />}
     </>
   )
@@ -196,7 +197,7 @@ export default function App() {
 
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          <Route path="/" element={<Layout heroPage><HomePage /></Layout>} />
+          <Route path="/" element={<Layout><HomePage /></Layout>} />
           <Route path="/products" element={<Layout><ProductsPage /></Layout>} />
           <Route path="/products/:id" element={<Layout><ProductPage /></Layout>} />
           <Route path="/about" element={<Layout><AboutPage /></Layout>} />

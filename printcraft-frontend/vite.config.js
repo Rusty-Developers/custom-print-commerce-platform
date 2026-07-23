@@ -17,6 +17,13 @@ export default defineConfig({
     },
   },
   server: {
+    port: 5175,
+    strictPort: true,
+    // Allow Google OAuth popup postMessage through COOP
+    headers: {
+      'Cross-Origin-Opener-Policy': 'unsafe-none',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:8080',

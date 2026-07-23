@@ -85,7 +85,7 @@ export default function ProductsPage() {
               <button
                 key={tab.key}
                 type="button"
-                className={`pc-filter-tab${activeCategory === tab.key ? ' active' : ''}`}
+                className={`pc-filter-tab pc-filter-tab--${tab.key.toLowerCase()}${activeCategory === tab.key ? ' active' : ''}`}
                 onClick={() => setCategory(tab.key)}
                 id={`filter-tab-${tab.key}`}
               >

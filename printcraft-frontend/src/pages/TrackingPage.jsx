@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import api from '../api/axios'
 import Spinner from '../components/Spinner'
 import toast from 'react-hot-toast'
+import useSeo from '../hooks/useSeo'
 
 // ── Full enum from backend DeliveryStatus.java ──────────────────────────────
 const DELIVERY_STEPS = [
@@ -52,6 +53,10 @@ function isStepCurrent(stepStatus, currentStatus) {
 }
 
 export default function TrackingPage() {
+  useSeo(
+    'Track Your Order — MK Group Printing',
+    'Real-time delivery tracking for your MK Group Printing order. Enter your Order ID for live updates.'
+  )
   const [searchParams] = useSearchParams()
   const rawOrderId = searchParams.get('orderId') || ''
 

@@ -41,8 +41,8 @@ export default function AdminOrders() {
     if (filterOrderId) params.orderId = filterOrderId
     if (filterFrom) params.from = filterFrom
     if (filterTo) params.to = filterTo
-    api.get('/admin/orders', { params })
-      .then((r) => setOrders(r.data || []))
+    api.get('/api/admin/orders', { params })
+      .then((r) => setOrders(Array.isArray(r.data) ? r.data : []))
       .catch(() => { setError(true); toast.error('Failed to fetch orders') })
       .finally(() => setLoading(false))
   }
@@ -109,8 +109,8 @@ export default function AdminOrders() {
               {orders.map((o) => (
                 <tr key={o.id}>
                   <td>#{o.id}</td>
-                  <td style={{ fontSize: 12 }}>{o.user?.name || o.user?.phoneNo || '—'}</td>
-                  <td style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.product?.productName || '—'}</td>
+                  <td style={{ fontSize: 12 }}>{o.customerName || o.customerPhone || '—'}</td>
+                  <td style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.productName || '—'}</td>
                   <td style={{ fontSize: 12 }}>{SIZE_LABELS[o.productSizeInches] || o.productSizeInches}</td>
                   <td style={{ fontSize: 12 }}>{THICKNESS_LABELS[o.productThickness] || o.productThickness}</td>
                   <td style={{ fontSize: 12 }}>{FRAME_LABELS[o.frameTypes] || o.frameTypes}</td>

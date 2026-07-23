@@ -2,7 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import useStore from '../store/useStore'
 import { isLoggedIn } from '../utils/jwt'
-import { CATEGORY_LABELS, CATEGORY_ICONS, ALL_CATEGORIES } from '../utils/format'
+import { CATEGORY_LABELS, ALL_CATEGORIES } from '../utils/format'
+import newLogo from '../assets/logopiv/newlogo1.jpeg'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home', end: true },
@@ -134,19 +135,42 @@ export default function Navbar() {
             onClick={closeMobile}
           >
             <img
-              src="/mk-group-logo.jpg"
-              alt="MK Group Logo"
+              src={newLogo}
+              alt="MK Group Printing Logo"
               style={{
-                height: '48px',
+                height: '44px',
                 width: 'auto',
-                maxWidth: '200px',
+                maxWidth: '180px',
                 objectFit: 'contain',
-                objectPosition: 'left center',
+                objectPosition: 'center',
                 display: 'block',
-                borderRadius: '6px',
+                borderRadius: '4px',
               }}
             />
-            <span className="navbar-brand-name">MK Group Printing</span>
+            <span style={{
+              display: 'flex',
+              flexDirection: 'column',
+              lineHeight: 1.15,
+              userSelect: 'none',
+            }}>
+              <span style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontSize: '17px',
+                fontWeight: 700,
+                color: '#ffffff',
+                letterSpacing: '-0.01em',
+                whiteSpace: 'nowrap',
+              }}>MK Group</span>
+              <span style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '10px',
+                fontWeight: 500,
+                color: 'rgba(255,255,255,0.52)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap',
+              }}>Printing</span>
+            </span>
           </Link>
 
           <ul className="navbar-nav">
@@ -191,11 +215,10 @@ export default function Navbar() {
                       <Link
                         key={cat}
                         to={`/products?category=${cat}`}
-                        className="mega-dropdown-item"
+                        className={`mega-dropdown-item mega-cat--${cat.toLowerCase()}`}
                         onClick={() => setMegaOpen(false)}
                       >
-                        <span className="mega-dropdown-icon">{CATEGORY_ICONS[cat]}</span>
-                        <span>{CATEGORY_LABELS[cat]}</span>
+                        <span className="mega-dropdown-label">{CATEGORY_LABELS[cat]}</span>
                       </Link>
                     ))}
                   </div>
@@ -271,10 +294,10 @@ export default function Navbar() {
                 <Link
                   key={cat}
                   to={`/products?category=${cat}`}
-                  className="navbar-mobile-cat"
+                  className={`navbar-mobile-cat mega-cat--${cat.toLowerCase()}`}
                   onClick={closeMobile}
                 >
-                  {CATEGORY_ICONS[cat]} {CATEGORY_LABELS[cat]}
+                  {CATEGORY_LABELS[cat]}
                 </Link>
               ))}
             </div>

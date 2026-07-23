@@ -1,7 +1,12 @@
 import { useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo'
+import useSeo from '../hooks/useSeo'
 
 export default function AboutPage() {
+  useSeo(
+    'About Us — MK Group Printing',
+    'Learn the story of MK Group Printing — a premium custom print studio serving thousands of customers across India with passion and craftsmanship.'
+  )
   const navigate = useNavigate()
   const VALUES = [
     { icon: '🏆', title: 'Quality', desc: 'We use only premium substrates — UV-resistant glass, aircraft-grade metal, sustainably sourced wood — to ensure every print is a lasting treasure.' },

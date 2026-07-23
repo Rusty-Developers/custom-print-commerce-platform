@@ -1,115 +1,88 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
-import CyclingFrame from '../components/CyclingFrame'
 import { ALL_CATEGORIES, CATEGORY_LABELS } from '../utils/format'
-import { SAMPLE_PHOTOS, getCategoryFrameStyle } from '../utils/framePreview'
-import { PHOTO_POOL, getFrameStartIndexes } from '../utils/photoPool'
+import mkgLogo from '../assets/logopiv/mkg.jpeg'
+import useSeo from '../hooks/useSeo'
+import catTiles      from '../assets/CATEGORY_BACKGROUNDS/TILES.jpeg'
+import catPvc        from '../assets/CATEGORY_BACKGROUNDS/Pvc door.jpeg'
+import catGlass      from '../assets/CATEGORY_BACKGROUNDS/Glass printing.jpeg'
+import catMetal      from '../assets/CATEGORY_BACKGROUNDS/Metal printing.jpeg'
+import catAcrylic    from '../assets/CATEGORY_BACKGROUNDS/Archylic.jpeg'
+import catPhotoFrame from '../assets/CATEGORY_BACKGROUNDS/Photo frame.jpeg'
+import catPoster     from '../assets/CATEGORY_BACKGROUNDS/Poster printing.jpeg'
+
+/* ─── Carousel Slides ─────────────────────────────────────── */
+const CAROUSEL_SLIDES = [
+  {
+    img: new URL('../assets/carosalPICS/GLASS.jpeg', import.meta.url).href,
+    label: 'PREMIUM GLASS PRINTS',
+    caption: 'UV-Resistant Inks on Crystal-Clear Glass',
+    category: 'GLASS',
+    btnLabel: 'Shop Glass Prints',
+  },
+  {
+    img: new URL('../assets/carosalPICS/Archylic.jpeg', import.meta.url).href,
+    label: 'ACRYLIC WALL ART',
+    caption: 'Vivid Colours Behind Premium Acrylic',
+    category: 'ACRYLIC',
+    btnLabel: 'Shop Acrylic Prints',
+  },
+  {
+    img: new URL('../assets/carosalPICS/Photo frame.jpeg', import.meta.url).href,
+    label: 'LUXURY CUSTOM FRAMES',
+    caption: 'Every Detail Crafted to Perfection',
+    category: 'PHOTO_FRAME',
+    btnLabel: 'Shop Photo Frames',
+  },
+  {
+    img: new URL('../assets/carosalPICS/WOODEN.jpeg', import.meta.url).href,
+    label: 'NATURAL WOOD PRINTS',
+    caption: 'Warm, Textured Prints on Real Wood',
+    category: 'WOOD',
+    btnLabel: 'Shop Wooden Prints',
+  },
+  {
+    img: new URL('../assets/carosalPICS/Metal printing.jpeg', import.meta.url).href,
+    label: 'METAL WALL PRINTS',
+    caption: 'Sleek, Durable Prints on Premium Metal',
+    category: 'METAL',
+    btnLabel: 'Shop Metal Prints',
+  },
+  {
+    img: new URL('../assets/carosalPICS/Poster printing.jpeg', import.meta.url).href,
+    label: 'BOLD POSTER PRINTING',
+    caption: 'High-Resolution Prints in 7 Sizes',
+    category: 'POSTER',
+    btnLabel: 'Shop Posters',
+  },
+]
+
+// Pills → navigate directly to category listing
+const MATERIAL_PILLS = [
+  { key: 'ACRYLIC', label: 'Acrylic' },
+  { key: 'GLASS',   label: 'Glass'   },
+  { key: 'WOOD',    label: 'Wood'    },
+  { key: 'METAL',   label: 'Metal'   },
+]
 
 
 
 
 /* ─── Category Backgrounds ────────────────────────────────── */
 const CATEGORY_BACKGROUNDS = {
-  TILES:       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&fit=crop&auto=format&q=80',
-  PVC:         'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&fit=crop&auto=format&q=80',
-  GLASS:       'https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=400&fit=crop&auto=format&q=80',
-  METAL:       'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=400&fit=crop&auto=format&q=80',
+  TILES:       catTiles,
+  PVC:         catPvc,
+  GLASS:       catGlass,
+  METAL:       catMetal,
   WOOD:        'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=400&fit=crop&auto=format&q=80',
-  ACRYLIC:     'https://images.unsplash.com/photo-1502014822147-1aedfb0676e0?w=400&fit=crop&auto=format&q=80',
-  PHOTO_FRAME: 'https://images.unsplash.com/photo-1531685250784-7569952593d2?w=400&fit=crop&auto=format&q=80',
-  POSTER:      'https://images.unsplash.com/photo-1579762715118-a6f1d4b934f1?w=400&fit=crop&auto=format&q=80',
+  ACRYLIC:     catAcrylic,
+  PHOTO_FRAME: catPhotoFrame,
+  POSTER:      catPoster,
   CREATIVE:    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&fit=crop&auto=format&q=80',
 }
-
-/* ─── Material Toggle Photo Pools ─────────────────────────── */
-const MATERIAL_PHOTOS = {
-  all:     null, // null = default PHOTO_POOL
-  acrylic: [
-    'https://images.unsplash.com/photo-1502014822147-1aedfb0676e0?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1509718443690-d8e2fb3474b7?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1531685250784-7569952593d2?w=300&fit=crop&q=80',
-  ],
-  glass: [
-    'https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=300&fit=crop&q=80',
-  ],
-  wood: [
-    'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1581781870027-0f1c48c1bada?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=300&fit=crop&q=80',
-  ],
-  metal: [
-    'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1509718443690-d8e2fb3474b7?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1531685250784-7569952593d2?w=300&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1502014822147-1aedfb0676e0?w=300&fit=crop&q=80',
-  ],
-}
-
-const MATERIAL_PILLS = [
-  { key: 'acrylic', label: 'Acrylic' },
-  { key: 'glass',   label: 'Glass'   },
-  { key: 'wood',    label: 'Wood'    },
-  { key: 'metal',   label: 'Metal'   },
-]
-
-/**
- * Hero frame config.
- * translateZ values create multi-plane depth so mouse parallax moves
- * each frame at a different visual rate — the near frames shift more than
- * the far ones, producing a natural stereo-depth showroom feel.
- */
-const HERO_FRAMES = [
-  {
-    borderRadius: '10px',
-    translateZ:   20,
-    floatDuration: 5.5,
-    floatDelay:    0,
-    shadow: '0 2px 4px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.18), 0 28px 72px rgba(0,0,0,0.32)',
-    glow:   'rgba(192, 100, 80, 0.22)',
-    baseTransform: 'rotateY(-7deg) rotateX(4deg)',
-  },
-  {
-    borderRadius: '50%',
-    translateZ:   35,
-    floatDuration: 6.8,
-    floatDelay:    1.4,
-    shadow: '0 2px 4px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.16), 0 24px 60px rgba(0,0,0,0.28)',
-    glow:   'rgba(139, 80, 200, 0.18)',
-    baseTransform: 'rotateY(6deg) rotateX(-3deg)',
-  },
-  {
-    borderRadius: '38px',
-    translateZ:   50,
-    floatDuration: 7.2,
-    floatDelay:    0.7,
-    shadow: '0 2px 4px rgba(0,0,0,0.10), 0 10px 28px rgba(0,0,0,0.22), 0 32px 80px rgba(0,0,0,0.38)',
-    glow:   'rgba(200, 140, 60, 0.20)',
-    baseTransform: 'rotateY(-5deg) rotateX(-2deg)',
-  },
-  {
-    border:       '8px solid #5a3e2b',
-    borderRadius: '10px',
-    translateZ:   30,
-    floatDuration: 6.0,
-    floatDelay:    2.1,
-    shadow: '0 2px 4px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.20), 0 26px 68px rgba(0,0,0,0.34)',
-    glow:   'rgba(90, 62, 43, 0.25)',
-    baseTransform: 'rotateY(7deg) rotateX(3deg)',
-  },
-]
 
 const FAQS = [
   { q: 'What materials do you print on?',   a: 'We print on premium Glass, Acrylic, Metal, Wood, PVC, Tiles and more. Each material gives a distinct premium look and finish.' },
@@ -162,6 +135,324 @@ function useScrollReveal(deps = []) {
   }, deps)
 }
 
+/* ─── Hero Trust Icons ───────────────────────────────────── */
+const IconShield = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4z"/><path d="M9 12l2 2 4-4"/>
+  </svg>
+)
+const IconTruck = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="1" y="6" width="15" height="10" rx="1"/><path d="M16 10h4l3 4v2h-7V10z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+  </svg>
+)
+const IconStar = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+  </svg>
+)
+
+/* ─── Prewarm a single image URL into the browser cache ──────── */
+function prewarm(src) {
+  if (!src) return
+  const img = new Image()
+  img.src = src
+  if (img.decode) img.decode().catch(() => {})
+}
+
+/* ─── Hero Section ────────────────────────────────────────── */
+function HeroSection() {
+  const navigate = useNavigate()
+  const [mounted, setMounted] = useState(false)
+  const total = CAROUSEL_SLIDES.length
+
+  // ── Dual-layer crossfade state ──
+  // layerA and layerB hold {src, opacity}. We ping-pong between them.
+  const [layerA, setLayerA] = useState({ src: CAROUSEL_SLIDES[0].img, opacity: 1 })
+  const [layerB, setLayerB] = useState({ src: '', opacity: 0 })
+  const topLayer   = useRef('A')        // which layer is "on top" / visible
+  const currIdx    = useRef(0)
+  const intervalRef = useRef(null)
+
+  // ── Caption/label follow the "current" top layer slide ──
+  const [slideIdx, setSlideIdx] = useState(0)
+
+  // ── Preload all images on mount ──
+  useEffect(() => {
+    CAROUSEL_SLIDES.forEach(s => prewarm(s.img))
+    setMounted(true)
+  }, [])
+
+  // ── Perform one crossfade tick ──
+  const tick = useCallback(() => {
+    const next    = (currIdx.current + 1) % total
+    const nextSrc = CAROUSEL_SLIDES[next].img
+
+    // Preload the slide after next so it's always warm
+    prewarm(CAROUSEL_SLIDES[(next + 1) % total].img)
+
+    currIdx.current = next
+
+    const doSwap = () => {
+      if (topLayer.current === 'A') {
+        // A is visible → load next into B, fade B in, fade A out
+        setLayerB({ src: nextSrc, opacity: 1 })
+        setLayerA(prev => ({ ...prev, opacity: 0 }))
+        topLayer.current = 'B'
+        // After fade, free A's memory
+        setTimeout(() => setLayerA({ src: '', opacity: 0 }), 700)
+      } else {
+        // B is visible → load next into A, fade A in, fade B out
+        setLayerA({ src: nextSrc, opacity: 1 })
+        setLayerB(prev => ({ ...prev, opacity: 0 }))
+        topLayer.current = 'A'
+        setTimeout(() => setLayerB({ src: '', opacity: 0 }), 700)
+      }
+      setSlideIdx(next)
+    }
+
+    // Gate the swap on the image being decoded (or 200ms safety timeout)
+    const img = new Image()
+    img.src = nextSrc
+    const timeout = setTimeout(doSwap, 200)
+    if (img.complete) {
+      clearTimeout(timeout)
+      doSwap()
+    } else {
+      img.onload  = () => { clearTimeout(timeout); doSwap() }
+      img.onerror = () => { clearTimeout(timeout); doSwap() }
+    }
+  }, [total])
+
+  const startInterval = useCallback(() => {
+    clearInterval(intervalRef.current)
+    intervalRef.current = setInterval(tick, 4000)
+  }, [tick])
+
+  useEffect(() => {
+    startInterval()
+    return () => clearInterval(intervalRef.current)
+  }, [startInterval])
+
+  const goTo = useCallback((idx) => {
+    if (idx === currIdx.current) return
+    // Jump directly: load target into the hidden layer then crossfade
+    const targetSrc = CAROUSEL_SLIDES[idx].img
+    currIdx.current = idx
+
+    const doSwap = () => {
+      if (topLayer.current === 'A') {
+        setLayerB({ src: targetSrc, opacity: 1 })
+        setLayerA(prev => ({ ...prev, opacity: 0 }))
+        topLayer.current = 'B'
+        setTimeout(() => setLayerA({ src: '', opacity: 0 }), 700)
+      } else {
+        setLayerA({ src: targetSrc, opacity: 1 })
+        setLayerB(prev => ({ ...prev, opacity: 0 }))
+        topLayer.current = 'A'
+        setTimeout(() => setLayerB({ src: '', opacity: 0 }), 700)
+      }
+      setSlideIdx(idx)
+    }
+
+    const img = new Image()
+    img.src = targetSrc
+    const timeout = setTimeout(doSwap, 200)
+    if (img.complete) { clearTimeout(timeout); doSwap() }
+    else {
+      img.onload  = () => { clearTimeout(timeout); doSwap() }
+      img.onerror = () => { clearTimeout(timeout); doSwap() }
+    }
+    startInterval()
+  }, [startInterval])
+
+  const prev = useCallback(() => goTo((currIdx.current - 1 + total) % total), [total, goTo])
+  const next = useCallback(() => goTo((currIdx.current + 1) % total), [total, goTo])
+
+  const current = CAROUSEL_SLIDES[slideIdx]
+  const FADE_MS = 700
+  const FADE_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)'
+
+  const imgStyle = (opacity, zIdx) => ({
+    position: 'absolute',
+    inset: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    objectPosition: 'center center',
+    display: 'block',
+    willChange: 'opacity',
+    zIndex: zIdx,
+    opacity,
+    transition: opacity === 0
+      ? 'none'
+      : `opacity ${FADE_MS}ms ${FADE_EASE}`,
+  })
+
+  return (
+    <>
+    <section className="hp-hero">
+      {/* ══ LEFT — Light copy panel ══ */}
+      <div className={`hp-hero-left${mounted ? ' hp-hero-left--enter' : ''}`}>
+        <p className="hp-hero-label">Premium Custom Prints</p>
+        <h1 className="hp-hero-title">
+          Your Memories<br />
+          Beautifully Printed
+        </h1>
+        <p className="hp-hero-sub">
+          Premium custom prints on Glass, Acrylic, Metal, Wood &amp; more. Delivered across India.
+        </p>
+
+        {/* Category pills — each one deep-links to that category's products */}
+        <div className="hp-material-toggle" role="group" aria-label="Browse by material">
+          {MATERIAL_PILLS.map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              className="hp-material-pill"
+              onClick={() => navigate(`/products?category=${key}`)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="hp-hero-buttons">
+          <button
+            type="button"
+            id="hero-view-all-products-btn"
+            className="hp-btn-primary"
+            onClick={() => navigate('/products')}
+          >
+            View All Products →
+          </button>
+          <button type="button" className="hp-btn-outline" onClick={() => navigate('/about')}>
+            Why Us? →
+          </button>
+        </div>
+
+        <div className="hp-hero-trust">
+          <span className="hp-trust-item"><IconShield /> Secure Payment</span>
+          <span className="hp-trust-sep" aria-hidden="true">·</span>
+          <span className="hp-trust-item"><IconTruck /> Pan-India Delivery</span>
+          <span className="hp-trust-sep" aria-hidden="true">·</span>
+          <span className="hp-trust-item"><IconStar /> 4.8/5 Rating</span>
+        </div>
+      </div>
+
+      {/* ══ RIGHT — Crimson carousel panel ══ */}
+      <div className="hp-hero-right">
+        {/* MK Group brand watermark */}
+        <img src={mkgLogo} alt="" className="hp-carousel-logo-bg" aria-hidden="true" />
+        {/* Deep red overlay + texture */}
+        <div className="hp-carousel-overlay" />
+        {/* Decorative large MK letterform */}
+        <div className="hp-carousel-letter" aria-hidden="true">MK</div>
+
+        {/* ── Dual-layer zero-blank crossfade ── */}
+        <div className="hp-carousel-img-wrap">
+          {layerA.src && (
+            <img
+              src={layerA.src}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              style={imgStyle(layerA.opacity, topLayer.current === 'A' ? 2 : 1)}
+            />
+          )}
+          {layerB.src && (
+            <img
+              src={layerB.src}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              style={imgStyle(layerB.opacity, topLayer.current === 'B' ? 2 : 1)}
+            />
+          )}
+          {/* Image scrim on top of images */}
+          <div className="hp-carousel-img-scrim" style={{ zIndex: 3 }} />
+        </div>
+
+        {/* Brand label centred over image */}
+        <div className="hp-carousel-brand">
+          <span className="hp-carousel-brand-title">MK Group</span>
+          <span className="hp-carousel-brand-sub">{current.label}</span>
+        </div>
+
+        {/* Arrow controls */}
+        <button className="hp-carousel-arrow hp-carousel-arrow--prev" onClick={prev} aria-label="Previous slide">
+          &#8249;
+        </button>
+        <button className="hp-carousel-arrow hp-carousel-arrow--next" onClick={next} aria-label="Next slide">
+          &#8250;
+        </button>
+
+        {/* Dot navigation */}
+        <div className="hp-carousel-dots" role="tablist" aria-label="Carousel navigation">
+          {CAROUSEL_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              role="tab"
+              aria-selected={i === slideIdx}
+              aria-label={`Slide ${i + 1}`}
+              className={`hp-carousel-dot${i === slideIdx ? ' active' : ''}`}
+              onClick={() => goTo(i)}
+            />
+          ))}
+        </div>
+
+        {/* Per-slide Shop Now CTA — deep-links to the slide's category */}
+        <div className="hp-carousel-cta-bar">
+          <span className="hp-carousel-cta-caption">{current.caption}</span>
+          <button
+            type="button"
+            className="hp-carousel-shop-btn"
+            id="carousel-shop-now-btn"
+            onClick={() =>
+              navigate(
+                current.category
+                  ? `/products?category=${current.category}`
+                  : '/products'
+              )
+            }
+            aria-label={current.btnLabel}
+          >
+            {current.btnLabel} →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Advertisement Banner — store showcase image below hero ── */}
+    <div
+      className="hp-ad-banner"
+      role="complementary"
+      aria-label="MK Group store showcase"
+    >
+      <img
+        src={new URL('../assets/carosalMusthavethisPIC/WhatsApp Image 2026-07-11 at 15.09.25.jpeg', import.meta.url).href}
+        alt="MK Group Printing — Visit our store"
+        className="hp-ad-banner-img"
+        loading="lazy"
+        decoding="async"
+      />
+      <div className="hp-ad-banner-overlay">
+        <span className="hp-ad-banner-tag">Our Store</span>
+        <span className="hp-ad-banner-text">Welcome to MK Group Printing — Premium Custom Frames & Prints</span>
+        <button
+          type="button"
+          className="hp-ad-banner-btn"
+          onClick={() => navigate('/products')}
+        >
+          Shop Now →
+        </button>
+      </div>
+    </div>
+    </>
+  )
+}
+
+
 /* ─── Skeleton Card ───────────────────────────────────────── */
 function SkeletonCard() {
   return (
@@ -176,297 +467,22 @@ function SkeletonCard() {
   )
 }
 
-/* ─── Hero Trust Icons ───────────────────────────────────── */
-const IconShield = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4z"/><path d="M9 12l2 2 4-4"/>
-  </svg>
-)
-const IconTruck = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="1" y="6" width="15" height="10" rx="1"/><path d="M16 10h4l3 4v2h-7V10z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-  </svg>
-)
-const IconStar = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
-    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-  </svg>
-)
-
-/* ─── Single Hero Frame ───────────────────────────────────── */
-/**
- * Renders one floating frame with:
- * - Framer Motion float animation (translateY loop, unique duration + delay)
- * - Spring-driven parallax derived from parent mouse motion values
- * - Ambient glow blob behind the frame
- * - Contact shadow beneath
- */
-function HeroFrame({ frame, index, startIndex, sharedIndexes, springX, springY, photoOverride }) {
-  // Map the parent's spring values to a subtle per-frame offset.
-  // Near frames (large translateZ) shift more than far ones for natural parallax.
-  const depth   = frame.translateZ / 50    // 0.4 – 1.0
-  const rotateX = useTransform(springY, v => v * depth * 0.4)
-  const rotateY = useTransform(springX, v => v * depth * 0.4)
-
-  // Use material override photos if provided, else fall back to shared pool
-  const photos = photoOverride || PHOTO_POOL
-
-  return (
-    <motion.div
-      style={{
-        position:   'relative',
-        transformStyle: 'preserve-3d',
-        willChange: 'transform',
-        // Static per-frame 3D tilt — applied as CSS for GPU compositing
-        transform:  `${frame.baseTransform} translateZ(${frame.translateZ}px)`,
-      }}
-      // Framer Motion float animation — each frame at its own speed + delay
-      animate={{ y: [0, -13, 0] }}
-      transition={{
-        duration: frame.floatDuration,
-        delay:    frame.floatDelay,
-        repeat:   Infinity,
-        ease:     'easeInOut',
-      }}
-    >
-      {/* Ambient glow blob */}
-      <div
-        aria-hidden="true"
-        style={{
-          position:     'absolute',
-          inset:        '-30px',
-          borderRadius: '50%',
-          background:   `radial-gradient(ellipse at 50% 50%, ${frame.glow} 0%, transparent 70%)`,
-          filter:       'blur(24px)',
-          zIndex:       -1,
-          pointerEvents:'none',
-        }}
-      />
-
-      {/* Contact shadow */}
-      <div
-        aria-hidden="true"
-        style={{
-          position:     'absolute',
-          bottom:       -20,
-          left:         '10%',
-          width:        '80%',
-          height:       20,
-          background:   'radial-gradient(ellipse 100% 100% at 50% 0%, rgba(0,0,0,0.32) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter:       'blur(6px)',
-          pointerEvents:'none',
-          zIndex:       -1,
-        }}
-      />
-
-      {/* Spring parallax wrapper — subtle rotational shift on cursor move */}
-      <motion.div style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}>
-        <CyclingFrame
-          photos={photos}
-          width={140}
-          height={175}
-          frameStyle={{
-            borderRadius: frame.borderRadius,
-            border:       frame.border,
-          }}
-          boxShadow={frame.shadow}
-          eager={index === 0}
-          pauseWhenHidden
-          initialIndex={startIndex}
-          cyclePeriod={8000}
-          staggerOffset={index * 2000}
-          frameSlot={index}
-          sharedIndexes={sharedIndexes}
-        />
-      </motion.div>
-    </motion.div>
-  )
-}
-
-
-/* ─── Hero Section ────────────────────────────────────────── */
-function HeroSection() {
-  const navigate = useNavigate()
-  const [mounted, setMounted]         = useState(false)
-  const [activeMaterial, setActiveMaterial] = useState(null) // null = default PHOTO_POOL
-  const heroRef    = useRef(null)
-  const shopBtnRef = useRef(null)
-
-  const startIndexes  = useMemo(() => getFrameStartIndexes(4), [])
-  const sharedIndexes = useRef([...startIndexes])
-
-  useEffect(() => { setMounted(true) }, [])
-
-  // Raw mouse position as motion values (0 = no movement yet)
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-
-  // Spring smoothing — slow, physical feel (stiffness 80, damping 20)
-  const springX = useSpring(mouseX, { stiffness: 80, damping: 20 })
-  const springY = useSpring(mouseY, { stiffness: 80, damping: 20 })
-
-  const handleMouseMove = useCallback((e) => {
-    if (window.matchMedia('(pointer: coarse)').matches) return
-    const rect = heroRef.current?.getBoundingClientRect()
-    if (!rect) return
-    mouseX.set(((e.clientX - rect.left) / rect.width  - 0.5) * 10)
-    mouseY.set(((e.clientY - rect.top)  / rect.height - 0.5) * 10)
-  }, [mouseX, mouseY])
-
-  const handleMouseLeave = useCallback(() => {
-    mouseX.set(0)
-    mouseY.set(0)
-  }, [mouseX, mouseY])
-
-  // ── Magnetic effect for "Shop Now" ────────────────────────
-  const handleMagMove = useCallback((e) => {
-    const btn = shopBtnRef.current
-    if (!btn) return
-    const rect = btn.getBoundingClientRect()
-    const cx = rect.left + rect.width  / 2
-    const cy = rect.top  + rect.height / 2
-    const dx = ((e.clientX - cx) / rect.width)  * 5
-    const dy = ((e.clientY - cy) / rect.height) * 5
-    btn.style.setProperty('--mag-x', `${dx.toFixed(2)}px`)
-    btn.style.setProperty('--mag-y', `${dy.toFixed(2)}px`)
-  }, [])
-
-  const handleMagLeave = useCallback(() => {
-    const btn = shopBtnRef.current
-    if (!btn) return
-    btn.style.setProperty('--mag-x', '0px')
-    btn.style.setProperty('--mag-y', '0px')
-  }, [])
-
-  return (
-    <section
-      ref={heroRef}
-      className="hp-hero"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      {/* Slow ambient breathing glow behind the entire hero */}
-      <motion.div
-        className="hp-hero-ambient"
-        aria-hidden="true"
-        animate={{ opacity: [0.06, 0.14, 0.06], scale: [1, 1.10, 1] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      <div className="hp-hero-inner container">
-        {/* ── Left — Copy ── */}
-        <div className="hp-hero-left">
-          <p className="hp-hero-label">Premium Custom Prints</p>
-          <h1 className={`hp-hero-title${mounted ? ' hp-hero-title--enter' : ''}`}>
-            Your Memories
-            <br />
-            Beautifully Printed
-          </h1>
-          <p className="hp-hero-sub">
-            Premium custom prints on Glass, Acrylic, Metal, Wood &amp; more. Delivered across India.
-          </p>
-
-          {/* Material Toggle Pills */}
-          <div className="hp-material-toggle" role="group" aria-label="Filter by material">
-            {MATERIAL_PILLS.map(({ key, label }) => (
-              <button
-                key={key}
-                type="button"
-                className={`hp-material-pill${activeMaterial === key ? ' active' : ''}`}
-                onClick={() => setActiveMaterial(activeMaterial === key ? null : key)}
-                aria-pressed={activeMaterial === key}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          <div className="hp-hero-buttons">
-            <button
-              ref={shopBtnRef}
-              type="button"
-              id="hero-shop-now-btn"
-              className="hp-btn-primary"
-              onClick={() => navigate('/products')}
-              onMouseMove={handleMagMove}
-              onMouseLeave={handleMagLeave}
-            >
-              Shop Now →
-            </button>
-            <button type="button" className="hp-btn-outline" onClick={() => navigate('/products')}>
-              See All Frames
-            </button>
-          </div>
-          <div className="hp-hero-trust">
-            <span className="hp-trust-item"><IconShield /> Secure Payment</span>
-            <span className="hp-trust-sep" aria-hidden="true">·</span>
-            <span className="hp-trust-item"><IconTruck /> Pan-India Delivery</span>
-            <span className="hp-trust-sep" aria-hidden="true">·</span>
-            <span className="hp-trust-item"><IconStar /> 4.8/5 Rating</span>
-          </div>
-        </div>
-
-        {/* ── Right — Floating 3D Frames ── */}
-        <div className="hp-hero-right">
-          <div
-            style={{
-              perspective:         '1400px',
-              perspectiveOrigin:   '50% 50%',
-              display:             'grid',
-              gridTemplateColumns: 'repeat(2, 140px)',
-              gap:                 '24px',
-              transformStyle:      'preserve-3d',
-            }}
-          >
-            {HERO_FRAMES.map((frame, i) => (
-              <HeroFrame
-                key={i}
-                frame={frame}
-                index={i}
-                startIndex={startIndexes[i]}
-                sharedIndexes={sharedIndexes}
-                springX={springX}
-                springY={springY}
-                photoOverride={activeMaterial ? MATERIAL_PHOTOS[activeMaterial] : null}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 /* ─── Category Card ───────────────────────────────────────── */
 function CategoryCard({ category }) {
-  const frameStyle = getCategoryFrameStyle(category)
   return (
     <Link
       to={`/products?category=${category}`}
       className="hp-category-card"
       aria-label={`Browse ${CATEGORY_LABELS[category]} prints`}
     >
-      {/* Full-bleed background image — zooms on hover via CSS */}
+      {/* Full-bleed background — aspect-ratio:3/2 matches source photos,
+          so cover shows the full image with zero cropping on any side */}
       <div
         className="hp-category-preview"
         style={{ backgroundImage: `url(${CATEGORY_BACKGROUNDS[category]})` }}
       />
       {/* Gradient scrim */}
       <div className="hp-category-preview-overlay" />
-      {/* Floating frame preview */}
-      <div className="hp-category-frame">
-        <CyclingFrame
-          photos={SAMPLE_PHOTOS}
-          width={110}
-          height={140}
-          frameStyle={{
-            borderRadius: frameStyle.borderRadius,
-            border:       frameStyle.border,
-            boxShadow:    '0 8px 32px rgba(0,0,0,0.25)',
-          }}
-        />
-      </div>
       {/* Overlay text at bottom */}
       <div className="hp-category-body">
         <h3 className="hp-category-name">{CATEGORY_LABELS[category]}</h3>
@@ -475,6 +491,8 @@ function CategoryCard({ category }) {
     </Link>
   )
 }
+
+
 
 function CategoryShowcase() {
   return (
@@ -617,6 +635,10 @@ function FAQSection() {
 }
 
 export default function HomePage() {
+  useSeo(
+    'MK Group Printing — Premium Custom Prints',
+    'Transform your memories into premium custom prints on Glass, Acrylic, Metal, Wood & more. Delivered pan-India in 5-7 days.'
+  )
   useScrollReveal([])
   return (
     <div className="page-enter">
