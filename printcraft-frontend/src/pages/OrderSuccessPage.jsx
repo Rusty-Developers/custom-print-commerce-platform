@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
+import useSeo from '../hooks/useSeo'
 
 /* ─── Inline Styles ─────────────────────────────────────── */
 const styles = `
@@ -339,6 +340,10 @@ const STEPS = [
 ]
 
 export default function OrderSuccessPage() {
+  useSeo(
+    'Order Confirmed — MK Group Printing',
+    'Your MK Group Printing order has been confirmed and is being crafted with care. Track your order for live updates.'
+  )
   const navigate  = useNavigate()
   const location  = useLocation()
   const orderId   = location.state?.orderId || localStorage.getItem('last_order_id')

@@ -5,6 +5,14 @@ import Spinner from '../../components/Spinner'
 import { formatINR } from '../../utils/format'
 import { isProductActive } from './adminUtils'
 
+// Safely normalize a response into an array, handling both
+// plain arrays and paginated wrapper objects (e.g. { content: [...] })
+function toArray(data) {
+  if (Array.isArray(data)) return data
+  if (Array.isArray(data?.content)) return data.content
+  return []
+}
+
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -17,13 +25,13 @@ export default function AdminDashboard() {
     setError(false)
     Promise.all([
       api.get('/api/products'),
-      api.get('/admin/orders'),
+      api.get('/api/admin/orders'),
       api.get('/api/admin/modifications/pending'),
     ])
       .then(([pr, or, mr]) => {
-        setProducts(pr.data || [])
-        setOrders(or.data || [])
-        setPendingMods((mr.data || []).length)
+        setProducts(toArray(pr.data))
+        setOrders(toArray(or.data))
+        setPendingMods(toArray(mr.data).length)
       })
       .catch(() => {
         setError(true)

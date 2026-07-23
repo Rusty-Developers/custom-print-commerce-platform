@@ -12,17 +12,20 @@ const TIMER_SECS = 300 // 5 minutes
 export default function VerifyOtpPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const phone = searchParams.get('phone') || ''
+  const phone    = searchParams.get('phone') || ''
   const redirect = searchParams.get('redirect') || '/'
 
   const setToken = useStore((s) => s.setToken)
 
-  const [digits, setDigits]       = useState(Array(OTP_LENGTH).fill(''))
-  const [loading, setLoading]     = useState(false)
-  const [shake, setShake]         = useState(false)
-  const [timer, setTimer]         = useState(TIMER_SECS)
-  const [attempts, setAttempts]   = useState(0)
+  const [digits, setDigits]     = useState(Array(OTP_LENGTH).fill(''))
+  const [loading, setLoading]   = useState(false)
+  const [shake, setShake]       = useState(false)
+  const [timer, setTimer]       = useState(TIMER_SECS)
+  const [attempts, setAttempts] = useState(0)
+  const [mounted, setMounted]   = useState(false)
   const inputsRef = useRef([])
+
+  useEffect(() => { const t = setTimeout(() => setMounted(true), 30); return () => clearTimeout(t) }, [])
 
   // Countdown
   useEffect(() => {
@@ -107,37 +110,28 @@ export default function VerifyOtpPage() {
     <div className="auth-page-cinema">
       <div className="auth-bg-cinema" />
 
-      <div className="auth-panel-cinema">
+      <div className={`auth-panel-cinema${mounted ? ' auth-panel--visible' : ''}`}>
         <div className="auth-deco-strip" />
 
-        <div style={{ padding: '44px 44px 40px' }}>
+        <div className="auth-panel-body">
           {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <Logo size={28} />
-            <h1 style={{
-              fontFamily: 'var(--font-heading)', fontSize: 26, fontWeight: 800,
-              marginTop: 18, marginBottom: 6, color: 'var(--text-dark)',
-              letterSpacing: '-0.02em',
-            }}>
-              Verify OTP
-            </h1>
-            <p style={{ fontSize: 13.5, color: 'var(--text-muted)', lineHeight: 1.55 }}>
+          <div className="auth-header">
+            <div className="auth-logo-wrap">
+              <Logo size={22} />
+            </div>
+            <h1 className="auth-heading">Verify OTP</h1>
+            <p className="auth-subheading">
               Sent to <strong style={{ color: 'var(--text-dark)' }}>+91 {phone}</strong>&nbsp;
-              <Link to="/login" style={{ color: 'var(--primary)', fontSize: 12.5, fontWeight: 700 }}>Change</Link>
+              <Link to="/login" style={{ color: 'var(--primary)', fontSize: '12.5px', fontWeight: 700 }}>Change</Link>
             </p>
           </div>
 
           {/* Progress bar */}
-          <div style={{
-            height: 3, background: 'var(--divider)', borderRadius: 2, marginBottom: 32, overflow: 'hidden',
-          }}>
-            <div style={{
-              height: '100%',
-              width: `${(filled / OTP_LENGTH) * 100}%`,
-              background: 'var(--primary-gradient)',
-              borderRadius: 2,
-              transition: 'width 200ms ease',
-            }} />
+          <div className="otp-progress-bar">
+            <div
+              className="otp-progress-fill"
+              style={{ width: `${(filled / OTP_LENGTH) * 100}%` }}
+            />
           </div>
 
           <form onSubmit={handleVerify} noValidate>
@@ -191,16 +185,15 @@ export default function VerifyOtpPage() {
 
             <button
               type="submit"
-              className="btn btn-primary btn-full"
+              className="btn btn-primary btn-full auth-submit-btn"
               id="verify-otp-btn"
               disabled={loading || attempts >= 5 || filled < OTP_LENGTH}
-              style={{ padding: '14px 28px', fontSize: 14.5, marginTop: 16 }}
             >
               {loading ? <Spinner size="sm" white /> : 'Verify & Login'}
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-light)', marginTop: 24 }}>
+          <p className="auth-footnote">
             🔒 Your OTP is valid for 5 minutes only
           </p>
         </div>

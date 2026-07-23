@@ -8,17 +8,17 @@ import Spinner from '../components/Spinner'
 
 // ── The ONLY Google client ID for this app ────────────────────────────────────
 const GOOGLE_CLIENT_ID =
-  '77738261734-9cdvibem3dicur2tl1j5r607uf951mms.apps.googleusercontent.com'
+  '280935553138-9l8a389kma480vag3oetuf82565i2ppo.apps.googleusercontent.com'
 
 export default function AdminLoginPage() {
-  const navigate  = useNavigate()
-  const setToken  = useStore((s) => s.setToken)
+  const navigate = useNavigate()
+  const setToken = useStore((s) => s.setToken)
 
   const btnDivRef = useRef(null)   // Google's rendered button mounts here
-  const [sdkReady,  setSdkReady]  = useState(false)
-  const [loading,   setLoading]   = useState(false)
-  const [error,     setError]     = useState('')
-  const [mounted,   setMounted]   = useState(false)
+  const [sdkReady, setSdkReady] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [mounted, setMounted] = useState(false)
 
   // Skip login if already an admin
   useEffect(() => {
@@ -29,7 +29,6 @@ export default function AdminLoginPage() {
   useEffect(() => { setMounted(true) }, [])
 
   // ── Credential callback (called by Google with an ID token) ─────────────────
-  // Must be on window so Google's SDK can call it by name
   const handleCredential = useCallback(async (response) => {
     const idToken = response?.credential
     if (!idToken) {
@@ -40,7 +39,6 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError('')
     try {
-      // POST the ID token to backend — GoogleIdTokenVerifier validates it there
       const res = await api.post('/api/auth/admin/google', { idToken })
       const jwt = res.data.Token
       if (!jwt) throw new Error('No token received')
@@ -63,7 +61,7 @@ export default function AdminLoginPage() {
     window.__adminGoogleCallback = handleCredential
 
     const script = document.createElement('script')
-    script.src   = 'https://accounts.google.com/gsi/client'
+    script.src = 'https://accounts.google.com/gsi/client'
     script.async = true
     script.defer = true
 
@@ -71,8 +69,8 @@ export default function AdminLoginPage() {
       if (!window.google?.accounts?.id) return
 
       window.google.accounts.id.initialize({
-        client_id:  GOOGLE_CLIENT_ID,
-        callback:   window.__adminGoogleCallback,
+        client_id: GOOGLE_CLIENT_ID,
+        callback: window.__adminGoogleCallback,
         // auto_select: false — admin must explicitly click
         auto_select: false,
         // ux_mode: 'popup' keeps everything in a modal — no redirect
@@ -99,11 +97,11 @@ export default function AdminLoginPage() {
   useEffect(() => {
     if (!sdkReady || !btnDivRef.current) return
     window.google.accounts.id.renderButton(btnDivRef.current, {
-      theme:  'filled_black',   // matches dark card background
-      size:   'large',
-      width:  320,              // matches card inner width
-      text:   'signin_with',
-      shape:  'rectangular',
+      theme: 'filled_black',   // matches dark card background
+      size: 'large',
+      width: 320,              // matches card inner width
+      text: 'signin_with',
+      shape: 'rectangular',
       logo_alignment: 'left',
     })
   }, [sdkReady])
@@ -122,14 +120,14 @@ export default function AdminLoginPage() {
 
   return (
     <div style={{
-      minHeight:      '100vh',
-      background:     'linear-gradient(145deg, #080808 0%, #0e0808 40%, #1a0808 100%)',
-      display:        'flex',
-      alignItems:     'center',
+      minHeight: '100vh',
+      background: 'linear-gradient(145deg, #080808 0%, #0e0808 40%, #1a0808 100%)',
+      display: 'flex',
+      alignItems: 'center',
       justifyContent: 'center',
-      padding:         24,
-      position:       'relative',
-      overflow:       'hidden',
+      padding: 24,
+      position: 'relative',
+      overflow: 'hidden',
     }}>
       <style>{`
         @keyframes admin-fade-up {
@@ -153,42 +151,42 @@ export default function AdminLoginPage() {
 
       {/* Ambient glows */}
       <div style={{
-        position:   'absolute', inset: 0, pointerEvents: 'none',
+        position: 'absolute', inset: 0, pointerEvents: 'none',
         background: 'radial-gradient(ellipse 50% 60% at 50% 100%, rgba(139,0,0,0.28) 0%, transparent 70%)',
-        animation:  'admin-glow-pulse 8s ease-in-out infinite',
+        animation: 'admin-glow-pulse 8s ease-in-out infinite',
       }} />
       <div style={{
-        position:   'absolute', top: -200, left: -200, width: 600, height: 600,
+        position: 'absolute', top: -200, left: -200, width: 600, height: 600,
         background: 'radial-gradient(circle, rgba(192,57,43,0.08) 0%, transparent 70%)',
         pointerEvents: 'none',
-        animation:  'admin-glow-drift 12s ease-in-out infinite',
+        animation: 'admin-glow-drift 12s ease-in-out infinite',
       }} />
       <div style={{
-        position:   'absolute', bottom: -200, right: -200, width: 500, height: 500,
+        position: 'absolute', bottom: -200, right: -200, width: 500, height: 500,
         background: 'radial-gradient(circle, rgba(139,0,0,0.10) 0%, transparent 70%)',
         pointerEvents: 'none',
-        animation:  'admin-glow-drift 16s ease-in-out infinite reverse',
+        animation: 'admin-glow-drift 16s ease-in-out infinite reverse',
       }} />
 
       {/* ── Card ── */}
       <div style={{
-        width:          '100%',
-        maxWidth:        420,
-        background:     'rgba(20,12,12,0.82)',
+        width: '100%',
+        maxWidth: 420,
+        background: 'rgba(20,12,12,0.82)',
         backdropFilter: 'blur(32px)',
         WebkitBackdropFilter: 'blur(32px)',
-        border:         '1px solid rgba(192,57,43,0.20)',
-        borderTop:      '2px solid rgba(192,57,43,0.55)',
-        borderRadius:    22,
-        boxShadow:      '0 32px 80px rgba(0,0,0,0.72), 0 0 0 1px rgba(255,255,255,0.03)',
-        padding:        '48px 40px 44px',
-        position:       'relative',
-        animation:      mounted ? 'admin-fade-up 0.45s cubic-bezier(0.16,1,0.3,1) both' : 'none',
+        border: '1px solid rgba(192,57,43,0.20)',
+        borderTop: '2px solid rgba(192,57,43,0.55)',
+        borderRadius: 22,
+        boxShadow: '0 32px 80px rgba(0,0,0,0.72), 0 0 0 1px rgba(255,255,255,0.03)',
+        padding: '48px 40px 44px',
+        position: 'relative',
+        animation: mounted ? 'admin-fade-up 0.45s cubic-bezier(0.16,1,0.3,1) both' : 'none',
       }}>
 
         {/* Top shimmer line */}
         <div style={{
-          position:   'absolute', top: -1, left: '20%', right: '20%', height: 1,
+          position: 'absolute', top: -1, left: '20%', right: '20%', height: 1,
           background: 'linear-gradient(90deg, transparent, rgba(192,57,43,0.75), transparent)',
           pointerEvents: 'none',
         }} />
@@ -198,33 +196,33 @@ export default function AdminLoginPage() {
           <Logo size={32} />
           <div style={{ marginTop: 18 }}>
             <span style={{
-              display:        'inline-flex',
-              alignItems:     'center',
-              gap:             6,
-              background:     'rgba(192,57,43,0.14)',
-              border:         '1px solid rgba(192,57,43,0.28)',
-              borderRadius:    100,
-              padding:        '4px 14px',
-              fontSize:        9,
-              fontWeight:      700,
-              letterSpacing:  '0.13em',
-              color:          'rgba(255,160,160,0.85)',
-              textTransform:  'uppercase',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              background: 'rgba(192,57,43,0.14)',
+              border: '1px solid rgba(192,57,43,0.28)',
+              borderRadius: 100,
+              padding: '4px 14px',
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: '0.13em',
+              color: 'rgba(255,160,160,0.85)',
+              textTransform: 'uppercase',
             }}>🔐 Admin Portal</span>
           </div>
           <h1 style={{
-            color:          'white',
-            fontFamily:     'var(--font-heading)',
-            fontSize:        26,
-            fontWeight:      800,
-            margin:         '14px 0 6px',
-            letterSpacing:  '-0.02em',
+            color: 'white',
+            fontFamily: 'var(--font-heading)',
+            fontSize: 26,
+            fontWeight: 800,
+            margin: '14px 0 6px',
+            letterSpacing: '-0.02em',
           }}>Admin Access</h1>
           <p style={{
-            color:      'rgba(255,255,255,0.40)',
-            fontSize:    13.5,
-            margin:      0,
-            lineHeight:  1.55,
+            color: 'rgba(255,255,255,0.40)',
+            fontSize: 13.5,
+            margin: 0,
+            lineHeight: 1.55,
           }}>
             Sign in with the authorised Google account
           </p>
@@ -233,17 +231,17 @@ export default function AdminLoginPage() {
         {/* Error banner */}
         {error && (
           <div style={{
-            padding:    '10px 14px',
+            padding: '10px 14px',
             marginBottom: 18,
             background: 'rgba(192,57,43,0.12)',
-            border:     '1px solid rgba(192,57,43,0.30)',
+            border: '1px solid rgba(192,57,43,0.30)',
             borderRadius: 9,
-            fontSize:    13,
-            color:      'rgba(255,160,160,0.92)',
-            display:    'flex',
+            fontSize: 13,
+            color: 'rgba(255,160,160,0.92)',
+            display: 'flex',
             alignItems: 'flex-start',
-            gap:         8,
-            lineHeight:  1.45,
+            gap: 8,
+            lineHeight: 1.45,
           }}>
             <span style={{ flexShrink: 0, marginTop: 1 }}>⚠️</span>
             <span>{error}</span>
@@ -252,17 +250,17 @@ export default function AdminLoginPage() {
 
         {/* ── Google Button (rendered by Google SDK) ── */}
         <div style={{
-          display:        'flex',
-          flexDirection:  'column',
-          alignItems:     'center',
-          gap:             16,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 16,
         }}>
           {/* SDK renders the official Google button inside this div */}
           <div
             id="admin-google-btn"
             ref={btnDivRef}
             style={{
-              width:   '100%',
+              width: '100%',
               minHeight: 44,
               display: sdkReady && !loading ? 'block' : 'none',
             }}
@@ -271,17 +269,17 @@ export default function AdminLoginPage() {
           {/* Loading / initialising state */}
           {(!sdkReady || loading) && (
             <div style={{
-              width:          '100%',
-              padding:        '13px 20px',
-              background:     'rgba(255,255,255,0.05)',
-              border:         '1px solid rgba(255,255,255,0.10)',
-              borderRadius:    10,
-              display:        'flex',
-              alignItems:     'center',
+              width: '100%',
+              padding: '13px 20px',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              borderRadius: 10,
+              display: 'flex',
+              alignItems: 'center',
               justifyContent: 'center',
-              gap:             10,
-              color:          'rgba(255,255,255,0.35)',
-              fontSize:        14,
+              gap: 10,
+              color: 'rgba(255,255,255,0.35)',
+              fontSize: 14,
             }}>
               <Spinner size="sm" />
               <span>{loading ? 'Signing in…' : 'Loading Google Sign-In…'}</span>
@@ -291,10 +289,10 @@ export default function AdminLoginPage() {
 
         {/* Divider */}
         <div style={{
-          display:        'flex',
-          alignItems:     'center',
-          gap:             12,
-          margin:         '22px 0 0',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          margin: '22px 0 0',
         }}>
           <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
           <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: 11, letterSpacing: '0.06em' }}>
@@ -309,27 +307,27 @@ export default function AdminLoginPage() {
           onClick={handleManualSignIn}
           disabled={!sdkReady || loading}
           style={{
-            marginTop:      14,
-            width:          '100%',
-            padding:        '11px 20px',
-            background:     'transparent',
-            border:         `1.5px solid ${sdkReady && !loading ? 'rgba(192,57,43,0.45)' : 'rgba(255,255,255,0.08)'}`,
-            borderRadius:    10,
-            fontSize:        13.5,
-            fontWeight:      600,
-            color:          sdkReady && !loading ? 'rgba(255,200,200,0.85)' : 'rgba(255,255,255,0.25)',
-            cursor:         sdkReady && !loading ? 'pointer' : 'not-allowed',
-            transition:     'all 0.2s ease',
-            letterSpacing:  '0.02em',
+            marginTop: 14,
+            width: '100%',
+            padding: '11px 20px',
+            background: 'transparent',
+            border: `1.5px solid ${sdkReady && !loading ? 'rgba(192,57,43,0.45)' : 'rgba(255,255,255,0.08)'}`,
+            borderRadius: 10,
+            fontSize: 13.5,
+            fontWeight: 600,
+            color: sdkReady && !loading ? 'rgba(255,200,200,0.85)' : 'rgba(255,255,255,0.25)',
+            cursor: sdkReady && !loading ? 'pointer' : 'not-allowed',
+            transition: 'all 0.2s ease',
+            letterSpacing: '0.02em',
           }}
           onMouseEnter={(e) => {
             if (sdkReady && !loading) {
-              e.currentTarget.style.background    = 'rgba(192,57,43,0.10)'
-              e.currentTarget.style.borderColor   = 'rgba(192,57,43,0.65)'
+              e.currentTarget.style.background = 'rgba(192,57,43,0.10)'
+              e.currentTarget.style.borderColor = 'rgba(192,57,43,0.65)'
             }
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background  = 'transparent'
+            e.currentTarget.style.background = 'transparent'
             e.currentTarget.style.borderColor = sdkReady && !loading
               ? 'rgba(192,57,43,0.45)' : 'rgba(255,255,255,0.08)'
           }}
@@ -339,13 +337,13 @@ export default function AdminLoginPage() {
 
         {/* Footer */}
         <div style={{
-          marginTop:   26,
-          paddingTop:  20,
-          borderTop:   '1px solid rgba(255,255,255,0.07)',
-          display:     'flex',
-          alignItems:  'center',
+          marginTop: 26,
+          paddingTop: 20,
+          borderTop: '1px solid rgba(255,255,255,0.07)',
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'center',
-          gap:          7,
+          gap: 7,
         }}>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
             stroke="rgba(255,255,255,0.18)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -353,9 +351,9 @@ export default function AdminLoginPage() {
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
           <span style={{
-            color:          'rgba(255,255,255,0.16)',
-            fontSize:        11,
-            letterSpacing:  '0.025em',
+            color: 'rgba(255,255,255,0.16)',
+            fontSize: 11,
+            letterSpacing: '0.025em',
           }}>
             Only the authorised Google account can access this panel
           </span>

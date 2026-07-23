@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import Spinner from '../components/Spinner'
+import useSeo from '../hooks/useSeo'
 
 const CONTACT_INFO = [
   {
@@ -34,6 +35,10 @@ const CONTACT_INFO = [
 ]
 
 export default function ContactPage() {
+  useSeo(
+    'Contact Us — MK Group Printing',
+    'Get in touch with MK Group Printing. Call, email or visit us for premium custom print enquiries and support.'
+  )
   const [form, setForm]     = useState({ name: '', email: '', message: '' })
   const [loading, setLoading] = useState(false)
   const set = (f) => (e) => setForm((p) => ({ ...p, [f]: e.target.value }))

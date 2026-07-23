@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
@@ -7,9 +7,12 @@ import Spinner from '../components/Spinner'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', phoneno: '', email: '' })
+  const [form, setForm]     = useState({ name: '', phoneno: '', email: '' })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { const t = setTimeout(() => setMounted(true), 30); return () => clearTimeout(t) }, [])
 
   const validate = () => {
     const e = {}
@@ -52,50 +55,33 @@ export default function RegisterPage() {
     <div className="auth-page-cinema">
       <div className="auth-bg-cinema" />
 
-      <div className="auth-panel-cinema" style={{ maxWidth: 480 }}>
+      <div className={`auth-panel-cinema${mounted ? ' auth-panel--visible' : ''}`} style={{ maxWidth: 480 }}>
         <div className="auth-deco-strip" />
 
-        <div style={{ padding: '40px 44px 40px' }}>
+        <div className="auth-panel-body">
           {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <Logo size={28} />
-            <h1 style={{
-              fontFamily: 'var(--font-heading)', fontSize: 26, fontWeight: 800,
-              marginTop: 18, marginBottom: 6, color: 'var(--text-dark)',
-              letterSpacing: '-0.02em',
-            }}>
-              Create Account
-            </h1>
-            <p style={{ fontSize: 13.5, color: 'var(--text-muted)', lineHeight: 1.55 }}>
+          <div className="auth-header">
+            <div className="auth-logo-wrap">
+              <Logo size={22} />
+            </div>
+            <h1 className="auth-heading">Create Account</h1>
+            <p className="auth-subheading">
               Join MK Group Printing — your prints await
             </p>
           </div>
 
           {/* Steps indicator */}
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            gap: 8, marginBottom: 28,
-          }}>
+          <div className="auth-steps">
             {['Details', 'Verify OTP', 'Done'].map((s, i) => (
-              <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{
-                  width: 24, height: 24, borderRadius: '50%',
-                  background: i === 0 ? 'var(--primary-gradient)' : 'var(--divider)',
-                  color: i === 0 ? 'white' : 'var(--text-light)',
-                  fontSize: 11, fontWeight: 700,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  {i + 1}
-                </div>
-                <span style={{ fontSize: 11, fontWeight: 500, color: i === 0 ? 'var(--primary)' : 'var(--text-light)' }}>
-                  {s}
-                </span>
-                {i < 2 && <div style={{ width: 20, height: 1, background: 'var(--divider)' }} />}
+              <div key={s} className="auth-step">
+                <div className={`auth-step-dot${i === 0 ? ' active' : ''}`}>{i + 1}</div>
+                <span className={`auth-step-label${i === 0 ? ' active' : ''}`}>{s}</span>
+                {i < 2 && <div className="auth-step-connector" />}
               </div>
             ))}
           </div>
 
-          <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <form onSubmit={handleSubmit} noValidate className="auth-form">
             <div className="form-group">
               <label className="form-label" htmlFor="reg-name">Full Name</label>
               <input
@@ -113,17 +99,21 @@ export default function RegisterPage() {
 
             <div className="form-group">
               <label className="form-label" htmlFor="reg-phone">Phone Number</label>
-              <input
-                id="reg-phone"
-                className={`form-input${errors.phoneno ? ' error' : ''}`}
-                type="tel"
-                placeholder="10-digit mobile number"
-                value={form.phoneno}
-                onChange={set('phoneno')}
-                onBlur={validate}
-                maxLength={10}
-                autoComplete="tel"
-              />
+              <div className="phone-input-wrap">
+                <span className="phone-prefix">+91</span>
+                <input
+                  id="reg-phone"
+                  className={`form-input phone-input${errors.phoneno ? ' error' : ''}`}
+                  type="tel"
+                  placeholder="10-digit mobile number"
+                  value={form.phoneno}
+                  onChange={set('phoneno')}
+                  onBlur={validate}
+                  maxLength={10}
+                  autoComplete="tel"
+                  inputMode="numeric"
+                />
+              </div>
               {errors.phoneno && <span className="form-error">{errors.phoneno}</span>}
             </div>
 
@@ -144,47 +134,25 @@ export default function RegisterPage() {
 
             <button
               type="submit"
-              className="btn btn-primary btn-full"
+              className="btn btn-primary btn-full auth-submit-btn"
               id="register-btn"
               disabled={loading}
-              style={{ padding: '14px 28px', fontSize: 14.5, marginTop: 4 }}
             >
               {loading ? <Spinner size="sm" white /> : 'Create Account →'}
             </button>
           </form>
 
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            margin: '22px 0', color: 'var(--text-light)', fontSize: 12,
-          }}>
-            <div style={{ flex: 1, height: 1, background: 'var(--divider)' }} />
-            <span>HAVE AN ACCOUNT?</span>
-            <div style={{ flex: 1, height: 1, background: 'var(--divider)' }} />
+          <div className="auth-divider">
+            <div className="auth-divider-line" />
+            <span className="auth-divider-text">HAVE AN ACCOUNT?</span>
+            <div className="auth-divider-line" />
           </div>
 
-          <Link
-            to="/login"
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: '100%', padding: '13px 28px',
-              border: '1.5px solid var(--border-color)',
-              borderRadius: 'var(--radius-sm)', fontSize: 14, fontWeight: 600,
-              color: 'var(--text-dark)', textDecoration: 'none',
-              transition: 'border-color 180ms ease, color 180ms ease',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.borderColor = 'var(--primary)'
-              e.currentTarget.style.color = 'var(--primary)'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.borderColor = 'var(--border-color)'
-              e.currentTarget.style.color = 'var(--text-dark)'
-            }}
-          >
+          <Link to="/login" className="auth-alt-btn">
             Login Instead
           </Link>
 
-          <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-light)', marginTop: 20 }}>
+          <p className="auth-footnote">
             🔒 Your data is safe with us — we never share it
           </p>
         </div>
