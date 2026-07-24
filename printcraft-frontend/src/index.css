@@ -2511,6 +2511,11 @@ body::after {
 /* =========================================
    ADMIN PANEL
    ========================================= */
+@keyframes admin-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 .admin-layout {
   display: grid;
   grid-template-columns: 220px 1fr;
@@ -2525,9 +2530,11 @@ body::after {
 }
 
 .admin-sidebar-logo {
-  padding: 0 20px 24px;
+  padding: 16px 20px 22px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
 }
 
 .admin-sidebar-link {
