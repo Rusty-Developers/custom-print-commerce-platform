@@ -21,6 +21,7 @@ public class EmailService {
         //createMimeMessage
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(message,true);
+            messageHelper.setFrom("mkgroupprinting@gmail.com");
             messageHelper.setTo(to);
             messageHelper.setSubject(subject);
             // helper.setText(body, true) -> true means HTML content

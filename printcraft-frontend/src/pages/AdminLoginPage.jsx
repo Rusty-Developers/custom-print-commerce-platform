@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
-import Logo from '../components/Logo'
 import { isAdmin } from '../utils/jwt'
 import useStore from '../store/useStore'
 import Spinner from '../components/Spinner'
+import adminLogo from '../assets/logopiv/newlogo1.jpeg'
 
 // ── The ONLY Google client ID for this app ────────────────────────────────────
 const GOOGLE_CLIENT_ID =
@@ -142,6 +142,22 @@ export default function AdminLoginPage() {
           0%,100% { opacity:0.28; }
           50%     { opacity:0.46; }
         }
+        @keyframes admin-logo-float {
+          0%,100% { transform:translateY(0px) scale(1); }
+          50%     { transform:translateY(-6px) scale(1.02); }
+        }
+        @keyframes admin-ring-spin {
+          from { transform:rotate(0deg); }
+          to   { transform:rotate(360deg); }
+        }
+        @keyframes admin-shimmer {
+          0%   { left:-100%; }
+          100% { left:200%; }
+        }
+        @keyframes admin-ring-glow {
+          0%,100% { box-shadow: 0 0 18px 4px rgba(192,57,43,0.45), 0 0 40px 10px rgba(192,57,43,0.18); }
+          50%     { box-shadow: 0 0 28px 8px rgba(192,57,43,0.70), 0 0 60px 18px rgba(192,57,43,0.28); }
+        }
         /* Override Google button border-radius to match card style */
         #admin-google-btn > div {
           border-radius: 10px !important;
@@ -193,8 +209,78 @@ export default function AdminLoginPage() {
 
         {/* Logo + badge */}
         <div style={{ textAlign: 'center', marginBottom: 30 }}>
-          <Logo size={32} />
-          <div style={{ marginTop: 18 }}>
+
+          {/* ── Premium Logo Frame ── */}
+          <div style={{
+            position: 'relative',
+            display: 'inline-block',
+            marginBottom: 20,
+            animation: 'admin-logo-float 5s ease-in-out infinite',
+          }}>
+            {/* Spinning gradient ring */}
+            <div style={{
+              position: 'absolute',
+              inset: -5,
+              borderRadius: '50%',
+              background: 'conic-gradient(from 0deg, rgba(192,57,43,0.0) 0%, rgba(192,57,43,0.85) 40%, rgba(255,100,80,0.9) 50%, rgba(192,57,43,0.85) 60%, rgba(192,57,43,0.0) 100%)',
+              animation: 'admin-ring-spin 4s linear infinite',
+              zIndex: 0,
+            }} />
+            {/* Static glow halo */}
+            <div style={{
+              position: 'absolute',
+              inset: -3,
+              borderRadius: '50%',
+              background: 'transparent',
+              animation: 'admin-ring-glow 3s ease-in-out infinite',
+              zIndex: 1,
+              borderRadius: 999,
+            }} />
+            {/* Logo container */}
+            <div style={{
+              position: 'relative',
+              zIndex: 2,
+              width: 110,
+              height: 110,
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '3px solid rgba(20,10,10,0.95)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.08)',
+              background: '#0d0505',
+            }}>
+              <img
+                src={adminLogo}
+                alt="MK Group Printing — Admin"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  display: 'block',
+                }}
+              />
+              {/* Shimmer sweep */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                overflow: 'hidden',
+                borderRadius: '50%',
+                pointerEvents: 'none',
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  width: '45%',
+                  background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.14) 50%, transparent 70%)',
+                  animation: 'admin-shimmer 3.5s ease-in-out infinite',
+                }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Admin Portal badge */}
+          <div style={{ marginBottom: 14 }}>
             <span style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -210,12 +296,13 @@ export default function AdminLoginPage() {
               textTransform: 'uppercase',
             }}>🔐 Admin Portal</span>
           </div>
+
           <h1 style={{
             color: 'white',
             fontFamily: 'var(--font-heading)',
             fontSize: 26,
             fontWeight: 800,
-            margin: '14px 0 6px',
+            margin: '0 0 6px',
             letterSpacing: '-0.02em',
           }}>Admin Access</h1>
           <p style={{

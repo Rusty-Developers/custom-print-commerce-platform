@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import useStore from '../store/useStore'
-import Logo from '../components/Logo'
+import adminLogo from '../assets/logopiv/newlogo1.jpeg'
 import Spinner from '../components/Spinner'
 import { isAdmin } from '../utils/jwt'
 import api from '../api/axios'
@@ -52,8 +52,77 @@ export default function AdminPage() {
     <div className="admin-layout" style={{ minHeight: '100vh', gridTemplateColumns: '240px 1fr' }}>
       <aside className="admin-sidebar" style={{ background: '#1a1a1a', width: 240, display: 'flex', flexDirection: 'column' }}>
         <div className="admin-sidebar-logo">
-          <Logo size={18} />
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>Admin Panel</div>
+          {/* Premium circular logo */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 10,
+          }}>
+            <div style={{
+              position: 'relative',
+              width: 72,
+              height: 72,
+              flexShrink: 0,
+            }}>
+              {/* Animated glow ring */}
+              <div style={{
+                position: 'absolute',
+                inset: -3,
+                borderRadius: '50%',
+                background: 'conic-gradient(from 180deg, rgba(192,57,43,0.0) 0%, rgba(192,57,43,0.85) 45%, rgba(255,120,90,1) 55%, rgba(192,57,43,0.85) 65%, rgba(192,57,43,0.0) 100%)',
+                animation: 'admin-ring-spin 5s linear infinite',
+              }} />
+              <div style={{
+                position: 'relative',
+                zIndex: 1,
+                width: 72,
+                height: 72,
+                borderRadius: '50%',
+                overflow: 'hidden',
+                border: '2.5px solid rgba(15,5,5,0.98)',
+                boxShadow: '0 0 18px rgba(192,57,43,0.40), 0 4px 16px rgba(0,0,0,0.55)',
+                background: '#0a0404',
+              }}>
+                <img
+                  src={adminLogo}
+                  alt="MK Group"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    display: 'block',
+                  }}
+                />
+              </div>
+            </div>
+            {/* Brand text */}
+            <div style={{ textAlign: 'center', lineHeight: 1.25 }}>
+              <div style={{
+                fontSize: 12,
+                fontWeight: 800,
+                letterSpacing: '0.10em',
+                color: 'rgba(255,255,255,0.92)',
+                textTransform: 'uppercase',
+              }}>MK Group</div>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                marginTop: 4,
+                background: 'rgba(192,57,43,0.18)',
+                border: '1px solid rgba(192,57,43,0.35)',
+                borderRadius: 100,
+                padding: '2px 9px',
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                color: 'rgba(255,160,140,0.90)',
+                textTransform: 'uppercase',
+              }}>⚙️ Admin Panel</div>
+            </div>
+          </div>
         </div>
         <nav style={{ flex: 1 }}>
           {NAV.map((item) => (
