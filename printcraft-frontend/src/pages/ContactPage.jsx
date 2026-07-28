@@ -20,14 +20,14 @@ const CONTACT_INFO = [
   },
   {
     icon: '📍',
-    label: 'Studio 1 — West Bengal',
-    val: 'Manas Kundu, Girjapara (Kathgada), Dist. Paschim Burdwan, West Bengal – 713347',
-    link: 'https://maps.google.com/?q=Girjapara+Kathgada+Paschim+Burdwan+West+Bengal+713347',
+    label: 'Office 1 — West Bengal',
+    val: 'RANIGANJ, GIRJAPARA, KATHGADA, DIST. PASCHIM BARDHAMAN, WEST BENGAL – 713347, INDIA',
+    link: 'https://maps.google.com/?q=Raniganj+Girjapara+Kathgada+Paschim+Bardhaman+West+Bengal+713347',
     sub: 'View on Google Maps',
   },
   {
     icon: '📍',
-    label: 'Studio 2 — Andhra Pradesh',
+    label: 'Office 2 — Andhra Pradesh',
     val: 'Willows 851, Raintree Park Dwarka Krishna, Near Acharya Nagarjuna University, Namburu, District Guntur, Andhra Pradesh – 522508',
     link: 'https://maps.google.com/?q=Raintree+Park+Dwarka+Krishna+Namburu+Guntur+Andhra+Pradesh+522508',
     sub: 'View on Google Maps',
@@ -43,8 +43,8 @@ const CONTACT_INFO = [
 
 export default function ContactPage() {
   useSeo(
-    'Contact Us — MK Group Printing',
-    'Get in touch with MK Group Printing. Call, email or visit us for premium custom print enquiries and support.'
+    'Contact Us — MK GROUP Printing',
+    'Get in touch with MK GROUP Printing. Call, email or visit us for premium custom print enquiries and support.'
   )
   const [form, setForm]     = useState({ name: '', email: '', message: '' })
   const [loading, setLoading] = useState(false)
@@ -259,8 +259,8 @@ export default function ContactPage() {
                   onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' }}
                 >
                   <span style={{ fontSize: 28 }}>🗺️</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dark)', lineHeight: 1.3 }}>Studio 1</span>
-                  <span style={{ fontSize: 11, lineHeight: 1.4 }}>Paschim Burdwan<br />West Bengal</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dark)', lineHeight: 1.3 }}>Office 1</span>
+                  <span style={{ fontSize: 11, lineHeight: 1.4 }}>Paschim Bardhaman<br />West Bengal</span>
                 </a>
                 <a
                   href="https://maps.google.com/?q=Raintree+Park+Dwarka+Krishna+Namburu+Guntur+Andhra+Pradesh+522508"
@@ -283,7 +283,7 @@ export default function ContactPage() {
                   onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' }}
                 >
                   <span style={{ fontSize: 28 }}>🗺️</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dark)', lineHeight: 1.3 }}>Studio 2</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dark)', lineHeight: 1.3 }}>Office 2</span>
                   <span style={{ fontSize: 11, lineHeight: 1.4 }}>Namburu, Guntur<br />Andhra Pradesh</span>
                 </a>
               </div>

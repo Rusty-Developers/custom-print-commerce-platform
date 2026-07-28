@@ -89,14 +89,14 @@ export default function Footer() {
             <div className="footer-brand-logo">
               <img
                 src="/mk-group-logo.svg"
-                alt="MK Group Printing"
+                alt="MK GROUP Printing"
                 width={120}
                 height={36}
                 style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
               />
             </div>
             <p className="footer-brand-desc">
-              MK Group Printing is India&apos;s premium custom print studio. We transform your cherished memories into
+              MK GROUP Printing is India&apos;s premium custom print studio. We transform your cherished memories into
               stunning prints on glass, metal, wood, acrylic and more — crafted with passion and delivered
               to your door.
             </p>
@@ -161,8 +161,8 @@ export default function Footer() {
             <div className="footer-contact-item" style={{ alignItems: 'flex-start' }}>
               <IconPin />
               <span>
-                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', display: 'block', marginBottom: 2 }}>Studio 1</span>
-                Manas Kundu, Girjapara (Kathgada),<br />Dist. Paschim Burdwan,<br />West Bengal – 713347
+                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', display: 'block', marginBottom: 2 }}>Office 1</span>
+                RANIGANJ, GIRJAPARA, KATHGADA,<br />DIST. PASCHIM BARDHAMAN,<br />WEST BENGAL – 713347,<br />INDIA
               </span>
             </div>
 
@@ -170,7 +170,7 @@ export default function Footer() {
             <div className="footer-contact-item" style={{ alignItems: 'flex-start' }}>
               <IconPin />
               <span>
-                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', display: 'block', marginBottom: 2 }}>Studio 2</span>
+                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', display: 'block', marginBottom: 2 }}>Office 2</span>
                 Willows 851, Raintree Park Dwarka Krishna,<br />Near Acharya Nagarjuna University,<br />Namburu, District Guntur,<br />Andhra Pradesh – 522508
               </span>
             </div>
@@ -189,7 +189,7 @@ export default function Footer() {
 
       <div className="footer-bottom">
         <div className="container">
-          <p className="footer-copyright">© 2026 MK Group Printing. All rights reserved.</p>
+          <p className="footer-copyright">© 2026 MK GROUP Printing. All rights reserved.</p>
           <div className="footer-razorpay-badge">
             <img
               src="https://razorpay.com/assets/razorpay-glyph.svg"

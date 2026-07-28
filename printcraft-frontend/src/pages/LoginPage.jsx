@@ -8,8 +8,8 @@ import useSeo from '../hooks/useSeo'
 
 export default function LoginPage() {
   useSeo(
-    'Login — MK Group Printing',
-    'Log in to your MK Group Printing account to view orders, track deliveries, and manage your profile.'
+    'Login — MK GROUP Printing',
+    'Log in to your MK GROUP Printing account to view orders, track deliveries, and manage your profile.'
   )
   const navigate = useNavigate()
   const [phone, setPhone]       = useState('')

@@ -66,7 +66,7 @@ export default function RegisterPage() {
             </div>
             <h1 className="auth-heading">Create Account</h1>
             <p className="auth-subheading">
-              Join MK Group Printing — your prints await
+              Join MK GROUP Printing — your prints await
             </p>
           </div>
 

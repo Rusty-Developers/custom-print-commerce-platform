@@ -201,8 +201,8 @@ function buildWhatsAppUrl(order) {
 
 export default function AccountPage() {
   useSeo(
-    'My Account — MK Group Printing',
-    'Manage your MK Group Printing account, view orders, track deliveries and update your addresses.'
+    'My Account — MK GROUP Printing',
+    'Manage your MK GROUP Printing account, view orders, track deliveries and update your addresses.'
   )
   const navigate = useNavigate()
   const clearToken = useStore((s) => s.clearToken)
@@ -332,7 +332,7 @@ export default function AccountPage() {
                   </div>
 
                   <div>
-                    <div style={{ fontFamily:'var(--font-heading)', fontSize:22, fontWeight:700 }}>{name || 'MK Group Printing Member'}</div>
+                    <div style={{ fontFamily:'var(--font-heading)', fontSize:22, fontWeight:700 }}>{name || 'MK GROUP Printing Member'}</div>
                     <div style={{ color:'var(--text-muted)', fontSize:14, marginTop:4 }}>📞 +91 {phone}</div>
                     <span className="badge badge-red" style={{ marginTop:8 }}>Verified Member</span>
                   </div>

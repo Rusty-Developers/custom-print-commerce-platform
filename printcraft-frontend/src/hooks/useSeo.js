@@ -4,7 +4,7 @@ import { useEffect } from 'react'
  * useSeo — sets the browser tab title and meta description per page.
  * Call at the top of each page component with static or derived values.
  *
- * @param {string} title       Full page title (e.g. "Shop Products — MK Group Printing")
+ * @param {string} title       Full page title (e.g. "Shop Products — MK GROUP Printing")
  * @param {string} description Short meta description (140-160 chars ideal)
  */
 export default function useSeo(title, description) {
@@ -25,7 +25,7 @@ export default function useSeo(title, description) {
     }
     // Restore default on unmount
     return () => {
-      document.title = 'MK Group Printing — Premium Custom Photo Prints'
+      document.title = 'MK GROUP Printing — Premium Custom Photo Prints'
     }
   }, [title, description])
 }

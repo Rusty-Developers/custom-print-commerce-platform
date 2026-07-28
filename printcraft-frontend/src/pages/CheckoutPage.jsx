@@ -81,7 +81,7 @@ export default function CheckoutPage() {
         amount: Math.round(totalAmount * 100),
         currency: currency || 'INR',
         order_id: razorpayOrderId,
-        name: 'MK Group Printing',
+        name: 'MK GROUP Printing',
         description: 'Custom Print Order',
         theme: { color: '#C0392B' },
         handler: () => {

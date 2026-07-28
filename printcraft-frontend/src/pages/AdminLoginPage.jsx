@@ -250,7 +250,7 @@ export default function AdminLoginPage() {
             }}>
               <img
                 src={adminLogo}
-                alt="MK Group Printing — Admin"
+                alt="MK GROUP Printing — Admin"
                 style={{
                   width: '100%',
                   height: '100%',

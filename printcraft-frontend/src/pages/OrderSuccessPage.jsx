@@ -341,8 +341,8 @@ const STEPS = [
 
 export default function OrderSuccessPage() {
   useSeo(
-    'Order Confirmed — MK Group Printing',
-    'Your MK Group Printing order has been confirmed and is being crafted with care. Track your order for live updates.'
+    'Order Confirmed — MK GROUP Printing',
+    'Your MK GROUP Printing order has been confirmed and is being crafted with care. Track your order for live updates.'
   )
   const navigate  = useNavigate()
   const location  = useLocation()
