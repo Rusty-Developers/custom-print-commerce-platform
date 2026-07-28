@@ -1,12 +1,14 @@
+import newLogo from '../assets/logopiv/newlogo1.jpeg'
+
 export default function Logo({ size = 28 }) {
-  const height = Math.min(size * 1.8, 52)
+  const dim = Math.round(size * 2.4)
   return (
     <img
-      src="/mk-group-logo.jpg"
+      src={newLogo}
       alt="MK Group Printing"
-      width={Math.round(height * 2.7)}
-      height={height}
-      style={{ objectFit: 'contain', display: 'block' }}
+      width={dim}
+      height={dim}
+      style={{ objectFit: 'contain', display: 'block', borderRadius: 6 }}
     />
   )
 }

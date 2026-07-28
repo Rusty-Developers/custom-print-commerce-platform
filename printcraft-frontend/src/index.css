@@ -2128,10 +2128,10 @@ body::after {
   min-height: 100vh;
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 32px 24px;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* Multi-layer dark gradient background */
@@ -2202,9 +2202,6 @@ body::after {
   .auth-panel-cinema {
     max-width: 100%;
     border-radius: var(--radius-lg);
-  }
-  .auth-panel-cinema > div {
-    padding: 32px 28px 32px !important;
   }
 }
 
@@ -3736,49 +3733,59 @@ body::after {
 .hp-carousel-img-scrim {
   position: absolute;
   inset: 0;
+  /* Heavy vignette ONLY at the very bottom — lets the image breathe at top/mid */
   background: linear-gradient(
     to bottom,
-    rgba(90,10,10,0.55) 0%,
-    rgba(40,5,5,0.25) 40%,
-    rgba(40,5,5,0.55) 75%,
-    rgba(10,2,2,0.82) 100%
+    rgba(0,0,0,0.08)  0%,
+    rgba(0,0,0,0.04) 35%,
+    rgba(0,0,0,0.18) 60%,
+    rgba(0,0,0,0.72) 82%,
+    rgba(0,0,0,0.90) 100%
   );
 }
 
 /* Centred brand block */
 .hp-carousel-brand {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  /* Sit just above the dot row (dots are at bottom:96px, height ~10px) */
+  bottom: 118px;
+  left: 0;
+  right: 0;
   z-index: 5;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   pointer-events: none;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 24px;
+}
+@media (max-width: 767px) {
+  .hp-carousel-brand { bottom: 108px; }
+}
+@media (max-width: 480px) {
+  .hp-carousel-brand { bottom: 100px; gap: 4px; }
 }
 
 .hp-carousel-brand-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(32px, 5vw, 80px);
+  font-size: clamp(24px, 3.5vw, 48px);
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.02em;
   line-height: 1;
-  text-shadow: 0 4px 32px rgba(0,0,0,0.6);
+  text-shadow: 0 2px 16px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5);
 }
 
 .hp-carousel-brand-sub {
   font-family: 'Inter', sans-serif;
-  font-size: clamp(9px, 1.2vw, 11px);
-  font-weight: 600;
-  color: rgba(255,255,255,0.75);
-  letter-spacing: 0.22em;
+  font-size: clamp(9px, 1.1vw, 12px);
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.20em;
   text-transform: uppercase;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
 }
 
 /* Arrow buttons */
@@ -4618,7 +4625,10 @@ body::after {
 
 /* â”€â”€ Panel body â€” fluid padding â”€â”€ */
 .auth-panel-body {
-  padding: clamp(28px, 6vw, 44px) clamp(24px, 6vw, 44px) clamp(28px, 5vw, 40px);
+  /* Extra left padding (8px) clears the 4px deco strip with breathing room */
+  padding: clamp(28px, 6vw, 44px) clamp(24px, 6vw, 44px) clamp(28px, 5vw, 40px) clamp(28px, 6vw, 44px);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* â”€â”€ Header block â”€â”€ */
@@ -4792,7 +4802,7 @@ body::after {
   flex-shrink: 0;
 }
 
-/* â”€â”€ OTP progress bar â”€â”€ */
+/* ——— OTP progress bar ——— */
 .otp-progress-bar {
   height: 3px;
   background: var(--divider);
@@ -4809,7 +4819,7 @@ body::after {
   will-change: width;
 }
 
-/* â”€â”€ OTP Input grid â€” fully fluid â”€â”€ */
+/* ——— OTP Input grid — fully fluid ——— */
 .otp-inputs {
   display: flex;
   gap: clamp(6px, 2vw, 10px);
@@ -4882,17 +4892,23 @@ body::after {
     border-radius: var(--radius-lg);
   }
   .auth-page-cinema {
-    padding: 72px 12px 20px;
+    padding: 72px 16px 24px;
+  }
+
+  .auth-panel-body {
+
+    padding: 28px 20px 28px 24px;
+
   }
 }
 
 /* Very small phones (SE, older Android) */
 @media (max-width: 360px) {
   .auth-page-cinema {
-    padding: 64px 8px 16px;
+    padding: 64px 12px 16px;
   }
   .auth-panel-body {
-    padding: 24px 18px 24px;
+    padding: 24px 16px 24px 20px;
   }
   .otp-input {
     max-width: 36px;
@@ -4944,9 +4960,9 @@ body::after {
   }
 }
 
-/* Ensure auth panel doesn't clip its contents */
+/* Ensure auth panel properly contains its deco strip while allowing content to be visible */
 .auth-panel-cinema {
-  overflow: visible !important;
+  overflow: hidden;
 }
 
 /* Let the whole auth card self-scroll on tiny screens if needed */
@@ -4974,6 +4990,37 @@ body::after {
   height: auto !important;
   object-fit: contain;
   display: block;
+}
+
+/* Remove the old broad selector that could conflict */
+.auth-header img {
+  max-width: unset;
+  max-height: unset;
+}
+
+
+/* ── Auth logo wrapper ── premium square brand mark display ── */
+.auth-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  width: 100%;
+}
+
+.auth-logo-wrap img {
+  width:  clamp(80px, 22vw, 104px) !important;
+  height: clamp(80px, 22vw, 104px) !important;
+  max-width:  104px !important;
+  max-height: 104px !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 4px 16px rgba(139, 0, 0, 0.18),
+    0 1px 4px  rgba(0, 0, 0, 0.10),
+    0 0 0 3px rgba(255, 255, 255, 0.9) inset !important;
+  background: #fff;
 }
 
 /* Remove the old broad selector that could conflict */

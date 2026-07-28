@@ -6,7 +6,7 @@ import { PHOTO_POOL } from './photoPool'
  * keeps working without changes while now drawing from local photos.
  */
 export const SAMPLE_PHOTOS = PHOTO_POOL
-export const HERO_PHOTOS   = PHOTO_POOL.slice(0, 4)
+export const HERO_PHOTOS = PHOTO_POOL.slice(0, 4)
 
 export const DEFAULT_SHADOW = '0 8px 32px rgba(0,0,0,0.2), 0 20px 60px rgba(0,0,0,0.12)'
 
@@ -147,9 +147,9 @@ export function usePhotoCycle(
     initialIndex !== undefined ? initialIndex : Math.floor(Math.random() * photos.length)
   )
   const [currentIndex, setCurrentIndex] = useState(startRef.current)
-  const [prevIndex, setPrevIndex]       = useState(null)
-  const [prevOpacity, setPrevOpacity]   = useState(1)
-  const [tabVisible, setTabVisible]     = useState(() => !document.hidden)
+  const [prevIndex, setPrevIndex] = useState(null)
+  const [prevOpacity, setPrevOpacity] = useState(1)
+  const [tabVisible, setTabVisible] = useState(() => !document.hidden)
 
   useEffect(() => {
     const onVisibility = () => setTabVisible(!document.hidden)

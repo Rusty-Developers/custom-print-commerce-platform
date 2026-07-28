@@ -156,10 +156,25 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h4 className="footer-heading">Contact Info</h4>
-            <div className="footer-contact-item">
+
+            {/* Address 1 — West Bengal */}
+            <div className="footer-contact-item" style={{ alignItems: 'flex-start' }}>
               <IconPin />
-              <span>Manas Kundu, Girjapara (Kathgada),<br />Dist. Paschim Burdwan,<br />West Bengal – 713347</span>
+              <span>
+                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', display: 'block', marginBottom: 2 }}>Studio 1</span>
+                Manas Kundu, Girjapara (Kathgada),<br />Dist. Paschim Burdwan,<br />West Bengal – 713347
+              </span>
             </div>
+
+            {/* Address 2 — Andhra Pradesh */}
+            <div className="footer-contact-item" style={{ alignItems: 'flex-start' }}>
+              <IconPin />
+              <span>
+                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', display: 'block', marginBottom: 2 }}>Studio 2</span>
+                Willows 851, Raintree Park Dwarka Krishna,<br />Near Acharya Nagarjuna University,<br />Namburu, District Guntur,<br />Andhra Pradesh – 522508
+              </span>
+            </div>
+
             <div className="footer-contact-item">
               <IconPhone />
               <a href="tel:+919647212171" style={{ color: 'inherit', textDecoration: 'none' }}>+91 96472 12171</a>

@@ -55,7 +55,7 @@ export default function RegisterPage() {
     <div className="auth-page-cinema">
       <div className="auth-bg-cinema" />
 
-      <div className={`auth-panel-cinema${mounted ? ' auth-panel--visible' : ''}`} style={{ maxWidth: 480 }}>
+      <div className={`auth-panel-cinema${mounted ? ' auth-panel--visible' : ''}`}>
         <div className="auth-deco-strip" />
 
         <div className="auth-panel-body">
