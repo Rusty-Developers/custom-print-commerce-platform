@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import footerLogo from '../assets/logopiv/newlogo1.jpeg'
 
 /* ─── Social Icon SVGs ───────────────────────────────────── */
 function IconFacebook() {
@@ -88,11 +89,17 @@ export default function Footer() {
           <div>
             <div className="footer-brand-logo">
               <img
-                src="/mk-group-logo.svg"
+                src={footerLogo}
                 alt="MK GROUP Printing"
-                width={120}
-                height={36}
-                style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+                style={{
+                  height: 52,
+                  width: 'auto',
+                  maxWidth: 160,
+                  objectFit: 'contain',
+                  objectPosition: 'center',
+                  borderRadius: 8,
+                  display: 'block',
+                }}
               />
             </div>
             <p className="footer-brand-desc">
