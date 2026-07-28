@@ -20,10 +20,17 @@ const CONTACT_INFO = [
   },
   {
     icon: '📍',
-    label: 'Address',
+    label: 'Studio 1 — West Bengal',
     val: 'Manas Kundu, Girjapara (Kathgada), Dist. Paschim Burdwan, West Bengal – 713347',
     link: 'https://maps.google.com/?q=Girjapara+Kathgada+Paschim+Burdwan+West+Bengal+713347',
-    sub: 'Visit our studio',
+    sub: 'View on Google Maps',
+  },
+  {
+    icon: '📍',
+    label: 'Studio 2 — Andhra Pradesh',
+    val: 'Willows 851, Raintree Park Dwarka Krishna, Near Acharya Nagarjuna University, Namburu, District Guntur, Andhra Pradesh – 522508',
+    link: 'https://maps.google.com/?q=Raintree+Park+Dwarka+Krishna+Namburu+Guntur+Andhra+Pradesh+522508',
+    sub: 'View on Google Maps',
   },
   {
     icon: '📸',
@@ -229,36 +236,57 @@ export default function ContactPage() {
                 ))}
               </div>
 
-              {/* Map Link Card */}
-              <a
-                href="https://maps.google.com/?q=Girjapara+Kathgada+Paschim+Burdwan+West+Bengal+713347"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  flexDirection: 'column', gap: 8,
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--divider)',
-                  height: 130,
-                  background: 'linear-gradient(135deg, #f9f9f9, #fff)',
-                  textDecoration: 'none',
-                  color: 'var(--text-muted)',
-                  transition: 'box-shadow 200ms ease, transform 200ms ease',
-                  cursor: 'pointer',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.boxShadow = 'var(--shadow-lg)'
-                  e.currentTarget.style.transform = 'translateY(-2px)'
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.boxShadow = 'none'
-                  e.currentTarget.style.transform = 'translateY(0)'
-                }}
-              >
-                <span style={{ fontSize: 36 }}>🗺️</span>
-                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-dark)' }}>View on Google Maps</span>
-                <span style={{ fontSize: 11 }}>Girjapara, Paschim Burdwan, WB</span>
-              </a>
+              {/* Map Link Cards — both studios */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <a
+                  href="https://maps.google.com/?q=Girjapara+Kathgada+Paschim+Burdwan+West+Bengal+713347"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexDirection: 'column', gap: 6,
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--divider)',
+                    padding: '18px 12px',
+                    background: 'linear-gradient(135deg, #f9f9f9, #fff)',
+                    textDecoration: 'none',
+                    color: 'var(--text-muted)',
+                    transition: 'box-shadow 200ms ease, transform 200ms ease',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+                  onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' }}
+                >
+                  <span style={{ fontSize: 28 }}>🗺️</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dark)', lineHeight: 1.3 }}>Studio 1</span>
+                  <span style={{ fontSize: 11, lineHeight: 1.4 }}>Paschim Burdwan<br />West Bengal</span>
+                </a>
+                <a
+                  href="https://maps.google.com/?q=Raintree+Park+Dwarka+Krishna+Namburu+Guntur+Andhra+Pradesh+522508"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexDirection: 'column', gap: 6,
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--divider)',
+                    padding: '18px 12px',
+                    background: 'linear-gradient(135deg, #f9f9f9, #fff)',
+                    textDecoration: 'none',
+                    color: 'var(--text-muted)',
+                    transition: 'box-shadow 200ms ease, transform 200ms ease',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+                  onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' }}
+                >
+                  <span style={{ fontSize: 28 }}>🗺️</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dark)', lineHeight: 1.3 }}>Studio 2</span>
+                  <span style={{ fontSize: 11, lineHeight: 1.4 }}>Namburu, Guntur<br />Andhra Pradesh</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
