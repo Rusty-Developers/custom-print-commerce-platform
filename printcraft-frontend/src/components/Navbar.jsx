@@ -136,7 +136,7 @@ export default function Navbar() {
           >
             <img
               src={newLogo}
-              alt="MK Group Printing Logo"
+              alt="MK GROUP Printing Logo"
               style={{
                 height: '44px',
                 width: 'auto',
@@ -160,7 +160,7 @@ export default function Navbar() {
                 color: '#ffffff',
                 letterSpacing: '-0.01em',
                 whiteSpace: 'nowrap',
-              }}>MK Group</span>
+              }}>MK GROUP</span>
               <span style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: '10px',

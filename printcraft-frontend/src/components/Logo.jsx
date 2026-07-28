@@ -5,7 +5,7 @@ export default function Logo({ size = 28 }) {
   return (
     <img
       src={newLogo}
-      alt="MK Group Printing"
+      alt="MK GROUP Printing"
       width={dim}
       height={dim}
       style={{ objectFit: 'contain', display: 'block', borderRadius: 6 }}

@@ -86,7 +86,7 @@ export default function AdminPage() {
               }}>
                 <img
                   src={adminLogo}
-                  alt="MK Group"
+                  alt="MK GROUP"
                   style={{
                     width: '100%',
                     height: '100%',
@@ -105,7 +105,7 @@ export default function AdminPage() {
                 letterSpacing: '0.10em',
                 color: 'rgba(255,255,255,0.92)',
                 textTransform: 'uppercase',
-              }}>MK Group</div>
+              }}>MK GROUP</div>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',

@@ -22,7 +22,7 @@ const VALUES = [
 ]
 
 const TIMELINE = [
-  { year: '2020', title: 'MK Group Printing Founded', desc: 'Started as a one-room print studio in Girjapara, Paschim Burdwan, West Bengal with two premium printers and a dream to make custom prints accessible.' },
+  { year: '2020', title: 'MK GROUP Printing Founded', desc: 'Started as a one-room print studio in Girjapara, Paschim Burdwan, West Bengal with two premium printers and a dream to make custom prints accessible.' },
   { year: '2021', title: 'Went Online', desc: 'Launched our first e-commerce platform. Within 6 months, served customers across 18 Indian states.' },
   { year: '2023', title: 'Expanded Materials', desc: 'Added Glass, Metal, and Acrylic printing to our range. Installed state-of-the-art UV printing equipment.' },
   { year: '2025', title: 'Premium Platform Launch', desc: 'Launched our new platform with live photo preview, instant pricing, and pan-India delivery across 500+ cities.' },
@@ -37,8 +37,8 @@ const STATS = [
 
 export default function AboutPage() {
   useSeo(
-    'About Us — MK Group Printing',
-    'Learn the story of MK Group Printing — a premium custom print studio serving thousands of customers across India with passion and craftsmanship.'
+    'About Us — MK GROUP Printing',
+    'Learn the story of MK GROUP Printing — a premium custom print studio serving thousands of customers across India with passion and craftsmanship.'
   )
   const navigate = useNavigate()
 
@@ -65,7 +65,7 @@ export default function AboutPage() {
                 Where Memories Become&nbsp;Masterpieces
               </h2>
               <p className="about-intro-para">
-                MK Group Printing was born from a simple belief — that every memory deserves to be
+                MK GROUP Printing was born from a simple belief — that every memory deserves to be
                 displayed beautifully. We started in a small studio in Girjapara, West Bengal,
                 armed with nothing but premium printers and an obsession with quality.
               </p>
@@ -87,19 +87,19 @@ export default function AboutPage() {
               <div className="about-brand-logo-wrap">
                 <img
                   src={newLogo}
-                  alt="MK Group Printing"
+                  alt="MK GROUP Printing"
                   className="about-brand-logo"
                 />
               </div>
-              <div className="about-brand-name">MK Group Printing</div>
+              <div className="about-brand-name">MK GROUP Printing</div>
               <div className="about-brand-tagline">Premium Custom Print Studio</div>
               <ul className="about-brand-facts">
                 <li>
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', opacity: 0.6, textTransform: 'uppercase' }}>Studio 1</span><br />
-                  📍 Girjapara (Kathgada), Paschim Burdwan, WB – 713347
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', opacity: 0.6, textTransform: 'uppercase' }}>Office 1</span><br />
+                  📍 RANIGANJ, GIRJAPARA, KATHGADA, PASCHIM BARDHAMAN, WB – 713347, INDIA
                 </li>
                 <li>
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', opacity: 0.6, textTransform: 'uppercase' }}>Studio 2</span><br />
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', opacity: 0.6, textTransform: 'uppercase' }}>Office 2</span><br />
                   📍 Namburu, Guntur District, Andhra Pradesh – 522508
                 </li>
                 <li>🏭 Premium Print Studio</li>

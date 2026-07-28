@@ -54,8 +54,8 @@ function isStepCurrent(stepStatus, currentStatus) {
 
 export default function TrackingPage() {
   useSeo(
-    'Track Your Order — MK Group Printing',
-    'Real-time delivery tracking for your MK Group Printing order. Enter your Order ID for live updates.'
+    'Track Your Order — MK GROUP Printing',
+    'Real-time delivery tracking for your MK GROUP Printing order. Enter your Order ID for live updates.'
   )
   const [searchParams] = useSearchParams()
   const rawOrderId = searchParams.get('orderId') || ''

@@ -375,7 +375,7 @@ function HeroSection() {
 
         {/* Brand label centred over image */}
         <div className="hp-carousel-brand">
-          <span className="hp-carousel-brand-title">MK Group</span>
+          <span className="hp-carousel-brand-title">MK GROUP</span>
           <span className="hp-carousel-brand-sub">{current.label}</span>
         </div>
 
@@ -427,18 +427,18 @@ function HeroSection() {
     <div
       className="hp-ad-banner"
       role="complementary"
-      aria-label="MK Group store showcase"
+      aria-label="MK GROUP store showcase"
     >
       <img
         src={new URL('../assets/carosalMusthavethisPIC/WhatsApp Image 2026-07-11 at 15.09.25.jpeg', import.meta.url).href}
-        alt="MK Group Printing — Visit our store"
+        alt="MK GROUP Printing — Visit our store"
         className="hp-ad-banner-img"
         loading="lazy"
         decoding="async"
       />
       <div className="hp-ad-banner-overlay">
         <span className="hp-ad-banner-tag">Our Store</span>
-        <span className="hp-ad-banner-text">Welcome to MK Group Printing — Premium Custom Frames & Prints</span>
+        <span className="hp-ad-banner-text">Welcome to MK GROUP Printing — Premium Custom Frames & Prints</span>
         <button
           type="button"
           className="hp-ad-banner-btn"
@@ -574,7 +574,7 @@ function WhyChooseUs() {
   return (
     <section className="hp-section hp-section--white reveal">
       <div className="container">
-        <h2 className="hp-section-title hp-section-title--sm">Why Choose MK Group Printing</h2>
+        <h2 className="hp-section-title hp-section-title--sm">Why Choose MK GROUP Printing</h2>
         <div className="hp-title-accent" />
         <div className="hp-features-grid">
           {FEATURES.map((f) => (
@@ -636,7 +636,7 @@ function FAQSection() {
 
 export default function HomePage() {
   useSeo(
-    'MK Group Printing — Premium Custom Prints',
+    'MK GROUP Printing — Premium Custom Prints',
     'Transform your memories into premium custom prints on Glass, Acrylic, Metal, Wood & more. Delivered pan-India in 5-7 days.'
   )
   useScrollReveal([])
