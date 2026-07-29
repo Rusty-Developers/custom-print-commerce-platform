@@ -1,5 +1,5 @@
 /* ============================================
-   PRINTCRAFT Ã¢â‚¬â€ GLOBAL DESIGN SYSTEM
+   PRINTCRAFT ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â GLOBAL DESIGN SYSTEM
    Premium Indian Print Studio
    ============================================ */
 
@@ -26,13 +26,13 @@
   --text-light: #9B9B9B;
   --border-color: #E8E8E8;
 
-  /* Ã¢â€â‚¬Ã¢â€â‚¬ Cinematic Dark Palette Ã¢â€â‚¬Ã¢â€â‚¬ */
+  /* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Cinematic Dark Palette ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
   --cinema-black:  #080808;
   --cinema-deep:   #0e0c0c;
   --cinema-surface:#141212;
   --cinema-lift:   rgba(255,255,255,0.04);
   --cinema-border: rgba(255,255,255,0.07);
-  --grain-opacity: 0.045;   /* film grain strength Ã¢â‚¬â€ tweak here */
+  --grain-opacity: 0.045;   /* film grain strength ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â tweak here */
 
   /* Dark Footer */
   --dark-bg: #1A1A1A;
@@ -45,7 +45,7 @@
   --green: #22C55E;
   --red-light: #FEF2F2;
 
-  /* Shadows Ã¢â‚¬â€ layered ambient + key light */
+  /* Shadows ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â layered ambient + key light */
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.04);
   --shadow-md: 0 2px 8px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05);
   --shadow-lg: 0 8px 24px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
@@ -61,7 +61,7 @@
   --radius-xl: 26px;
   --radius-full: 9999px;
 
-  /* Transitions Ã¢â‚¬â€ spring-like easing */
+  /* Transitions ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â spring-like easing */
   --transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: all 0.14s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-slow: all 0.48s cubic-bezier(0.16, 1, 0.3, 1);
@@ -194,9 +194,9 @@ img {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Cinematic Keyframes Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Cinematic Keyframes ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 
-/* Film grain tile shift Ã¢â‚¬â€ moves the noise pattern each frame */
+/* Film grain tile shift ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â moves the noise pattern each frame */
 @keyframes grain-shift {
   0%   { transform: translate(0,   0);   }
   10%  { transform: translate(-2%, -3%); }
@@ -219,7 +219,7 @@ img {
   100% { opacity: 0.06; transform: translateX(0)   scale(1);    }
 }
 
-/* Cinematic vignette pulse Ã¢â‚¬â€ very subtle breathe */
+/* Cinematic vignette pulse ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â very subtle breathe */
 @keyframes vignette-breathe {
   0%,100% { opacity: 0.72; }
   50%     { opacity: 0.82; }
@@ -229,13 +229,13 @@ img {
   animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+/* ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â
    CINEMATIC FILM GRAIN
    Implemented as a fixed pseudo-element using an inline SVG
    feTurbulence filter so the noise is always covering the
    viewport. Grain-shift animation randomises the tile offset
    every frame to simulate real 35mm grain flutter.
-   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
+   ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â */
 body::after {
   content:    '';
   position:   fixed;
@@ -252,7 +252,7 @@ body::after {
   will-change: transform;
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Scroll Reveal Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Scroll Reveal ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .reveal {
   opacity: 0;
   transform: translateY(32px);
@@ -264,7 +264,7 @@ body::after {
   transform: translateY(0);
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Loading Skeleton Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Loading Skeleton ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .skeleton {
   background: linear-gradient(90deg, #f2f2f2 25%, #e8e8e8 50%, #f2f2f2 75%);
   background-size: 200% 100%;
@@ -885,9 +885,9 @@ body::after {
   transform: translateY(-1px);
 }
 
-/* ═══════════════════════════════════════════
-   MEGA DROPDOWN — Icon-free, 3×3 grid, classy
-   ═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MEGA DROPDOWN â€” Icon-free, 3Ã—3 grid, classy
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .mega-dropdown {
   position: absolute;
   top: calc(100% + 4px);
@@ -938,9 +938,9 @@ body::after {
   pointer-events: none;
 }
 
-/* ── 9 TOTALLY DISTINCT animated hover effects — Red-White combo ── */
+/* â”€â”€ 9 TOTALLY DISTINCT animated hover effects â€” Red-White combo â”€â”€ */
 
-/* 1. TILES — Radial ripple burst from center */
+/* 1. TILES â€” Radial ripple burst from center */
 @keyframes tileRipple {
   0%   { transform: scale(0); opacity: 0.6; }
   100% { transform: scale(2.5); opacity: 0; }
@@ -966,7 +966,7 @@ body::after {
   animation: tileRipple 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* 2. PVC — Electric top-border zap + text bold */
+/* 2. PVC â€” Electric top-border zap + text bold */
 @keyframes pvcZap {
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -990,7 +990,7 @@ body::after {
   animation: pvcZap 0.7s ease-in-out;
 }
 
-/* 3. GLASS — Frosted blur + inset glow */
+/* 3. GLASS â€” Frosted blur + inset glow */
 .mega-cat--glass {
   backdrop-filter: blur(0px);
 }
@@ -1004,7 +1004,7 @@ body::after {
               inset 0 1px 0 rgba(255,255,255,0.9);
 }
 
-/* 4. METAL — Emboss press-down (mechanical click) */
+/* 4. METAL â€” Emboss press-down (mechanical click) */
 @keyframes metalPress {
   0%   { transform: scale(1)    translateY(0);   box-shadow: 0 4px 0 rgba(192,57,43,0.4); }
   40%  { transform: scale(0.96) translateY(3px); box-shadow: 0 1px 0 rgba(192,57,43,0.4); }
@@ -1017,7 +1017,7 @@ body::after {
   animation: metalPress 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* 5. WOOD — Warm radial bloom from center */
+/* 5. WOOD â€” Warm radial bloom from center */
 .mega-cat--wood::before {
   content: '';
   position: absolute;
@@ -1033,7 +1033,7 @@ body::after {
 }
 .mega-cat--wood:hover::before { transform: scale(1.15); }
 
-/* 6. ACRYLIC — Neon-outline orbit */
+/* 6. ACRYLIC â€” Neon-outline orbit */
 @keyframes acrylicNeon {
   0%   { box-shadow:  3px  0   8px rgba(192,57,43,0.7), 0 0 0 rgba(192,57,43,0); }
   25%  { box-shadow:  0    3px 8px rgba(192,57,43,0.7), 0 0 0 rgba(192,57,43,0); }
@@ -1048,13 +1048,13 @@ body::after {
   animation: acrylicNeon 1s linear infinite;
 }
 
-/* 7. PHOTO_FRAME — Label slides up, arrow fades in below */
+/* 7. PHOTO_FRAME â€” Label slides up, arrow fades in below */
 .mega-cat--photo_frame .mega-dropdown-label {
   display: inline-block;
   transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .mega-cat--photo_frame::after {
-  content: '→';
+  content: 'â†’';
   position: absolute;
   bottom: -14px;
   left: 50%;
@@ -1072,7 +1072,7 @@ body::after {
 .mega-cat--photo_frame:hover .mega-dropdown-label { transform: translateY(-4px); }
 .mega-cat--photo_frame:hover::after { bottom: 4px; opacity: 1; }
 
-/* 8. POSTER — Corner flood fill (top-left → bottom-right) */
+/* 8. POSTER â€” Corner flood fill (top-left â†’ bottom-right) */
 .mega-cat--poster::before {
   content: '';
   position: absolute;
@@ -1090,7 +1090,7 @@ body::after {
   clip-path: polygon(0 0, 100% 0, 100% 100%);
 }
 
-/* 9. CREATIVE — Jitter shake + inverted red bg with white text */
+/* 9. CREATIVE â€” Jitter shake + inverted red bg with white text */
 @keyframes creativeJitter {
   0%,100% { transform: translateX(0)    rotate(0deg);   }
   15%     { transform: translateX(-2px) rotate(-1deg);  }
@@ -1909,7 +1909,7 @@ body::after {
 
 /* Frame Preview */
 .room-scene {
-  /* Styled inline in JSX Ã¢â‚¬â€ this class is kept for selector compatibility */
+  /* Styled inline in JSX ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â this class is kept for selector compatibility */
 }
 
 .room-scene::before {
@@ -1940,7 +1940,7 @@ body::after {
   display: block;
 }
 
-/* Upload Zone Ã¢â‚¬â€ hover state via class (inline handles base) */
+/* Upload Zone ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â hover state via class (inline handles base) */
 .upload-zone:hover {
   border-color: #C0392B !important;
   background: rgba(192,57,43,0.02) !important;
@@ -2122,7 +2122,7 @@ body::after {
 }
 
 /* =========================================
-   AUTH PAGES â€” CINEMA PREMIUM
+   AUTH PAGES Ã¢â‚¬â€ CINEMA PREMIUM
    ========================================= */
 .auth-page-cinema {
   min-height: 100vh;
@@ -2942,7 +2942,7 @@ body::after {
 }
 
 /* =========================================
-   PRODUCTS PAGE Ã¢â‚¬â€ REDESIGNED
+   PRODUCTS PAGE ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â REDESIGNED
    ========================================= */
 
 .pc-products-header {
@@ -2989,7 +2989,7 @@ body::after {
   animation: pulse 2.5s ease-in-out infinite;
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Filter Tabs Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Filter Tabs ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .pc-filter-tabs-wrap {
   background: #FFFFFF;
   border-bottom: 1px solid #F0F0F0;
@@ -3034,9 +3034,9 @@ body::after {
   box-shadow: 0 3px 12px rgba(192,57,43,0.35);
 }
 
-/* ── 9 Unique Hover Animations per category — Red-White Combo ── */
+/* â”€â”€ 9 Unique Hover Animations per category â€” Red-White Combo â”€â”€ */
 
-/* ALL — Liquid wave ripple from center */
+/* ALL â€” Liquid wave ripple from center */
 @keyframes tabRipple {
   0%   { transform: translate(-50%,-50%) scale(0); opacity: 0.55; }
   100% { transform: translate(-50%,-50%) scale(3.5); opacity: 0; }
@@ -3055,7 +3055,7 @@ body::after {
 .pc-filter-tab--all:not(.active):hover { color: #C0392B; border-color: rgba(192,57,43,0.4); background: rgba(192,57,43,0.03); }
 .pc-filter-tab--all:not(.active):hover::before { animation: tabRipple 0.55s cubic-bezier(0.4,0,0.2,1) forwards; }
 
-/* TILES — Electric top-flash + bold text */
+/* TILES â€” Electric top-flash + bold text */
 @keyframes tabZap {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
@@ -3076,7 +3076,7 @@ body::after {
   animation: tabZap 0.65s ease-in-out;
 }
 
-/* PVC — Frosted glass blur */
+/* PVC â€” Frosted glass blur */
 .pc-filter-tab--pvc {
   backdrop-filter: blur(0px);
 }
@@ -3088,7 +3088,7 @@ body::after {
   box-shadow: inset 0 0 0 1.5px rgba(192,57,43,0.25), 0 2px 16px rgba(192,57,43,0.1), inset 0 1px 0 rgba(255,255,255,0.95);
 }
 
-/* GLASS — Mechanical press-down */
+/* GLASS â€” Mechanical press-down */
 @keyframes tabPress {
   0%   { transform: scale(1)    translateY(0);   box-shadow: 0 4px 0 rgba(192,57,43,0.35); }
   40%  { transform: scale(0.94) translateY(3px); box-shadow: 0 1px 0 rgba(192,57,43,0.35); }
@@ -3101,7 +3101,7 @@ body::after {
   animation: tabPress 0.22s cubic-bezier(0.4,0,0.2,1) forwards;
 }
 
-/* METAL — Radial warm bloom */
+/* METAL â€” Radial warm bloom */
 .pc-filter-tab--metal::before {
   content: '';
   position: absolute;
@@ -3114,7 +3114,7 @@ body::after {
 .pc-filter-tab--metal:not(.active):hover { color: #C0392B; border-color: rgba(192,57,43,0.3); }
 .pc-filter-tab--metal:not(.active):hover::before { transform: scale(1.1); }
 
-/* WOOD — Neon outline orbit */
+/* WOOD â€” Neon outline orbit */
 @keyframes tabNeon {
   0%   { box-shadow:  3px  0   9px rgba(192,57,43,0.65); }
   25%  { box-shadow:  0    3px 9px rgba(192,57,43,0.65); }
@@ -3129,7 +3129,7 @@ body::after {
   animation: tabNeon 0.9s linear infinite;
 }
 
-/* ACRYLIC — Corner-flood triangle fill */
+/* ACRYLIC â€” Corner-flood triangle fill */
 .pc-filter-tab--acrylic::before {
   content: '';
   position: absolute;
@@ -3142,7 +3142,7 @@ body::after {
 .pc-filter-tab--acrylic:not(.active):hover { color: #C0392B; border-color: rgba(192,57,43,0.4); }
 .pc-filter-tab--acrylic:not(.active):hover::before { clip-path: polygon(0 0, 100% 0, 100% 100%); }
 
-/* PHOTO_FRAME — Label slides up, arrow appears below */
+/* PHOTO_FRAME â€” Label slides up, arrow appears below */
 .pc-filter-tab--photo_frame:not(.active):hover {
   color: #C0392B;
   background: rgba(192,57,43,0.04);
@@ -3162,7 +3162,7 @@ body::after {
 }
 .pc-filter-tab--photo_frame:not(.active):hover::after { transform: scaleX(1); }
 
-/* POSTER — Jitter shake + red invert */
+/* POSTER â€” Jitter shake + red invert */
 @keyframes tabJitter {
   0%,100% { transform: translateX(0)    rotate(0deg);    }
   15%     { transform: translateX(-3px) rotate(-1.5deg); }
@@ -3178,7 +3178,7 @@ body::after {
   animation: tabJitter 0.38s ease-in-out;
 }
 
-/* CREATIVE — Staggered dot-burst bounce */
+/* CREATIVE â€” Staggered dot-burst bounce */
 @keyframes creativeBounce {
   0%   { transform: translateY(0)    scale(1);    }
   30%  { transform: translateY(-6px) scale(1.05); }
@@ -3193,7 +3193,7 @@ body::after {
   animation: creativeBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Results Count Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Results Count ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .pc-results-count {
   font-size: 13px;
   color: var(--text-muted);
@@ -3206,7 +3206,7 @@ body::after {
   }
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Product Grid Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Product Grid ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .pc-product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -3220,7 +3220,7 @@ body::after {
   }
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Empty State Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Empty State ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .pc-empty-state {
   text-align: center;
   padding: 80px 20px;
@@ -3244,7 +3244,7 @@ body::after {
 }
 
 /* =========================================
-   PRODUCT CARD Ã¢â‚¬â€ REDESIGNED
+   PRODUCT CARD ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â REDESIGNED
    ========================================= */
 
 .pc-product-card {
@@ -3285,7 +3285,7 @@ body::after {
   transform: translateY(-8px);
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Frame Preview Wrapper Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Frame Preview Wrapper ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .pc-card-frame-wrapper {
   display: flex;
   align-items: center;
@@ -3302,7 +3302,7 @@ body::after {
   }
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Card Body Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Card Body ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .pc-card-body {
   padding: 12px;
   display: flex;
@@ -3311,7 +3311,7 @@ body::after {
   background: #FFFFFF;
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Product Name Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Product Name ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .pc-card-name {
   font-family: 'Playfair Display', var(--font-heading);
   font-size: 15px;
@@ -3326,7 +3326,7 @@ body::after {
   margin: 0;
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Category Badge Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Category Badge ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .pc-card-category-badge {
   display: inline-flex;
   align-self: flex-start;
@@ -3339,7 +3339,7 @@ body::after {
   font-weight: 600;
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Price Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Price ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .pc-card-price {
   font-size: 14px;
   font-weight: 700;
@@ -3352,7 +3352,7 @@ body::after {
   font-weight: 500;
 }
 
-/* â”€â”€ CTA Button â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ CTA Button Ã¢â€â‚¬Ã¢â€â‚¬ */
 .pc-card-cta {
   display: flex;
   align-items: center;
@@ -3379,12 +3379,12 @@ body::after {
 }
 
 /* =========================================
-   HOMEPAGE â€” REDESIGNED
+   HOMEPAGE Ã¢â‚¬â€ REDESIGNED
    ========================================= */
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   HERO â€” SPLIT LAYOUT  (light left + crimson right)
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+   HERO Ã¢â‚¬â€ SPLIT LAYOUT  (light left + crimson right)
+   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 .hp-hero {
   display: flex;
   min-height: 100vh;
@@ -3394,7 +3394,7 @@ body::after {
   contain: layout style;
 }
 
-/* â”€â”€ LEFT PANEL â”€â”€ clean off-white copy panel â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ LEFT PANEL Ã¢â€â‚¬Ã¢â€â‚¬ clean off-white copy panel Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .hp-hero-left {
   flex: 0 0 52%;
   display: flex;
@@ -3415,7 +3415,7 @@ body::after {
     flex: 0 0 52%;
   }
 }
-/* Mobile stacking â€” hero becomes single column */
+/* Mobile stacking Ã¢â‚¬â€ hero becomes single column */
 @media (max-width: 767px) {
   .hp-hero {
     flex-direction: column;
@@ -3472,7 +3472,7 @@ body::after {
   .hp-hero-sub { font-size: 14px; }
 }
 
-/* Material pills â€” gray bg ensures visibility on white background */
+/* Material pills Ã¢â‚¬â€ gray bg ensures visibility on white background */
 .hp-material-toggle {
   display: flex;
   flex-wrap: wrap;
@@ -3484,7 +3484,7 @@ body::after {
   padding: 8px 20px;
   border-radius: 999px;
   border: 1.5px solid #b0b0b0;
-  background: #e8e8e8;         /* â† min-gray: always visible on white */
+  background: #e8e8e8;         /* Ã¢â€ Â min-gray: always visible on white */
   font-size: 12px;
   font-weight: 700;
   color: #1a1a1a;
@@ -3601,7 +3601,7 @@ body::after {
   filter: drop-shadow(0 0 6px rgba(255,255,255,0.35));
 }
 
-/* â”€â”€ RIGHT PANEL â”€â”€ deep crimson carousel panel â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ RIGHT PANEL Ã¢â€â‚¬Ã¢â€â‚¬ deep crimson carousel panel Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .hp-hero-right {
   flex: 0 0 48%;
   position: relative;
@@ -3614,7 +3614,7 @@ body::after {
   align-self: stretch;
 }
 
-/* â”€â”€ Tablet landscape (768pxâ€“1024px) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Tablet landscape (768pxÃ¢â‚¬â€œ1024px) Ã¢â€â‚¬Ã¢â€â‚¬ */
 @media (max-width: 1024px) and (min-width: 768px) {
   .hp-hero-right {
     flex: 0 0 48%;
@@ -3622,12 +3622,12 @@ body::after {
   }
 }
 
-/* â”€â”€ Mobile: stacks vertically â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Mobile: stacks vertically Ã¢â€â‚¬Ã¢â€â‚¬ */
 @media (max-width: 767px) {
   .hp-hero-right {
     flex: none;
     width: 100%;
-    /* 16:9 letterbox on mobile â€” never shorter than 200px */
+    /* 16:9 letterbox on mobile Ã¢â‚¬â€ never shorter than 200px */
     aspect-ratio: 16 / 9;
     height: auto;
     min-height: 200px;
@@ -3636,7 +3636,7 @@ body::after {
   }
 }
 
-/* â”€â”€ Small mobile (â‰¤480px) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Small mobile (Ã¢â€°Â¤480px) Ã¢â€â‚¬Ã¢â€â‚¬ */
 @media (max-width: 480px) {
   .hp-hero-right {
     aspect-ratio: 4 / 3;
@@ -3644,7 +3644,7 @@ body::after {
   }
 }
 
-/* â”€â”€ Extra-small phones (â‰¤360px) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Extra-small phones (Ã¢â€°Â¤360px) Ã¢â€â‚¬Ã¢â€â‚¬ */
 @media (max-width: 360px) {
   .hp-hero-right {
     aspect-ratio: 1 / 1;
@@ -3652,14 +3652,14 @@ body::after {
   }
 }
 
-/* â”€â”€ Large desktop (â‰¥1280px) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Large desktop (Ã¢â€°Â¥1280px) Ã¢â€â‚¬Ã¢â€â‚¬ */
 @media (min-width: 1280px) {
   .hp-hero-right {
     flex: 0 0 48%;
   }
 }
 
-/* â”€â”€ 2K / 4K / TV (â‰¥1920px) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ 2K / 4K / TV (Ã¢â€°Â¥1920px) Ã¢â€â‚¬Ã¢â€â‚¬ */
 @media (min-width: 1920px) {
   .hp-hero-right {
     flex: 0 0 50%;
@@ -3712,7 +3712,7 @@ body::after {
   line-height: 1;
 }
 
-/* Carousel image wrapper â€” always fills the entire panel edge-to-edge */
+/* Carousel image wrapper Ã¢â‚¬â€ always fills the entire panel edge-to-edge */
 .hp-carousel-img-wrap {
   position: absolute;
   inset: 0;
@@ -3733,7 +3733,7 @@ body::after {
 .hp-carousel-img-scrim {
   position: absolute;
   inset: 0;
-  /* Heavy vignette ONLY at the very bottom — lets the image breathe at top/mid */
+  /* Heavy vignette ONLY at the very bottom â€” lets the image breathe at top/mid */
   background: linear-gradient(
     to bottom,
     rgba(0,0,0,0.08)  0%,
@@ -3856,7 +3856,7 @@ body::after {
   transform: scale(1.3);
 }
 
-/* â”€â”€ Per-slide CTA bar (caption + Shop Now button) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Per-slide CTA bar (caption + Shop Now button) Ã¢â€â‚¬Ã¢â€â‚¬ */
 .hp-carousel-cta-bar {
   position: absolute;
   bottom: 0;
@@ -3935,7 +3935,7 @@ body::after {
   .hp-carousel-shop-btn { padding: 8px 14px; font-size: 11px; }
 }
 @media (max-width: 480px) {
-  .hp-carousel-cta-caption { display: none; } /* caption hidden on tiny screens â€” button is self-explanatory */
+  .hp-carousel-cta-caption { display: none; } /* caption hidden on tiny screens Ã¢â‚¬â€ button is self-explanatory */
   .hp-carousel-shop-btn { width: 100%; justify-content: center; }
 }
 
@@ -3949,127 +3949,261 @@ body::after {
   filter: none;
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   ADVERTISEMENT BANNER â€” below hero, above categories
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══════════════════════════════════════════════════════════════
+   STORE SHOWCASE BANNER — 2-column split: left=content, right=image
+   Zero overlap guaranteed on every device from 320px to 4K TV.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Outer container ── */
 .hp-ad-banner {
-  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
   width: 100%;
-  height: 280px;
+  min-height: 320px;
   overflow: hidden;
-  background: #1a1a1a;
+  background: #0d0202;
+}
+
+/* ── LEFT column: crimson branded panel ── */
+.hp-ad-banner-left {
+  flex: 0 0 48%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 48px 52px;
+  background: linear-gradient(135deg, #1a0404 0%, #2b0707 40%, #1e0505 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hp-ad-banner-left::after {
+  content: '';
+  position: absolute;
+  right: -80px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(192,57,43,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── RIGHT column: image fully visible, never behind text ── */
+.hp-ad-banner-right {
+  flex: 0 0 52%;
+  position: relative;
+  overflow: hidden;
+  /* grey matches the image's own background — no letterboxing visible */
+  background: #d8d8d8;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .hp-ad-banner-img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  /* contain = full image always visible, never cropped */
+  object-fit: contain;
+  object-position: center center;
   display: block;
-  filter: brightness(0.55);
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: brightness(0.92) saturate(0.88) contrast(1.02);
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
 }
 
 .hp-ad-banner:hover .hp-ad-banner-img {
-  transform: scale(1.04);
+  transform: scale(1.02);
 }
 
-.hp-ad-banner-overlay {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 48px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
+/* ── Pill tag ── */
 .hp-ad-banner-tag {
   display: inline-flex;
   align-items: center;
-  padding: 5px 14px;
+  padding: 5px 16px;
   border-radius: 999px;
   background: #C0392B;
   color: #fff;
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   white-space: nowrap;
+  box-shadow: 0 2px 14px rgba(192,57,43,0.50);
   flex-shrink: 0;
 }
 
-.hp-ad-banner-text {
+/* ── Heading ── */
+.hp-ad-banner-heading {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(18px, 2.5vw, 28px);
-  font-weight: 700;
+  font-size: clamp(22px, 2.8vw, 38px);
+  font-weight: 800;
   color: #fff;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  flex: 1;
-  text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+  line-height: 1.20;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.5);
 }
 
+/* ── Sub-text ── */
+.hp-ad-banner-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(13px, 1.1vw, 15px);
+  font-weight: 400;
+  color: rgba(255,255,255,0.68);
+  line-height: 1.65;
+  margin: 0;
+  max-width: 420px;
+}
+
+/* ── CTA button ── */
 .hp-ad-banner-btn {
-  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 12px 28px;
-  background: #fff;
-  color: #1a1a1a;
-  border: none;
-  border-radius: 6px;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: #C0392B;
+  color: #fff;
+  border: 2px solid transparent;
+  border-radius: 8px;
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.22s ease, color 0.22s ease,
-              transform 0.18s cubic-bezier(0.16,1,0.3,1),
-              box-shadow 0.22s ease;
   white-space: nowrap;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.20);
+  flex-shrink: 0;
+  transition: background 0.22s ease, border-color 0.22s ease,
+              transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.22s ease;
+  box-shadow: 0 4px 20px rgba(192,57,43,0.45);
+  margin-top: 6px;
 }
 
 .hp-ad-banner-btn:hover {
-  background: #C0392B;
+  background: transparent;
+  border-color: #C0392B;
   color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(192,57,43,0.50);
+  box-shadow: 0 8px 28px rgba(192,57,43,0.40);
 }
 
 .hp-ad-banner-btn:active {
   transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(192,57,43,0.30);
 }
 
-/* Tablet */
-@media (max-width: 1024px) {
-  .hp-ad-banner { height: 240px; }
-  .hp-ad-banner-overlay { padding: 0 32px; }
+/* ══ 2K / 4K / TV >= 1920px ══ */
+@media (min-width: 1920px) {
+  .hp-ad-banner { min-height: 420px; }
+  .hp-ad-banner-left { flex: 0 0 44%; padding: 64px 88px; gap: 24px; }
+  .hp-ad-banner-right { flex: 0 0 56%; }
+  .hp-ad-banner-heading { font-size: 46px; }
+  .hp-ad-banner-sub { font-size: 17px; max-width: 520px; }
+  .hp-ad-banner-btn { padding: 16px 40px; font-size: 13px; }
 }
 
-/* Mobile */
+/* ══ Large Desktop: 1440px–1919px ══ */
+@media (max-width: 1919px) and (min-width: 1440px) {
+  .hp-ad-banner { min-height: 360px; }
+  .hp-ad-banner-left { padding: 56px 64px; gap: 20px; }
+}
+
+/* ══ Laptop / Standard Desktop: 1025px–1439px ══ */
+@media (max-width: 1439px) and (min-width: 1025px) {
+  .hp-ad-banner { min-height: 300px; }
+  .hp-ad-banner-left { padding: 40px 44px; gap: 16px; }
+}
+
+/* ══ Tablet: 768px–1024px — 2-column, tighter ══ */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .hp-ad-banner { min-height: 260px; }
+  .hp-ad-banner-left { flex: 0 0 50%; padding: 28px 28px; gap: 14px; }
+  .hp-ad-banner-right { flex: 0 0 50%; }
+  .hp-ad-banner-heading { font-size: clamp(18px, 2.8vw, 26px); }
+  .hp-ad-banner-sub { font-size: 12px; }
+  .hp-ad-banner-btn { padding: 12px 22px; font-size: 11px; margin-top: 2px; }
+}
+
+/* ══ Mobile <= 767px: stacked — content ABOVE, image BELOW ══ */
 @media (max-width: 767px) {
-  .hp-ad-banner { height: 200px; }
-  .hp-ad-banner-overlay { padding: 0 20px; gap: 16px; }
-  .hp-ad-banner-btn { padding: 10px 20px; font-size: 12px; }
+  .hp-ad-banner {
+    flex-direction: column;
+    min-height: unset;
+  }
+
+  .hp-ad-banner-left {
+    flex: none;
+    width: 100%;
+    padding: 28px 20px 24px;
+    gap: 14px;
+    order: 1;
+    border-bottom: 3px solid rgba(192,57,43,0.60);
+  }
+
+  .hp-ad-banner-left::after { display: none; }
+
+  .hp-ad-banner-heading { font-size: clamp(20px, 6vw, 27px); }
+  .hp-ad-banner-sub { font-size: 13px; max-width: 100%; }
+
+  .hp-ad-banner-btn {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 13px;
+    margin-top: 2px;
+    border-color: transparent;
+    background: #C0392B;
+  }
+
+  .hp-ad-banner-btn:hover {
+    background: #a83224;
+    border-color: transparent;
+  }
+
+  .hp-ad-banner-right {
+    flex: none;
+    width: 100%;
+    height: 200px;
+    order: 2;
+    background: #d8d8d8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hp-ad-banner-img {
+    width: 100%;
+    height: 100%;
+    /* contain: full image visible on mobile too — no cropping */
+    object-fit: contain;
+    object-position: center center;
+    filter: brightness(0.92) saturate(0.88);
+    transition: none;
+  }
+
+  .hp-ad-banner:hover .hp-ad-banner-img { transform: none; }
 }
 
-/* Small mobile */
+/* ══ Small mobile <= 480px ══ */
 @media (max-width: 480px) {
-  .hp-ad-banner { height: 180px; }
-  .hp-ad-banner-text { font-size: 16px; }
-  .hp-ad-banner-tag { display: none; }
+  .hp-ad-banner-left { padding: 24px 16px 20px; gap: 12px; }
+  .hp-ad-banner-right { height: 210px; }
+  .hp-ad-banner-heading { font-size: clamp(18px, 5.5vw, 23px); }
+}
+
+/* ══ Extra-small phones <= 360px ══ */
+@media (max-width: 360px) {
+  .hp-ad-banner-left { padding: 20px 14px 18px; gap: 10px; }
+  .hp-ad-banner-right { height: 185px; }
+  .hp-ad-banner-heading { font-size: 18px; }
+  .hp-ad-banner-sub { font-size: 12px; }
+  .hp-ad-banner-btn { font-size: 12px; padding: 13px 16px; }
 }
 
 /* Float classes - kept for compat */
@@ -4130,7 +4264,7 @@ body::after {
   letter-spacing: 0.01em;
 }
 
-/* â”€â”€ Category Grid â”€â”€ Borderless Premium â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Category Grid Ã¢â€â‚¬Ã¢â€â‚¬ Borderless Premium Ã¢â€â‚¬Ã¢â€â‚¬ */
 .hp-category-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -4143,7 +4277,7 @@ body::after {
 @media (max-width: 380px) {
   .hp-category-grid { grid-template-columns: 1fr; gap: 14px; }
 }
-/* 4K / TV — cap grid width so cards don't balloon */
+/* 4K / TV â€” cap grid width so cards don't balloon */
 @media (min-width: 2400px) {
   .hp-category-grid {
     max-width: 1680px;
@@ -4198,11 +4332,11 @@ body::after {
   transform: scale(1.07);
 }
 
-/* Per-image position modifier classes removed — card is now aspect-ratio:3/2,
+/* Per-image position modifier classes removed â€” card is now aspect-ratio:3/2,
    matching the 3:2 landscape source photos. background-size:cover + center center
    now shows every image fully with zero cropping on any axis. */
 
-/* Static dark scrim Ã¢â‚¬â€ always present so text is legible */
+/* Static dark scrim ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â always present so text is legible */
 .hp-category-preview-overlay {
   position: absolute;
   inset: 0;
@@ -4222,7 +4356,7 @@ body::after {
 }
 
 
-/* Text overlay at the bottom of card â€” holds the category name */
+/* Text overlay at the bottom of card Ã¢â‚¬â€ holds the category name */
 .hp-category-body {
   position: absolute;
   bottom: 0;
@@ -4246,7 +4380,7 @@ body::after {
   text-shadow: 0 2px 10px rgba(0,0,0,0.80);
 }
 
-/* Explore button â€” reference slide-up pattern
+/* Explore button Ã¢â‚¬â€ reference slide-up pattern
      hidden:  opacity:0, translate(-50%, 130%)
      hover :  opacity:1, translate(-50%, 0)   */
 .hp-category-explore {
@@ -4292,7 +4426,7 @@ body::after {
   }
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Staggered Scroll Reveal for Product Cards Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Staggered Scroll Reveal for Product Cards ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .reveal-item {
   opacity: 0;
   transform: translateY(30px);
@@ -4305,7 +4439,7 @@ body::after {
   transform: translateY(0);
 }
 
-/* Stagger delays Ã¢â‚¬â€ applied via inline style or nth-child in JS */
+/* Stagger delays ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â applied via inline style or nth-child in JS */
 .reveal-item:nth-child(1) { transition-delay: 0.0s; }
 .reveal-item:nth-child(2) { transition-delay: 0.1s; }
 .reveal-item:nth-child(3) { transition-delay: 0.2s; }
@@ -4313,10 +4447,10 @@ body::after {
 .reveal-item:nth-child(5) { transition-delay: 0.4s; }
 .reveal-item:nth-child(6) { transition-delay: 0.5s; }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Material Toggle Pills Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Material Toggle Pills ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Best Sellers CTA Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Best Sellers CTA ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .hp-view-all-wrap {
   text-align: center;
   margin-top: 40px;
@@ -4346,7 +4480,7 @@ body::after {
   box-shadow: 0 4px 16px rgba(192,57,43,0.3);
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Features Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Features ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .hp-features-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -4404,7 +4538,7 @@ body::after {
   margin: 8px 0 0;
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Focus Rings Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Focus Rings ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 .hp-btn-primary:focus-visible,
 .hp-btn-outline:focus-visible {
   outline: 3px solid #C0392B;
@@ -4436,7 +4570,7 @@ body::after {
   border-radius: 4px;
 }
 
-/* â”€â”€ FAQ â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ FAQ Ã¢â€â‚¬Ã¢â€â‚¬ */
 .hp-faq-list {
   max-width: 720px;
   margin: 40px auto 0;
@@ -4504,10 +4638,10 @@ body::after {
   padding-top: 16px;
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Mobile Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Mobile ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 /* (old mobile block removed - replaced by new responsive system) */
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Reduced Motion Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Reduced Motion ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 @media (prefers-reduced-motion: reduce) {
   /* Framer Motion respects this via its own reduced-motion checks.
      CSS fallback: freeze ambient and floats. */
@@ -4523,7 +4657,7 @@ body::after {
     animation: none !important;
   }
 
-  /* Kill film grain flutter Ã¢â‚¬â€ freeze at position 0 */
+  /* Kill film grain flutter ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â freeze at position 0 */
   body::after {
     animation: none !important;
     transform: translate(0, 0) !important;
@@ -4575,7 +4709,7 @@ body::after {
   .cta-banner-btn {
     transition: none;
   }
-}/* Mobile / Tablet â€“ Extra Homepage + global fixes */
+}/* Mobile / Tablet Ã¢â‚¬â€œ Extra Homepage + global fixes */
 
 @media (max-width: 767px) {
   /* Homepage product grid 2-col on mobile */
@@ -4606,10 +4740,10 @@ body::after {
 
 
 /* =============================================
-   AUTH PAGES â€” RESPONSIVE CINEMA SYSTEM
+   AUTH PAGES Ã¢â‚¬â€ RESPONSIVE CINEMA SYSTEM
    ============================================= */
 
-/* â”€â”€ Entrance animation â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Entrance animation Ã¢â€â‚¬Ã¢â€â‚¬ */
 @keyframes authPanelEnter {
   from { opacity: 0; transform: translateY(28px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0)    scale(1);    }
@@ -4623,7 +4757,7 @@ body::after {
   animation: authPanelEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* â”€â”€ Panel body â€” fluid padding â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Panel body Ã¢â‚¬â€ fluid padding Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-panel-body {
   /* Extra left padding (8px) clears the 4px deco strip with breathing room */
   padding: clamp(28px, 6vw, 44px) clamp(24px, 6vw, 44px) clamp(28px, 5vw, 40px) clamp(28px, 6vw, 44px);
@@ -4631,7 +4765,7 @@ body::after {
   width: 100%;
 }
 
-/* â”€â”€ Header block â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Header block Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-header {
   text-align: center;
   margin-bottom: clamp(24px, 4vw, 36px);
@@ -4654,14 +4788,14 @@ body::after {
   margin: 0;
 }
 
-/* â”€â”€ Form â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Form Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-form {
   display: flex;
   flex-direction: column;
   gap: clamp(14px, 3vw, 18px);
 }
 
-/* â”€â”€ Phone prefix wrapper â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Phone prefix wrapper Ã¢â€â‚¬Ã¢â€â‚¬ */
 .phone-input-wrap {
   position: relative;
   display: flex;
@@ -4689,14 +4823,14 @@ body::after {
   width: 100%;
 }
 
-/* â”€â”€ Submit button â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Submit button Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-submit-btn {
   padding: clamp(12px, 3vw, 14px) 28px;
   font-size: clamp(13.5px, 2.5vw, 14.5px);
   margin-top: 4px;
 }
 
-/* â”€â”€ Divider â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Divider Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-divider {
   display: flex;
   align-items: center;
@@ -4717,7 +4851,7 @@ body::after {
   letter-spacing: 0.06em;
 }
 
-/* â”€â”€ Secondary action button (link-styled) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Secondary action button (link-styled) Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-alt-btn {
   display: flex;
   align-items: center;
@@ -4740,7 +4874,7 @@ body::after {
   background: rgba(192,57,43,0.03);
 }
 
-/* â”€â”€ Footnote â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Footnote Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-footnote {
   text-align: center;
   font-size: clamp(11px, 2vw, 12px);
@@ -4749,7 +4883,7 @@ body::after {
   line-height: 1.5;
 }
 
-/* â”€â”€ Steps indicator (Register) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Steps indicator (Register) Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-steps {
   display: flex;
   align-items: center;
@@ -4802,7 +4936,7 @@ body::after {
   flex-shrink: 0;
 }
 
-/* ——— OTP progress bar ——— */
+/* â€”â€”â€” OTP progress bar â€”â€”â€” */
 .otp-progress-bar {
   height: 3px;
   background: var(--divider);
@@ -4819,7 +4953,7 @@ body::after {
   will-change: width;
 }
 
-/* ——— OTP Input grid — fully fluid ——— */
+/* â€”â€”â€” OTP Input grid â€” fully fluid â€”â€”â€” */
 .otp-inputs {
   display: flex;
   gap: clamp(6px, 2vw, 10px);
@@ -4855,7 +4989,7 @@ body::after {
   animation: shake 0.5s ease;
 }
 
-/* â”€â”€ auth-page-cinema â€” better vertical centering on small screens â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ auth-page-cinema Ã¢â‚¬â€ better vertical centering on small screens Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-page-cinema {
   min-height: 100vh;
   min-height: 100dvh;
@@ -4867,7 +5001,7 @@ body::after {
   overflow-x: hidden;        /* only clip horizontal, allow vertical scroll */
 }
 
-/* â”€â”€ auth panel â€” fluid width â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ auth panel Ã¢â‚¬â€ fluid width Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-panel-cinema {
   position: relative;
   z-index: 1;
@@ -4885,7 +5019,7 @@ body::after {
   overflow: hidden;
 }
 
-/* Small phones â€” panel goes edge-to-edge with reduced radius */
+/* Small phones Ã¢â‚¬â€ panel goes edge-to-edge with reduced radius */
 @media (max-width: 480px) {
   .auth-panel-cinema {
     max-width: 100%;
@@ -4920,21 +5054,21 @@ body::after {
   }
 }
 
-/* Tablet â€” give more room */
+/* Tablet Ã¢â‚¬â€ give more room */
 @media (min-width: 768px) {
   .auth-page-cinema {
     padding: 88px 32px 40px;
   }
 }
 
-/* Large screens â€” generous centering */
+/* Large screens Ã¢â‚¬â€ generous centering */
 @media (min-width: 1200px) {
   .auth-page-cinema {
     padding: 100px 40px 48px;
   }
 }
 
-/* â”€â”€ Auth panel â€” logo sizing fix â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Auth panel Ã¢â‚¬â€ logo sizing fix Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-header img {
   display: block;
   margin: 0 auto;              /* center the logo img */
@@ -4974,7 +5108,7 @@ body::after {
   }
 }
 
-/* â”€â”€ Auth logo wrapper â€” constrains the logo img on all screen sizes â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Auth logo wrapper Ã¢â‚¬â€ constrains the logo img on all screen sizes Ã¢â€â‚¬Ã¢â€â‚¬ */
 .auth-logo-wrap {
   display: flex;
   align-items: center;
@@ -4999,7 +5133,7 @@ body::after {
 }
 
 
-/* ── Auth logo wrapper ── premium square brand mark display ── */
+/* â”€â”€ Auth logo wrapper â”€â”€ premium square brand mark display â”€â”€ */
 .auth-logo-wrap {
   display: flex;
   align-items: center;
