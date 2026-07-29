@@ -423,22 +423,18 @@ function HeroSection() {
       </div>
     </section>
 
-    {/* ── Advertisement Banner — store showcase image below hero ── */}
-    <div
-      className="hp-ad-banner"
-      role="complementary"
-      aria-label="MK GROUP store showcase"
-    >
-      <img
-        src={new URL('../assets/carosalMusthavethisPIC/WhatsApp Image 2026-07-11 at 15.09.25.jpeg', import.meta.url).href}
-        alt="MK GROUP Printing — Visit our store"
-        className="hp-ad-banner-img"
-        loading="lazy"
-        decoding="async"
-      />
-      <div className="hp-ad-banner-overlay">
+    {/* ── Store Showcase Banner ── */}
+    <div className="hp-ad-banner" role="complementary" aria-label="MK GROUP store showcase">
+
+      {/* LEFT: branded text column */}
+      <div className="hp-ad-banner-left">
         <span className="hp-ad-banner-tag">Our Store</span>
-        <span className="hp-ad-banner-text">Welcome to MK GROUP Printing — Premium Custom Frames & Prints</span>
+        <h2 className="hp-ad-banner-heading">
+          Welcome to<br />MK GROUP Printing
+        </h2>
+        <p className="hp-ad-banner-sub">
+          Premium custom prints on Glass, Acrylic, Metal, Wood &amp; more — crafted with passion, delivered to your door.
+        </p>
         <button
           type="button"
           className="hp-ad-banner-btn"
@@ -447,6 +443,18 @@ function HeroSection() {
           Shop Now →
         </button>
       </div>
+
+      {/* RIGHT: store image — fully visible, no overlap */}
+      <div className="hp-ad-banner-right">
+        <img
+          src={new URL('../assets/carosalMusthavethisPIC/WhatsApp Image 2026-07-11 at 15.09.25.jpeg', import.meta.url).href}
+          alt="MK GROUP Printing — Quality assured prints"
+          className="hp-ad-banner-img"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
     </div>
     </>
   )
