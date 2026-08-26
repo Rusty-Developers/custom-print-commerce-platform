@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
 import Logo from '../components/Logo'
@@ -7,7 +7,9 @@ import Spinner from '../components/Spinner'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
-  const [form, setForm]     = useState({ name: '', phoneno: '', email: '' })
+  const location = useLocation()
+  const prefillPhone = new URLSearchParams(location.search).get('phone') || ''
+  const [form, setForm]     = useState({ name: '', phoneno: prefillPhone, email: '' })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [mounted, setMounted] = useState(false)

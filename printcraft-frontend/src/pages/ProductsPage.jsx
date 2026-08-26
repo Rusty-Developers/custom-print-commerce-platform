@@ -4,6 +4,7 @@ import api from '../api/axios'
 import Spinner from '../components/Spinner'
 import ProductCard from '../components/ProductCard'
 import { ALL_CATEGORIES, CATEGORY_LABELS } from '../utils/format'
+import { enrichProductsWithBasePrice } from '../utils/enrichProducts'
 
 const FILTER_TABS = [
   { key: 'ALL', label: 'All' },
@@ -51,7 +52,12 @@ export default function ProductsPage() {
   useEffect(() => {
     api
       .get('/api/products')
-      .then((r) => setProducts(r.data))
+      .then(async (r) => {
+        const raw = r.data || []
+        // Enrich each product with its minimum active base price from pricing variants
+        const enriched = await enrichProductsWithBasePrice(raw)
+        setProducts(enriched)
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
@@ -72,9 +78,8 @@ export default function ProductsPage() {
         <div className="container">
           <h1 className="pc-products-title">Our Collection</h1>
           <p className="pc-products-subtitle">
-            See how your photos look in every frame — live preview below
+            Premium custom prints crafted to your specifications
           </p>
-          <p className="pc-products-live">Photos update every 3.5 seconds ✨</p>
         </div>
       </div>
 

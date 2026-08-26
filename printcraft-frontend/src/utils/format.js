@@ -34,7 +34,7 @@ export const CATEGORY_LABELS = {
   WOOD:        'Wood',
   ACRYLIC:     'Acrylic',
   PHOTO_FRAME: 'Photo Frame',
-  POSTER:      'Poster',
+  POSTER:      'Poster and Canvas',
   CREATIVE:    'Creative',
 }
 

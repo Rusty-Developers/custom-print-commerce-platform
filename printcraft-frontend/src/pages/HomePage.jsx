@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard'
 import { ALL_CATEGORIES, CATEGORY_LABELS } from '../utils/format'
 import mkgLogo from '../assets/logopiv/mkg.jpeg'
 import useSeo from '../hooks/useSeo'
+import { enrichProductsWithBasePrice } from '../utils/enrichProducts'
 import catTiles      from '../assets/CATEGORY_BACKGROUNDS/TILES.jpeg'
 import catPvc        from '../assets/CATEGORY_BACKGROUNDS/Pvc door.jpeg'
 import catGlass      from '../assets/CATEGORY_BACKGROUNDS/Glass printing.jpeg'
@@ -53,10 +54,10 @@ const CAROUSEL_SLIDES = [
   },
   {
     img: new URL('../assets/carosalPICS/Poster printing.jpeg', import.meta.url).href,
-    label: 'BOLD POSTER PRINTING',
+    label: 'BOLD POSTER & CANVAS PRINTING',
     caption: 'High-Resolution Prints in 7 Sizes',
     category: 'POSTER',
-    btnLabel: 'Shop Posters',
+    btnLabel: 'Shop Posters & Canvas',
   },
 ]
 
@@ -524,7 +525,16 @@ function BestSellers() {
   const gridRef = useRef(null)
 
   useEffect(() => {
-    api.get('/api/products').then((r) => setProducts(r.data)).catch(() => {}).finally(() => setLoading(false))
+    api
+      .get('/api/products')
+      .then(async (r) => {
+        const raw = r.data || []
+        // Enrich each product with the minimum active base price from its pricing variants
+        const enriched = await enrichProductsWithBasePrice(raw)
+        setProducts(enriched)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
   // Staggered scroll-reveal for product cards
