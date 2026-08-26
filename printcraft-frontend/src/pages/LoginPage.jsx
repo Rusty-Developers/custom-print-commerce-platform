@@ -12,10 +12,11 @@ export default function LoginPage() {
     'Log in to your MK GROUP Printing account to view orders, track deliveries, and manage your profile.'
   )
   const navigate = useNavigate()
-  const [phone, setPhone]       = useState('')
-  const [error, setError]       = useState('')
-  const [loading, setLoading]   = useState(false)
-  const [mounted, setMounted]   = useState(false)
+  const [phone, setPhone] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [notRegistered, setNotRegistered] = useState(false)
 
   useEffect(() => { const t = setTimeout(() => setMounted(true), 30); return () => clearTimeout(t) }, [])
 
@@ -38,13 +39,14 @@ export default function LoginPage() {
       navigate(`/verify-otp?phone=${phone}`)
     } catch (err) {
       const status = err.response?.status
-      const msg    = err.response?.data?.message || ''
-      if (status === 429 || msg.toLowerCase().includes('rate') || msg.toLowerCase().includes('limit')) {
+      const msg = (err.response?.data?.message || err.response?.data || '').toString().toLowerCase()
+      if (status === 429 || msg.includes('rate') || msg.includes('limit') || msg.includes('too many')) {
         toast.error('Too many OTP requests. Try again in 10 minutes.')
-      } else if (status === 404) {
-        toast.error('Phone number not registered. Please sign up first.')
       } else {
-        toast.error('Failed to send OTP. Please try again.')
+        // For ALL other failures (404, 400, 500, network issues, unregistered number, etc.)
+        // show the persistent "create your account" callout — this is a login page,
+        // so the most likely reason OTP fails is the number isn't registered.
+        setNotRegistered(true)
       }
     } finally {
       setLoading(false)
@@ -84,7 +86,7 @@ export default function LoginPage() {
                   type="tel"
                   placeholder="10-digit mobile number"
                   value={phone}
-                  onChange={(e) => { setPhone(e.target.value); setError('') }}
+                  onChange={(e) => { setPhone(e.target.value); setError(''); setNotRegistered(false) }}
                   onBlur={validate}
                   maxLength={10}
                   autoComplete="tel"
@@ -92,6 +94,20 @@ export default function LoginPage() {
                 />
               </div>
               {error && <span className="form-error">{error}</span>}
+
+              {/* ── Unregistered number callout ── */}
+              {notRegistered && (
+                <div className="not-registered-callout" role="alert">
+                  <div className="nrc-icon">🙋</div>
+                  <div className="nrc-body">
+                    <p className="nrc-title">No account found for this number</p>
+                    <p className="nrc-desc">Looks like you haven't signed up yet. Create a free account to get started!</p>
+                    <Link to={`/register?phone=${phone}`} className="nrc-cta-btn">
+                      Create Account →
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
 
             <button

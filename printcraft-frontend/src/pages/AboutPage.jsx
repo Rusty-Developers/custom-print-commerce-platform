@@ -95,11 +95,11 @@ export default function AboutPage() {
               <div className="about-brand-tagline">Premium Custom Print Studio</div>
               <ul className="about-brand-facts">
                 <li>
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', opacity: 0.6, textTransform: 'uppercase' }}>Office 1</span><br />
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', opacity: 0.6, textTransform: 'uppercase' }}>Printing Lab 1</span><br />
                   📍 RANIGANJ, GIRJAPARA, KATHGADA, PASCHIM BARDHAMAN, WB – 713347, INDIA
                 </li>
                 <li>
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', opacity: 0.6, textTransform: 'uppercase' }}>Office 2</span><br />
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', opacity: 0.6, textTransform: 'uppercase' }}>Printing Lab 2</span><br />
                   📍 Namburu, Guntur District, Andhra Pradesh – 522508
                 </li>
                 <li>🏭 Premium Print Studio</li>

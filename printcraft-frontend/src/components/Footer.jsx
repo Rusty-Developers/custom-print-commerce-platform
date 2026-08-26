@@ -152,7 +152,7 @@ export default function Footer() {
                 ['WOOD',        'Wood'],
                 ['ACRYLIC',     'Acrylic'],
                 ['PHOTO_FRAME', 'Photo Frame'],
-                ['POSTER',      'Poster'],
+                ['POSTER',      'Poster and Canvas'],
                 ['CREATIVE',    'Creative'],
               ].map(([cat, label]) => (
                 <li key={cat}><Link to={`/products?category=${cat}`}>{label}</Link></li>
