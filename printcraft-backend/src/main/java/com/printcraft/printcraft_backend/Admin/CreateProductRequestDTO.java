@@ -10,13 +10,18 @@ import lombok.Data;
 @Data
 @Builder
 public class CreateProductRequestDTO {
+
     @NotBlank
     private String productName;
+
     @NotNull
     private ProductCatagories productCatagories;
+
     private String description;
+
     @NotNull
     private FrameTypes frameTypes;
+
     @NotBlank
     private String imageUrl;
 }

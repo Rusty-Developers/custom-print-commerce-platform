@@ -8,6 +8,21 @@ function cellKey(size, thickness) {
   return `${size}_${thickness}`
 }
 
+// Parse a price string robustly, returning the rounded value or NaN
+function parsePrice(raw) {
+  const cleaned = String(raw).trim().replace(/,/g, '.')
+  const n = parseFloat(cleaned)
+  if (Number.isNaN(n)) return NaN
+  // Round to 2 decimal places to avoid floating-point drift
+  return Math.round(n * 100) / 100
+}
+
+// Validate that a string looks like a valid monetary amount
+function isValidPriceInput(raw) {
+  const cleaned = String(raw).trim().replace(/,/g, '.')
+  return /^\d+(\.\d{0,2})?$/.test(cleaned)
+}
+
 export default function AdminPricing() {
   const [products, setProducts] = useState([])
   const [productsLoading, setProductsLoading] = useState(true)
@@ -20,6 +35,7 @@ export default function AdminPricing() {
   const [editPrice, setEditPrice] = useState('')
   const [editActive, setEditActive] = useState(true)
   const [savingCell, setSavingCell] = useState(null)
+  const [priceError, setPriceError] = useState('')
 
   useEffect(() => {
     setProductsLoading(true)
@@ -46,20 +62,27 @@ export default function AdminPricing() {
   const openEdit = (size, thickness) => {
     const cell = getCell(size, thickness)
     setEditingCell({ size, thickness })
-    setEditPrice(cell?.basePrice != null ? String(cell.basePrice) : '')
+    // Format existing price to exactly 2 decimal places for clarity
+    setEditPrice(cell?.basePrice != null ? parseFloat(cell.basePrice).toFixed(2) : '')
     setEditActive(cell?.isActive ?? true)
+    setPriceError('')
   }
 
   const cancelEdit = () => setEditingCell(null)
 
-  const saveCell = async () => {
+  const validateAndSave = () => {
+    const raw = editPrice.trim()
+    if (raw === '') { setPriceError('Price is required'); return }
+    if (!isValidPriceInput(raw)) { setPriceError('Enter a valid number (e.g. 199 or 199.99)'); return }
+    const price = parsePrice(raw)
+    if (Number.isNaN(price) || price < 0) { setPriceError('Price must be 0 or greater'); return }
+    setPriceError('')
+    saveCell(price)
+  }
+
+  const saveCell = async (price) => {
     if (!editingCell || !selectedId) return
     const { size, thickness } = editingCell
-    const price = parseFloat(editPrice)
-    if (Number.isNaN(price) || price < 0) {
-      toast.error('Enter a valid price')
-      return
-    }
     setSavingCell(cellKey(size, thickness))
     try {
       const res = await api.put(`/api/admin/products/${selectedId}/pricing`, {
@@ -68,19 +91,22 @@ export default function AdminPricing() {
         basePrice: price,
         isActive: editActive,
       })
-      setGrid((prev) => prev.map((c) => {
-        if (c.sizeInches !== size || c.thickness !== thickness) return c
-        return {
-          ...c,
-          sizeInches: size,
-          thickness,
-          basePrice: res.data.basePrice,
-          isActive: res.data.isActive,
-          isSet: true,
+      const savedPrice = parseFloat(res.data.basePrice)
+      const savedActive = res.data.isActive
+      // CRITICAL FIX: use upsert — update existing cell OR push a new one if it wasn't in the grid yet
+      setGrid((prev) => {
+        const exists = prev.some((c) => c.sizeInches === size && c.thickness === thickness)
+        if (exists) {
+          return prev.map((c) => {
+            if (c.sizeInches !== size || c.thickness !== thickness) return c
+            return { ...c, basePrice: savedPrice, isActive: savedActive, isSet: true }
+          })
         }
-      }))
+        // Cell was unset (not in array), add it now
+        return [...prev, { sizeInches: size, thickness, basePrice: savedPrice, isActive: savedActive, isSet: true }]
+      })
       setEditingCell(null)
-      toast.success('Price saved')
+      toast.success('Price saved successfully')
     } catch {
       toast.error('Failed to save price')
     } finally {
@@ -104,26 +130,51 @@ export default function AdminPricing() {
 
     if (isEditing) {
       return (
-        <td key={key} style={{ padding: 10, verticalAlign: 'top', minWidth: 140 }}>
+        <td key={key} style={{ padding: 10, verticalAlign: 'top', minWidth: 160 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <input
-              className="form-input"
-              type="number"
-              min="0"
-              step="0.01"
-              value={editPrice}
-              onChange={(e) => setEditPrice(e.target.value)}
-              placeholder="Price"
-              autoFocus
-            />
-            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+            {/* Price input with ₹ prefix */}
+            <div style={{ position: 'relative' }}>
+              <span style={{
+                position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
+                color: '#374151', fontWeight: 700, fontSize: 14, pointerEvents: 'none',
+              }}>₹</span>
+              <input
+                className="form-input"
+                type="text"
+                inputMode="decimal"
+                value={editPrice}
+                onChange={(e) => {
+                  setEditPrice(e.target.value)
+                  if (priceError) setPriceError('')
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') { e.preventDefault(); validateAndSave() }
+                  if (e.key === 'Escape') { e.preventDefault(); cancelEdit() }
+                }}
+                placeholder="0.00"
+                autoFocus
+                style={{
+                  paddingLeft: 26,
+                  borderColor: priceError ? '#EF4444' : undefined,
+                  boxShadow: priceError ? '0 0 0 2px rgba(239,68,68,0.2)' : undefined,
+                }}
+              />
+            </div>
+            {/* Inline price error */}
+            {priceError && (
+              <div style={{ fontSize: 11, color: '#EF4444', marginTop: -4, fontWeight: 500 }}>
+                ⚠ {priceError}
+              </div>
+            )}
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, userSelect: 'none' }}>
               <input type="checkbox" checked={editActive} onChange={(e) => setEditActive(e.target.checked)} />
               Active
             </label>
             <div style={{ display: 'flex', gap: 6 }}>
-              <button type="button" className="btn btn-primary btn-sm" onClick={saveCell}>Save</button>
+              <button type="button" className="btn btn-primary btn-sm" onClick={validateAndSave}>Save</button>
               <button type="button" className="btn btn-ghost btn-sm" onClick={cancelEdit}>Cancel</button>
             </div>
+            <div style={{ fontSize: 10, color: '#9CA3AF' }}>Press Enter to save, Esc to cancel</div>
           </div>
         </td>
       )

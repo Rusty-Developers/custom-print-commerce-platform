@@ -3054,6 +3054,22 @@ body::after {
 .pc-filter-tabs-wrap {
   background: #FFFFFF;
   border-bottom: 1px solid #F0F0F0;
+  /* Clip children so pills never bleed past the section edge */
+  overflow: hidden;
+  position: relative;
+}
+
+/* Right-edge fade gradient — visual affordance that the row scrolls */
+.pc-filter-tabs-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 64px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, #FFFFFF);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .pc-filter-tabs {
@@ -3061,18 +3077,36 @@ body::after {
   flex-wrap: nowrap;
   gap: 8px;
   padding: 16px 0;
+  /* Must be width-bounded so overflow-x:auto actually creates a scrollbar */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  /* Thin visible scrollbar — Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(192,57,43,0.35) transparent;
 }
 
+/* Thin visible scrollbar — Chromium / Safari */
 .pc-filter-tabs::-webkit-scrollbar {
-  display: none;
+  height: 3px;
+}
+.pc-filter-tabs::-webkit-scrollbar-track {
+  background: transparent;
+}
+.pc-filter-tabs::-webkit-scrollbar-thumb {
+  background: rgba(192,57,43,0.35);
+  border-radius: 999px;
+}
+.pc-filter-tabs::-webkit-scrollbar-thumb:hover {
+  background: rgba(192,57,43,0.6);
 }
 
 .pc-filter-tab {
   position: relative;
-  flex-shrink: 0;
+  flex-shrink: 0;          /* never squish */
+  white-space: nowrap;     /* never wrap label text mid-word */
   padding: 8px 20px;
   border-radius: 999px;
   border: 1.5px solid rgba(0,0,0,0.1);
