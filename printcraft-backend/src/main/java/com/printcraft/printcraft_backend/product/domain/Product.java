@@ -27,6 +27,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(name = "catagory", nullable = false)
     private ProductCatagories productCatagories;
+    @Column(columnDefinition = "TEXT")
     private String description;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

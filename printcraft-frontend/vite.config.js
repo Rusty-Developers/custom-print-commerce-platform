@@ -35,6 +35,13 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      // Proxy uploaded product images — Spring Boot serves them from disk at /uploads/**
+      // Without this, the Vite dev server handles /uploads/* itself (404), so no images show.
+      '/uploads': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })

@@ -9,5 +9,8 @@ public enum ProductCatagories {
     ACRYLIC,
     PHOTO_FRAME,
     POSTER,
-    CREATIVE
+    CREATIVE,
+    WEDDING_PHOTO_ALBUM,
+    LAY_FLAT_ALBUM,
+    SPIRAL_ALBUM
 }

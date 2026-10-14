@@ -35,6 +35,8 @@ public class SecurityConfig {
                                 auth.requestMatchers("/").permitAll()
                          .requestMatchers("/api/products/**").permitAll() //anyone can view products
                                 .requestMatchers("/api/auth/**").permitAll() //anone can come and see products until auth
+                                // Uploaded product images must be public — served as static files from /uploads/**
+                                .requestMatchers("/uploads/**").permitAll()
                                 //ADMIN :->
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 // EVERYTHING ELSE NEEDS LOGIN

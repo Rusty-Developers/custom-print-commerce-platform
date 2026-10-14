@@ -9,7 +9,7 @@ import {
   formatINR,
   SIZE_LABELS, THICKNESS_LABELS, FRAME_LABELS,
   CATEGORY_LABELS,
-  ALL_FRAMES,
+  ALL_FRAMES, ALL_SIZES, ALL_THICKNESSES,
   SIZE_PREVIEW_DIMS, THICKNESS_BORDER,
 } from '../utils/format'
 
@@ -694,29 +694,97 @@ export default function ProductPage() {
               </div>
             </div>
 
+            {/* ── Price Display ── */}
             <div className="config-section">
               <div className="config-price">
-                {currentPrice ? formatINR(currentPrice) : <span style={{ fontSize: 20, color: 'var(--text-muted)' }}>Select size &amp; thickness</span>}
+                {currentPrice
+                  ? formatINR(currentPrice)
+                  : availablePricing.length === 0
+                    ? <span style={{ fontSize: 18, color: 'var(--text-muted)', fontWeight: 600 }}>Pricing coming soon</span>
+                    : <span style={{ fontSize: 18, color: 'var(--text-muted)' }}>Select size &amp; thickness</span>
+                }
               </div>
               <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>Inclusive of all taxes</div>
             </div>
 
+            {/* ── No pricing notice ── */}
+            {availablePricing.length === 0 && (
+              <div style={{
+                display: 'flex', alignItems: 'flex-start', gap: 10,
+                background: '#FFF8E1', border: '1px solid #FDE68A',
+                borderRadius: 10, padding: '12px 14px', marginBottom: 4,
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 1 }} aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span style={{ fontSize: 13, color: '#92400E', lineHeight: 1.5 }}>
+                  Pricing for this product is being configured. Please check back soon or contact us.
+                </span>
+              </div>
+            )}
+
+            {/* ── Size Pills ── */}
             <div className="config-section">
               <div className="config-label">Size</div>
-              <div className="pill-group">
-                {availableSizes.map((s) => (
-                  <button key={s} className={`pill${selectedSize === s ? ' active' : ''}`} onClick={() => handleSizeSelect(s)}>{SIZE_LABELS[s]}</button>
-                ))}
-              </div>
+              {availablePricing.length > 0 ? (
+                <div className="pill-group">
+                  {availableSizes.map((s) => (
+                    <button
+                      key={s}
+                      className={`pill${selectedSize === s ? ' active' : ''}`}
+                      onClick={() => handleSizeSelect(s)}
+                    >
+                      {SIZE_LABELS[s]}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                /* Show all possible sizes as disabled placeholders */
+                <div className="pill-group">
+                  {ALL_SIZES.map((s) => (
+                    <button
+                      key={s}
+                      className="pill"
+                      disabled
+                      style={{ opacity: 0.35, cursor: 'not-allowed', pointerEvents: 'none' }}
+                    >
+                      {SIZE_LABELS[s]}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
+            {/* ── Thickness Pills ── */}
             <div className="config-section">
               <div className="config-label">Thickness</div>
-              <div className="pill-group">
-                {availableThicknessesForSize.map((t) => (
-                  <button key={t} className={`pill${selectedThickness === t ? ' active' : ''}`} onClick={() => setSelectedThickness(t)}>{THICKNESS_LABELS[t]}</button>
-                ))}
-              </div>
+              {availablePricing.length > 0 ? (
+                <div className="pill-group">
+                  {availableThicknessesForSize.map((t) => (
+                    <button
+                      key={t}
+                      className={`pill${selectedThickness === t ? ' active' : ''}`}
+                      onClick={() => setSelectedThickness(t)}
+                    >
+                      {THICKNESS_LABELS[t]}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                /* Show all possible thicknesses as disabled placeholders */
+                <div className="pill-group">
+                  {ALL_THICKNESSES.map((t) => (
+                    <button
+                      key={t}
+                      className="pill"
+                      disabled
+                      style={{ opacity: 0.35, cursor: 'not-allowed', pointerEvents: 'none' }}
+                    >
+                      {THICKNESS_LABELS[t]}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="config-section">
@@ -737,8 +805,24 @@ export default function ProductPage() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <button className="btn btn-outline btn-full" onClick={handleAddToCart} id="add-to-cart-btn">🛒 Add to Cart</button>
-              <button className="btn btn-primary btn-lg btn-full" onClick={handleBuyNow} id="buy-now-btn">⚡ Buy Now</button>
+              <button
+                className="btn btn-outline btn-full"
+                onClick={handleAddToCart}
+                id="add-to-cart-btn"
+                disabled={availablePricing.length === 0}
+                style={availablePricing.length === 0 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+              >
+                🛒 Add to Cart
+              </button>
+              <button
+                className="btn btn-primary btn-lg btn-full"
+                onClick={handleBuyNow}
+                id="buy-now-btn"
+                disabled={availablePricing.length === 0}
+                style={availablePricing.length === 0 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+              >
+                ⚡ Buy Now
+              </button>
             </div>
 
             <div className="trust-badge">🔒 Secure Checkout — Razorpay Protected &nbsp;|&nbsp; 100% Safe Payment</div>

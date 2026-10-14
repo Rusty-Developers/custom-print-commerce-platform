@@ -27,27 +27,33 @@ export const FRAME_LABELS = {
 }
 
 export const CATEGORY_LABELS = {
-  TILES:       'Tiles',
-  PVC:         'PVC',
-  GLASS:       'Glass',
-  METAL:       'Metal',
-  WOOD:        'Wood',
-  ACRYLIC:     'Acrylic',
-  PHOTO_FRAME: 'Photo Frame',
-  POSTER:      'Poster and Canvas',
-  CREATIVE:    'Creative',
+  TILES:               'Tiles',
+  PVC:                 'PVC',
+  GLASS:               'Glass',
+  METAL:               'Metal',
+  WOOD:                'Wood',
+  ACRYLIC:             'Acrylic',
+  PHOTO_FRAME:         'Photo Frame',
+  POSTER:              'Poster and Canvas',
+  CREATIVE:            'Creative',
+  WEDDING_PHOTO_ALBUM: 'Wedding Photo Album',
+  LAY_FLAT_ALBUM:      'Lay Flat Album',
+  SPIRAL_ALBUM:        'Spiral Album',
 }
 
 export const CATEGORY_ICONS = {
-  TILES:       '🪟',
-  PVC:         '🪪',
-  GLASS:       '🔮',
-  METAL:       '⚙️',
-  WOOD:        '🪵',
-  ACRYLIC:     '💎',
-  PHOTO_FRAME: '🖼️',
-  POSTER:      '📋',
-  CREATIVE:    '🎨',
+  TILES:               '🪟',
+  PVC:                 '🪪',
+  GLASS:               '🔮',
+  METAL:               '⚙️',
+  WOOD:                '🪵',
+  ACRYLIC:             '💎',
+  PHOTO_FRAME:         '🖼️',
+  POSTER:              '📋',
+  CREATIVE:            '🎨',
+  WEDDING_PHOTO_ALBUM: '💒',
+  LAY_FLAT_ALBUM:      '📖',
+  SPIRAL_ALBUM:        '🌀',
 }
 
 export const ORDER_STATUS_BADGE = {
